@@ -1,7 +1,7 @@
 # Agent Workforce V1 — Design
 
-Status: APPROVED_FOR_IMPLEMENTATION  
-Date: 2026-10-18  
+Status: APPROVED_FOR_IMPLEMENTATION
+Date: 2026-10-18
 Scope: cross-repository engineering workforce for Jannek's software projects
 
 ## 1. Intent
