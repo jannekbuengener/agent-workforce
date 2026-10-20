@@ -6,6 +6,8 @@ V1 contains exactly two advisory scouts: Quality Scout and Process Scout. The or
 
 A scheduled run may shallow-preflight all in-scope repositories but deep-inspects exactly one repository.
 
+Portfolio membership and baseline cardinality are derived from [`../portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md). Each active scout requires one initial baseline for every current in-scope repository; no fixed repository count is part of the policy contract.
+
 ## Selection priority
 
 Choose the first eligible class below; within a class choose the least-recently-inspected repository:
