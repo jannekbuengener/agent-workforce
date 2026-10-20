@@ -30,6 +30,8 @@ V1 scouts may read/analyze, append evidence-backed observations to the canonical
 
 V1 scouts must not modify product code, create implementation PRs, change governance/branch protection, modify secrets, create specialist agents, or create follow-up implementation issues automatically.
 
+When issue creation is otherwise authorized by the acting role/operator and target-repository authority, follow the canonical [`GitHub issue creation`](docs/WORKFORCE_POLICY.md#github-issue-creation) section of the Workforce Policy. This reference does not grant issue-write authority.
+
 ## Fail closed
 
 Terminate with an explicit blocked outcome instead of guessing:
