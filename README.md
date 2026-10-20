@@ -21,6 +21,20 @@ Primary operating principle:
 
 If live access is unavailable, fail closed. Never reconstruct current repository state from stale memory.
 
+## Cross-repository meta topology
+
+The canonical shared meta-layer map is [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md).
+
+Current classes:
+
+- **METAEBENE**
+  - `jannekbuengener/agent-workforce` — workforce identity, authority, routing, portfolio and operating policy.
+  - `jannekbuengener/agent-brain` — shared knowledge, context, evidence, decision, memory and retrieval infrastructure.
+- **METATOOLS**
+  - `jannekbuengener/arvp` — domain-neutral deterministic validation, evaluation, gates and evidence framework.
+
+The topology describes shared capabilities and ownership boundaries only. It does not override target-repository authority and does not create implicit runtime dependencies.
+
 ## V1 workforce
 
 - [Quality Scout](agents/quality-scout.md)
@@ -29,6 +43,7 @@ If live access is unavailable, fail closed. Never reconstruct current repository
 - [Repo Health Book template](templates/REPO_HEALTH_BOOK.md)
 - [Portfolio](portfolio/REPOSITORIES.md)
 - [Workforce policy](docs/WORKFORCE_POLICY.md)
+- [Meta topology](docs/META_TOPOLOGY.md)
 - [NotebookLM guidance](docs/NOTEBOOKLM.md)
 
 ## Authority boundaries
