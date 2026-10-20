@@ -10,6 +10,8 @@ These rules govern agents acting from this workforce repository. They do not ove
 - Scheduled/external execution hosts must bootstrap from live `main` [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) and follow its current required-read order instead of carrying a duplicated downstream file list.
 - If the bootstrap or a required authority path cannot be resolved, fail closed with an explicit blocked outcome; never reconstruct missing authority from an older prompt or memory.
 - For a monitored repository, read and obey that repository's local `AGENTS`/README/canon/contracts before applying generic engineering assumptions.
+- After target-repository authority is established, use [`docs/CAPABILITY_ROUTING.md`](docs/CAPABILITY_ROUTING.md) to determine whether the current task triggers a specialized capability; consult [`capabilities/REGISTRY.yml`](capabilities/REGISTRY.yml) only for relevant matching capability entries.
+- Capability routing selects tools/discovery obligations only. It never overrides target-repository truth, ownership, or mutation authority.
 - Use this repository for workforce role, authority, finding, scheduling, and template contracts.
 - Use [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md) to classify shared meta repositories and metatools when cross-repository context is relevant.
 - Meta-layer membership never grants authority to override target-repository local truth or ownership.
@@ -29,6 +31,9 @@ Terminate with an explicit blocked outcome instead of guessing:
 - `BLOCKED_NO_REPO_ACCESS`
 - `BLOCKED_TOOL_UNAVAILABLE`
 - `BLOCKED_AUTHORITY_AMBIGUOUS`
+- `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE`
+
+`BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE` applies when a relevant registry entry is `REQUIRED` and the named capability is unavailable or unauthorized. Do not silently substitute another tool.
 
 Infrastructure, connector, scheduler, or budget failures are operational failures, not repository-quality findings.
 

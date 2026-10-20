@@ -1,0 +1,39 @@
+schema_version: 1
+
+requirement_levels:
+  - REQUIRED
+  - DISCOVERY_REQUIRED
+  - PREFERRED
+  - ADVISORY
+
+capabilities:
+  reverse_engineering:
+    requirement: REQUIRED
+    description: >
+      Reverse engineering of binaries, applications, packaged runtimes, and
+      behavior where the task intent is to reconstruct or inspect implementation
+      rather than perform ordinary documentation or web research.
+    triggers:
+      - binary reverse engineering
+      - proprietary application behavior reconstruction
+      - application behavior reconstruction
+      - native binary inspection
+      - Electron application analysis
+      - JavaScript application reverse engineering
+      - .NET assembly analysis
+      - runtime behavior investigation
+      - website behavior reconstruction
+    exclusions:
+      - ordinary web research
+      - ordinary documentation lookup
+      - source-available code review that does not require reverse engineering
+    tool:
+      name: REA
+      identity: morluto/rea
+      upstream: https://github.com/morluto/rea
+    availability:
+      require_available: true
+      require_authorized: true
+      unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      silent_substitution: false

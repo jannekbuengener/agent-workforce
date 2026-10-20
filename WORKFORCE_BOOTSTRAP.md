@@ -11,9 +11,9 @@ Execution hosts may hard-code only:
 - bootstrap path: `WORKFORCE_BOOTSTRAP.md`;
 - requested execution mode: `quality-scout`, `process-scout`, or `supervisor`.
 
-All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
+All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, capability-routing rules, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
 
-Do not copy the downstream read list into scheduler/automation prompts.
+Do not copy the downstream read list or capability registry into scheduler/automation prompts.
 
 ## Fail-closed bootstrap rule
 
@@ -23,7 +23,7 @@ Before any repository inspection or GitHub write:
 2. follow the current required-read order below;
 3. resolve the requested execution mode to its live role contract/read set;
 4. derive portfolio membership and Health Book URLs from the live portfolio;
-5. enter the selected target repository and read its local authority before applying workforce assumptions.
+5. enter the selected target repository and read its local authority before applying workforce assumptions or capability routing.
 
 If this bootstrap file, a required workforce authority file, the requested role contract, or the target repository's required authority cannot be read or resolved, do not reconstruct it from memory or an older prompt. Return an explicit blocked outcome (`BLOCKED_AUTHORITY_AMBIGUOUS`, `BLOCKED_NO_REPO_ACCESS`, or `BLOCKED_TOOL_UNAVAILABLE` as appropriate) and perform no evidence write that depends on the missing authority.
 
@@ -34,13 +34,16 @@ Read the live `main` versions in this order:
 1. `README.md` — workforce front door and truth hierarchy;
 2. `AGENTS.md` — operating and fail-closed rules;
 3. `docs/META_TOPOLOGY.md` — shared meta-repository/metatool classification;
-4. `docs/WORKFORCE_POLICY.md` — selection, evidence, authority and baseline policy;
-5. `contracts/FINDING_CONTRACT.md` — finding identity/lifecycle contract;
-6. `portfolio/REPOSITORIES.md` — current monitored membership and canonical Health Books;
-7. `templates/REPO_HEALTH_BOOK.md` — evidence ledger format and silence rules;
-8. the execution-mode-specific read set below.
+4. `docs/CAPABILITY_ROUTING.md` — specialized capability requirement levels, relevance gate and registry routing;
+5. `docs/WORKFORCE_POLICY.md` — selection, evidence, authority and baseline policy;
+6. `contracts/FINDING_CONTRACT.md` — finding identity/lifecycle contract;
+7. `portfolio/REPOSITORIES.md` — current monitored membership and canonical Health Books;
+8. `templates/REPO_HEALTH_BOOK.md` — evidence ledger format and silence rules;
+9. the execution-mode-specific read set below.
 
 The ordering above is canonical. If a downstream file is renamed or replaced, update this bootstrap contract; execution-host prompts remain unchanged.
+
+`capabilities/REGISTRY.yml` is intentionally not part of the unconditional read set. Consult it only after target-repository authority handoff and only when the current task matches a capability trigger or the target repository explicitly routes to a registered capability.
 
 ## Execution modes
 
@@ -110,15 +113,19 @@ After selecting a target repository:
 2. read the target repository's local `AGENTS.md` when present;
 3. read its README/front door and relevant canon/architecture/contracts/rules;
 4. use the portfolio row to locate its canonical Repo Health Book;
-5. only then apply the selected workforce role's analytical lens.
+5. classify the current task against `docs/CAPABILITY_ROUTING.md` only after the local authority above is established;
+6. if and only if a capability trigger matches or local authority explicitly routes to one, consult the matching entry in `capabilities/REGISTRY.yml` and enforce its requirement/availability rules;
+7. only then apply the selected workforce role's analytical lens.
 
-Target-repository local authority outranks generic workforce assumptions. The meta layer does not grant implementation ownership or create implicit runtime dependencies.
+Target-repository local authority outranks generic workforce assumptions and generic capability routing. The meta layer does not grant implementation ownership or create implicit runtime dependencies. Capability routing selects tools; it does not create repository authority.
 
 ## Execution-host boundary
 
 Private MCP access is never a worker requirement. Use only tools/evidence available to the execution host. Tool, connector, scheduler or budget failures are operational failures, not repository defects.
 
-The scheduler owns cadence and transient run metadata only. This repository owns versioned workforce canon. Do not persist mutable scheduler state here merely to support routing.
+When a matching registry entry is `REQUIRED`, unavailability or lack of authorization produces `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE`; do not silently substitute another tool.
+
+The scheduler owns cadence and transient run metadata only. This repository owns versioned workforce canon. Do not persist mutable scheduler state or machine-local capability paths here merely to support routing.
 
 ## Regression invariants
 
@@ -127,5 +134,7 @@ The bootstrap contract is correct only while all of these remain true:
 - adding/removing a portfolio member requires changing the live portfolio, not each scheduler prompt;
 - renaming a downstream canon file requires changing this bootstrap, not each scheduler prompt;
 - an unreadable bootstrap or required authority blocks instead of falling back to memory;
-- target-repository local authority remains above workforce assumptions;
-- no execution-host prompt carries a second full copy of the downstream canonical read list.
+- target-repository local authority remains above workforce assumptions and capability routing;
+- capability matching occurs after target-repository authority handoff;
+- unrelated tasks do not load or invoke registered capabilities solely because they exist;
+- no execution-host prompt carries a second full copy of the downstream canonical read list or capability registry.
