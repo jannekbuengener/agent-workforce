@@ -11,7 +11,7 @@ Execution hosts may hard-code only:
 - bootstrap path: `WORKFORCE_BOOTSTRAP.md`;
 - requested execution mode: `quality-scout`, `process-scout`, or `supervisor`.
 
-All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy and reporting cardinality are discovered from live repository canon through this file.
+All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
 
 Do not copy the downstream read list into scheduler/automation prompts.
 
@@ -69,6 +69,30 @@ Read:
 - Agent Workforce meta issue `#3`, including newer comments that supersede historical rollout snapshots.
 
 The supervisor validates scout output quality and contract adherence; it does not duplicate scout deep inspections or gain product-code authority.
+
+For each supervisor run:
+
+1. determine whether new scout output has appeared since the most recent Workforce Supervisor comment in meta issue `#3`;
+2. for each new baseline or finding delta, verify correct scout/repository identity, evidence-backed claims, repo-local authority precedence, no invented findings, stable root-cause identity/deduplication, correct Quality-vs-Process lens separation, and correct classification of tool/access failures;
+3. derive the current repository denominator from live `portfolio/REPOSITORIES.md`;
+4. if new scout output exists, append one compact meta-issue comment containing timestamp, current `Quality x/N` and `Process y/N` coverage, reviewed repo/scout/Health-Book references, assessment `PASS | CONCERN | BLOCKED`, touched finding IDs, and at most one next action when action is required;
+5. do not comment when nothing materially new has appeared and do not repeat already reviewed outputs;
+6. notify Jannek only when a real contract defect, duplicate/noisy behavior, wrong authority use, or blocked condition requires intervention; otherwise update the meta issue silently when an update is warranted.
+
+The supervisor must not modify product code, create implementation issues/PRs, promote scout authority, create managers/specialists, or alter workforce policy automatically.
+
+## Scheduled-run output policy
+
+For `quality-scout` and `process-scout`, return a compact run receipt containing:
+
+- selected repository;
+- runtime outcome;
+- canonical Repo Health Book URL;
+- finding IDs touched, if any.
+
+Notify Jannek only for initial baseline completion, material findings, or blocked runs. Do not notify for noise-only or unchanged outcomes.
+
+For `supervisor`, follow the supervisor-specific notification and comment rules above.
 
 ## Portfolio and baseline derivation
 
