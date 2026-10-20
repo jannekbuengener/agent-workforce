@@ -4,7 +4,7 @@ Canonical role and policy repository for Jannek's cross-repository AI engineerin
 
 ## Purpose
 
-This repository defines cross-repository workforce identity, authority, evidence contracts, portfolio membership, reusable templates, and relevance-gated capability/discovery routing. It does not own product code, repo-local engineering truth, mutable scheduler state, or runtime memory.
+This repository defines cross-repository workforce identity, authority, evidence contracts, portfolio membership, reusable templates, relevance-gated capability/discovery routing, and shared external-reference semantics. It does not own product code, repo-local engineering truth, mutable scheduler state, or runtime memory.
 
 Primary operating principle:
 
@@ -25,7 +25,7 @@ If live access is unavailable, fail closed. Never reconstruct current repository
 
 Scheduled/external execution hosts must start from [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) on live `main`.
 
-That bootstrap owns the current downstream read order, execution-mode routing, portfolio derivation, capability-routing discovery and fail-closed behavior. Scheduler prompts must not duplicate the full canonical file list or capability registry.
+That bootstrap owns the current downstream read order, execution-mode routing, portfolio derivation, capability/reference discovery and fail-closed behavior. Scheduler prompts must not duplicate the full canonical file list, capability registry, or reference catalog.
 
 ## Capability routing
 
@@ -48,6 +48,19 @@ The canonical decision procedure is [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BE
 
 Discovery can conclude `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM`. A discovery outcome is evidence for the engineering decision; it does not itself authorize dependency installation or repository mutation.
 
+## External references
+
+The canonical semantics are [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](contracts/EXTERNAL_REFERENCE_CONTRACT.md). A small shared discovery/reference catalog lives at [`references/CATALOG.yml`](references/CATALOG.yml), and [`templates/EXTERNAL_REFERENCE_INDEX.md`](templates/EXTERNAL_REFERENCE_INDEX.md) defines the default repo-local manifest shape.
+
+The two layers are intentionally separate:
+
+- the shared catalog records reusable public sources/discovery anchors;
+- a target repository's own external-reference manifest records which sources are actually relevant to that repository and why.
+
+Repo-local references use `P0` / `P1` / `P2` for **relevance**, independently from external source authority. `P0`/`P1` require concrete repo signals; `P2` is parked/reference-only. Shared catalog membership never proves that a repository uses a technology or should adopt a dependency.
+
+References are loaded relevance-first after target-repository authority handoff. Official/upstream evidence outranks community/example sources, while GitHub/repo live truth and target-repository canon remain higher than all external references.
+
 ## Cross-repository meta topology
 
 The canonical shared meta-layer map is [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md).
@@ -68,6 +81,9 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 - [Capability routing](docs/CAPABILITY_ROUTING.md)
 - [Capability registry](capabilities/REGISTRY.yml)
 - [Reuse before build](docs/REUSE_BEFORE_BUILD.md)
+- [External reference contract](contracts/EXTERNAL_REFERENCE_CONTRACT.md)
+- [Shared reference catalog](references/CATALOG.yml)
+- [External reference manifest template](templates/EXTERNAL_REFERENCE_INDEX.md)
 - [Quality Scout](agents/quality-scout.md)
 - [Process Scout](agents/process-scout.md)
 - [Finding contract](contracts/FINDING_CONTRACT.md)
@@ -79,6 +95,6 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 
 ## Authority boundaries
 
-`agent-workforce` owns versioned workforce canon only. Each monitored repository owns its own code, repository rules, CI, issues, PRs, and Repo Health Book. V1 intentionally has no runtime database, scheduler ledger, generated dashboard, or hosted GitHub Actions workflow.
+`agent-workforce` owns versioned workforce canon only. Each monitored repository owns its own code, repository rules, CI, issues, PRs, Repo Health Book, and repository-specific external-reference relevance. V1 intentionally has no runtime database, scheduler ledger, generated dashboard, or hosted GitHub Actions workflow.
 
-Mutable execution metadata and machine-local capability locations belong to the execution host and are never copied into role, policy, or capability files as canonical truth.
+Mutable execution metadata and machine-local capability/reference locations belong to the execution host and are never copied into role, policy, capability, or reference files as canonical truth.
