@@ -13,7 +13,11 @@ These rules govern agents acting from this workforce repository. They do not ove
 - After target-repository authority is established, use [`docs/CAPABILITY_ROUTING.md`](docs/CAPABILITY_ROUTING.md) to determine whether the current task triggers a specialized capability; consult [`capabilities/REGISTRY.yml`](capabilities/REGISTRY.yml) only for relevant matching capability entries and read any contract referenced by the matching entry.
 - For relevant planning/implementation work that would introduce a meaningful new code/dependency/tool/service/infrastructure path, the `reuse_before_build` route is `DISCOVERY_REQUIRED`; follow [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md) before selecting a custom implementation.
 - Reuse-before-build is bounded and relevance-gated. Do not run broad ecosystem research for trivial fixes, documentation-only work, straightforward use of existing repo primitives, or tasks that do not make a meaningful implementation-path decision.
-- Capability routing selects tools/discovery obligations only. It never overrides target-repository truth, ownership, dependency policy, or mutation authority.
+- When external documentation or engineering precedent is materially relevant, follow [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](contracts/EXTERNAL_REFERENCE_CONTRACT.md): use the target repo's own external-reference manifest when present, then consult [`references/CATALOG.yml`](references/CATALOG.yml) only for applicable shared discovery/reference anchors.
+- Never infer target-repository usage, dependency adoption, or implementation scope merely because a source exists in the shared reference catalog.
+- Repo-local `P0`/`P1` references require concrete current repo signals; `P2` is parked/reference-only. Load only entries relevant to the current task.
+- Official/upstream external sources outrank community/example material, but all external references remain below target-repository live truth/canon for claims about the repository itself.
+- Capability/reference routing selects tools, discovery obligations, or evidence sources only. It never overrides target-repository truth, ownership, dependency policy, or mutation authority.
 - Use this repository for workforce role, authority, finding, scheduling, and template contracts.
 - Use [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md) to classify shared meta repositories and metatools when cross-repository context is relevant.
 - Meta-layer membership never grants authority to override target-repository local truth or ownership.
