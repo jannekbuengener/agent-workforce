@@ -11,6 +11,19 @@ This file defines portfolio membership only. Activity classes are derived at run
 | `jannekbuengener/arvp` | https://github.com/jannekbuengener/arvp/issues/30 |
 | `jannekbuengener/traum_taenzer` | https://github.com/jannekbuengener/traum_taenzer/issues/96 |
 | `jannekbuengener/Claire_de_Binare` | https://github.com/jannekbuengener/Claire_de_Binare/issues/4596 |
+| `jannekbuengener/agent-brain` | https://github.com/jannekbuengener/agent-brain/issues/25 |
+
+## Baseline accounting
+
+Baseline coverage is derived from live portfolio membership, never from a fixed repository count.
+
+For each active scout, every in-scope repository requires exactly one initial baseline. Overall baseline completion is therefore:
+
+```text
+active scout roles × current in-scope repositories
+```
+
+When portfolio membership changes, the new current portfolio automatically defines the required baseline set. Historical coverage counts remain historical snapshots and must not be reused as current runtime invariants.
 
 ## Excluded from V1
 
