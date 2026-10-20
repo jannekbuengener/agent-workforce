@@ -2,7 +2,7 @@
 
 ## Purpose
 
-This file is the stable execution-host entry point for Agent Workforce V1.
+This file is the stable execution-host entry point for Agent Workforce V1.1.
 
 Execution hosts may hard-code only:
 
@@ -11,9 +11,9 @@ Execution hosts may hard-code only:
 - bootstrap path: `WORKFORCE_BOOTSTRAP.md`;
 - requested execution mode: `quality-scout`, `process-scout`, or `supervisor`.
 
-All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, capability/reference routing rules, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
+All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, checkpoint semantics, capability/reference routing rules, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
 
-Do not copy the downstream read list, capability registry, or shared reference catalog into scheduler/automation prompts.
+Do not copy the downstream read list, checkpoint contract, capability registry, or shared reference catalog into scheduler/automation prompts.
 
 ## Fail-closed bootstrap rule
 
@@ -27,6 +27,8 @@ Before any repository inspection or GitHub write:
 
 If this bootstrap file, a required workforce authority file, the requested role contract, or the target repository's required authority cannot be read or resolved, do not reconstruct it from memory or an older prompt. Return an explicit blocked outcome (`BLOCKED_AUTHORITY_AMBIGUOUS`, `BLOCKED_NO_REPO_ACCESS`, or `BLOCKED_TOOL_UNAVAILABLE` as appropriate) and perform no evidence write that depends on the missing authority.
 
+If required checkpoint state cannot be read or updated safely after checkpoint-aware routing begins, return `BLOCKED_CHECKPOINT_STATE_UNAVAILABLE`. Never guess or advance state optimistically.
+
 ## Required workforce read order
 
 Read the live `main` versions in this order:
@@ -36,10 +38,11 @@ Read the live `main` versions in this order:
 3. `docs/META_TOPOLOGY.md` — shared meta-repository/metatool classification;
 4. `docs/CAPABILITY_ROUTING.md` — specialized capability requirement levels, relevance gate and registry routing;
 5. `docs/WORKFORCE_POLICY.md` — selection, evidence, authority and baseline policy;
-6. `contracts/FINDING_CONTRACT.md` — finding identity/lifecycle contract;
-7. `portfolio/REPOSITORIES.md` — current monitored membership and canonical Health Books;
-8. `templates/REPO_HEALTH_BOOK.md` — evidence ledger format and silence rules;
-9. the execution-mode-specific read set below.
+6. `contracts/CHECKPOINT_CONTRACT.md` — durable Scout/Supervisor cursor semantics;
+7. `contracts/FINDING_CONTRACT.md` — finding identity/lifecycle contract;
+8. `portfolio/REPOSITORIES.md` — current monitored membership and canonical Health Books;
+9. `templates/REPO_HEALTH_BOOK.md` — evidence ledger format and silence rules;
+10. the execution-mode-specific read set below.
 
 The ordering above is canonical. If a downstream file is renamed or replaced, update this bootstrap contract; execution-host prompts remain unchanged.
 
@@ -58,7 +61,7 @@ Read:
 
 - `agents/quality-scout.md`
 
-Then execute exactly one Quality Scout run according to the live role, policy, portfolio, finding and Health Book contracts.
+Then execute exactly one Quality Scout run according to the live role, policy, checkpoint, portfolio, finding and Health Book contracts.
 
 ### `process-scout`
 
@@ -66,7 +69,7 @@ Read:
 
 - `agents/process-scout.md`
 
-Then execute exactly one Process Scout run according to the live role, policy, portfolio, finding and Health Book contracts.
+Then execute exactly one Process Scout run according to the live role, policy, checkpoint, portfolio, finding and Health Book contracts.
 
 ### `supervisor`
 
@@ -76,18 +79,24 @@ Read:
 - `agents/process-scout.md`;
 - Agent Workforce meta issue `#3`, including newer comments that supersede historical rollout snapshots.
 
-The supervisor validates scout output quality and contract adherence; it does not duplicate scout deep inspections or gain product-code authority.
+The Supervisor validates Scout output quality and contract adherence; it does not duplicate Scout deep inspections or gain product-code authority.
 
-For each supervisor run:
+For each Supervisor run:
 
-1. determine whether new scout output has appeared since the most recent Workforce Supervisor comment in meta issue `#3`;
-2. for each new baseline or finding delta, verify correct scout/repository identity, evidence-backed claims, repo-local authority precedence, no invented findings, stable root-cause identity/deduplication, correct Quality-vs-Process lens separation, and correct classification of tool/access failures;
-3. derive the current repository denominator from live `portfolio/REPOSITORIES.md`;
-4. if new scout output exists, append one compact meta-issue comment containing timestamp, current `Quality x/N` and `Process y/N` coverage, reviewed repo/scout/Health-Book references, assessment `PASS | CONCERN | BLOCKED`, touched finding IDs, and at most one next action when action is required;
-5. do not comment when nothing materially new has appeared and do not repeat already reviewed outputs;
-6. notify Jannek only when a real contract defect, duplicate/noisy behavior, wrong authority use, or blocked condition requires intervention; otherwise update the meta issue silently when an update is warranted.
+1. read the single Supervisor checkpoint defined by `contracts/CHECKPOINT_CONTRACT.md`;
+2. for each current Health Book, inspect only `INITIAL BASELINE` / `FINDING DELTA` comments whose comment id is newer than that Health Book's `last_reviewed_output_comment_id` cursor;
+3. ignore Scout checkpoint comments and all other non-Scout-output comments as review candidates;
+4. for each new Scout output, verify correct scout/repository identity, evidence-backed claims, repo-local authority precedence, no invented findings, stable root-cause identity/deduplication, correct Quality-vs-Process lens separation, and correct classification of tool/access/checkpoint failures;
+5. derive the current repository denominator from live `portfolio/REPOSITORIES.md`;
+6. if new Scout output exists, append one compact meta-issue comment containing timestamp, current `Quality x/N` and `Process y/N` coverage, reviewed repo/scout/Health-Book references, assessment `PASS | CONCERN | BLOCKED`, touched finding IDs, and at most one next action when action is required;
+7. after successful review, advance each affected Health Book cursor in the same Supervisor checkpoint to the highest successfully reviewed Scout-output comment id;
+8. if no new Scout output exists, create no normal Supervisor comment; checkpoint maintenance may still update `last_supervisor_run_at`;
+9. do not repeat already reviewed outputs;
+10. notify Jannek only when a real contract defect, duplicate/noisy behavior, wrong authority use, or blocked condition requires intervention; otherwise update the meta issue silently when an update is warranted.
 
-The supervisor must not modify product code, create implementation issues/PRs, promote scout authority, create managers/specialists, or alter workforce policy automatically.
+Before the first V1.1 Supervisor run, initialize the Supervisor checkpoint with the evidence-based cutover procedure in `contracts/CHECKPOINT_CONTRACT.md`. Never initialize historical review cursors by guessing or blanket `null` values.
+
+The Supervisor may create/update only its own checkpoint in meta issue `#3`. It must not modify product code, create implementation issues/PRs, promote Scout authority, create managers/specialists, or alter workforce policy automatically.
 
 ## Scheduled-run output policy
 
@@ -100,7 +109,7 @@ For `quality-scout` and `process-scout`, return a compact run receipt containing
 
 Notify Jannek only for initial baseline completion, material findings, or blocked runs. Do not notify for noise-only or unchanged outcomes.
 
-For `supervisor`, follow the supervisor-specific notification and comment rules above.
+For `supervisor`, follow the Supervisor-specific notification and comment rules above.
 
 ## Portfolio and baseline derivation
 
@@ -108,7 +117,7 @@ For `supervisor`, follow the supervisor-specific notification and comment rules 
 
 Never hard-code a repository count in an execution-host prompt. For reporting, derive the current denominator from the live in-scope portfolio. Baseline completion is `active scout roles × current in-scope repositories`.
 
-A newly added portfolio repository automatically enters missing-baseline priority for every active scout without a scheduler-prompt edit.
+A newly added portfolio repository automatically enters missing-baseline priority for every active Scout without a scheduler-prompt edit.
 
 ## Target-repository authority handoff
 
@@ -135,7 +144,7 @@ Private MCP access is never a worker requirement. Use only tools/evidence availa
 
 When a matching registry entry is `REQUIRED`, unavailability or lack of authorization produces `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE`; do not silently substitute another tool.
 
-The scheduler owns cadence and transient run metadata only. This repository owns versioned workforce canon. Do not persist mutable scheduler state, machine-local capability paths, or machine-local reference paths here merely to support routing.
+The scheduler owns cadence and transient task execution only. Durable Scout/Supervisor cursors live exclusively in the GitHub checkpoint comments defined by `CHECKPOINT_CONTRACT.md`; do not introduce a second mutable state store, machine-local capability paths, or machine-local reference paths to support routing.
 
 ## Regression invariants
 
@@ -144,6 +153,9 @@ The bootstrap contract is correct only while all of these remain true:
 - adding/removing a portfolio member requires changing the live portfolio, not each scheduler prompt;
 - renaming a downstream canon file requires changing this bootstrap, not each scheduler prompt;
 - an unreadable bootstrap or required authority blocks instead of falling back to memory;
+- one checkpoint mechanism is the only durable Scout/Supervisor cursor state;
+- checkpoint comments are never treated as Baseline/Finding outputs;
+- already reviewed Scout outputs are excluded by the Supervisor cursor rather than by prose-memory heuristics;
 - target-repository local authority remains above workforce assumptions, capability routing and external references;
 - capability/reference matching occurs after target-repository authority handoff;
 - matching registry entries can route to a capability-specific contract without adding that contract to every scheduler prompt;
@@ -151,5 +163,5 @@ The bootstrap contract is correct only while all of these remain true:
 - shared catalog membership never becomes target-repository usage/dependency evidence;
 - repo-local manifests use concrete relevance signals and keep inactive material parked;
 - unrelated tasks do not load or invoke registered capabilities/references solely because they exist;
-- no execution-host prompt carries a second full copy of the downstream canonical read list, capability registry, or shared reference catalog;
+- no execution-host prompt carries a second full copy of the downstream canonical read list, checkpoint contract, capability registry, or shared reference catalog;
 - authorized GitHub issue creation inherits its canonical issue-creation rules from `docs/WORKFORCE_POLICY.md`; scheduler/worker prompts do not duplicate those rules.
