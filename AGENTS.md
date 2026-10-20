@@ -9,6 +9,9 @@ These rules govern agents acting from this workforce repository. They do not ove
 - Determine current state from GitHub/repo live evidence, never from memory.
 - For a monitored repository, read and obey that repository's local `AGENTS`/README/canon/contracts before applying generic engineering assumptions.
 - Use this repository for workforce role, authority, finding, scheduling, and template contracts.
+- Use [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md) to classify shared meta repositories and metatools when cross-repository context is relevant.
+- Meta-layer membership never grants authority to override target-repository local truth or ownership.
+- Do not infer an implicit runtime dependency merely because a repository is listed in the meta topology.
 - Private MCP access is never a worker requirement. Workers receive only the tools/evidence available to their execution host.
 
 ## V1 authority
