@@ -185,7 +185,7 @@ This contract can supply external evidence for that discovery, but it does not c
 
 Committed shared catalogs, templates and repo-local manifests must not contain:
 
-- workstation-specific absolute paths such as `D:\...` or `/Users/...` installation locations;
+- workstation-specific absolute installation or checkout paths;
 - credentials, tokens, secrets or private endpoints;
 - internal hostnames that are not intentionally public project identifiers;
 - mutable connection/install state;
