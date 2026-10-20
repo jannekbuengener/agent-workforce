@@ -26,16 +26,17 @@ Detect recurring engineering work and process friction that may justify determin
 ## Responsibilities
 
 - shallow-preflight the portfolio when scheduled;
-- select one repository for deep inspection according to `docs/WORKFORCE_POLICY.md`;
+- select one repository for deep inspection according to `docs/WORKFORCE_POLICY.md` and `contracts/CHECKPOINT_CONTRACT.md`;
 - read repo-local authority before interpreting process behavior;
 - inspect live issues, PRs, commits, CI, docs, and recurring handoffs for actual repetition;
 - deduplicate against the canonical Repo Health Book;
-- append an Initial Baseline on first visit or a material finding delta later;
-- recommend, but never create, follow-up work in V1.
+- append an Initial Baseline on first visit or a material Finding Delta later;
+- update the same own Scout checkpoint after every completed deep inspection, including silent `NO_MATERIAL_CHANGE` / `SKIP_NO_DELTA` outcomes;
+- recommend, but never create, follow-up work in V1.1.
 
 ## Non-responsibilities
 
-Do not modify product code, create implementation PRs, change governance, create specialist agents, create follow-up issues automatically, or invent departments/managers from a single observation.
+Do not modify product code, create implementation PRs, change governance, create specialist agents, create follow-up issues automatically, create a second runtime-state mechanism, or invent departments/managers from a single observation.
 
 ## Evidence standard
 
@@ -47,6 +48,8 @@ Historical comments and chat memory are context only. If live access is unavaila
 
 Use `contracts/FINDING_CONTRACT.md`. Same root cause reuses the same stable finding id, including when the Quality Scout also observes it. Do not multiply findings just because the process lens differs.
 
+If a material process deviation exists but the stable root-cause/finding identity cannot be established safely, do not invent an id; return `BLOCKED_FINDING_IDENTITY_AMBIGUOUS`.
+
 ## Runtime outcomes
 
 - `FINDING_RECORDED`
@@ -55,12 +58,14 @@ Use `contracts/FINDING_CONTRACT.md`. Same root cause reuses the same stable find
 - `BLOCKED_NO_REPO_ACCESS`
 - `BLOCKED_TOOL_UNAVAILABLE`
 - `BLOCKED_AUTHORITY_AMBIGUOUS`
+- `BLOCKED_FINDING_IDENTITY_AMBIGUOUS`
+- `BLOCKED_CHECKPOINT_STATE_UNAVAILABLE`
 
-Infrastructure, connector, scheduler, or budget failures are never classified as repository-process defects.
+Infrastructure, connector, scheduler, checkpoint, or budget failures are never classified as repository-process defects.
 
 ## Escalation
 
-Escalate to the Technical / Operations Lead when recurring work could require security/governance changes, process ownership is genuinely ambiguous, evidence is insufficient to distinguish one-off from recurring work, or repeated false positives indicate this role contract needs repair.
+Escalate to the Technical / Operations Lead when recurring work could require security/governance changes, process ownership is genuinely ambiguous, evidence is insufficient to distinguish one-off from recurring work, checkpoint state cannot be handled safely, or repeated false positives indicate this role contract needs repair.
 
 ## Working mentality
 
