@@ -38,9 +38,9 @@
 - Consumes: existing Workforce Policy required-read position in the bootstrap.
 - Produces: one canonical issue-title rule inherited by authorized workforce issue creation.
 
-- [ ] Add a `GitHub issue creation` section to `docs/WORKFORCE_POLICY.md` with German/self-explanatory title rules and positive/negative examples.
-- [ ] Add a reference-only instruction in `AGENTS.md`; do not duplicate the title wording.
-- [ ] Add a bootstrap regression invariant that scheduler/worker prompts inherit issue-creation policy from `WORKFORCE_POLICY.md` rather than hard-coding it.
-- [ ] Verify no existing V1 authority prohibition was weakened.
-- [ ] Verify no issue-body language restriction was introduced.
-- [ ] Review branch diff against issue #24 and open a PR with `Closes #24`.
+- [x] Add a `GitHub issue creation` section to `docs/WORKFORCE_POLICY.md` with German/self-explanatory title rules and positive/negative examples.
+- [x] Add a reference-only instruction in `AGENTS.md`; do not duplicate the title wording.
+- [x] Add a bootstrap regression invariant that scheduler/worker prompts inherit issue-creation policy from `WORKFORCE_POLICY.md` rather than hard-coding it.
+- [x] Verify no existing V1 authority prohibition was weakened.
+- [x] Verify no issue-body language restriction was introduced.
+- [x] Review branch diff against issue #24 and open a PR with `Closes #24`.
