@@ -1,0 +1,101 @@
+schema_version: 1
+
+purpose: >
+  Small cross-repository catalog of reusable external reference and discovery
+  anchors. Catalog membership never proves that a target repository uses or
+  depends on the listed technology/source.
+
+authority_order:
+  - OFFICIAL_SPEC
+  - OFFICIAL_DOCS
+  - UPSTREAM_PROJECT_DOCS
+  - UPSTREAM_ISSUES_RELEASES
+  - ESTABLISHED_TECHNICAL_KNOWLEDGE
+  - COMMUNITY
+  - EXAMPLE_DISCOVERY
+
+sources:
+  github_docs:
+    name: GitHub Docs
+    canonical_url: https://docs.github.com/
+    portable_identity: github-docs
+    source_type: official_docs
+    authority: OFFICIAL_DOCS
+    category: repository_platform
+    purpose: >
+      Official reference for GitHub repositories, issues, pull requests,
+      Actions, security features and repository governance surfaces.
+    when_to_use:
+      - GitHub repository, issue or pull-request behavior
+      - GitHub Actions or repository security configuration
+      - repository governance or platform feature questions
+
+  github_cli:
+    name: GitHub CLI Manual
+    canonical_url: https://cli.github.com/manual/
+    portable_identity: github-cli
+    source_type: official_docs
+    authority: OFFICIAL_DOCS
+    category: repository_tooling
+    purpose: >
+      Official command reference for gh-based GitHub repository operations.
+    when_to_use:
+      - GitHub CLI command syntax or behavior
+      - gh issue, pull-request, release, workflow or repository operations
+
+  python_docs:
+    name: Python Documentation
+    canonical_url: https://docs.python.org/3/
+    portable_identity: python
+    source_type: official_docs
+    authority: OFFICIAL_DOCS
+    category: language_runtime
+    purpose: >
+      Official Python language and standard-library reference.
+    when_to_use:
+      - Python language semantics
+      - Python standard-library behavior
+      - Python runtime compatibility questions
+
+  stack_overflow:
+    name: Stack Overflow
+    canonical_url: https://stackoverflow.com/
+    portable_identity: stack-overflow
+    source_type: community
+    authority: COMMUNITY
+    category: engineering_experience
+    purpose: >
+      Community engineering experience for implementation pitfalls, debugging
+      patterns and precedent when stronger official/upstream evidence is
+      insufficient by itself.
+    when_to_use:
+      - known implementation or debugging problem where community precedent may help
+      - practical edge cases that should then be verified against current official/upstream/repo evidence
+
+  awesome_python:
+    name: Awesome Python
+    canonical_url: https://github.com/vinta/awesome-python
+    portable_identity: vinta/awesome-python
+    source_type: example_discovery
+    authority: EXAMPLE_DISCOVERY
+    category: library_discovery
+    purpose: >
+      Curated discovery anchor for Python libraries and projects; not dependency
+      authority and not evidence that a package is suitable for a target repo.
+    when_to_use:
+      - bounded Python library discovery after existing repo code and dependencies were checked
+      - finding candidate libraries for reuse-before-build evaluation
+
+  awesome_system_design:
+    name: Awesome System Design
+    canonical_url: https://github.com/madd86/awesome-system-design
+    portable_identity: madd86/awesome-system-design
+    source_type: example_discovery
+    authority: EXAMPLE_DISCOVERY
+    category: architecture_discovery
+    purpose: >
+      Curated system-design discovery and learning anchor; examples must be
+      validated against target-repository architecture and stronger sources.
+    when_to_use:
+      - architecture pattern discovery when existing repo canon does not already settle the question
+      - identifying candidate design references for further verification
