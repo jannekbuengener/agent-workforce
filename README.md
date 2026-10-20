@@ -4,7 +4,7 @@ Canonical role and policy repository for Jannek's cross-repository AI engineerin
 
 ## Purpose
 
-This repository defines cross-repository workforce identity, authority, evidence contracts, portfolio membership, reusable templates, relevance-gated capability/discovery routing, and shared external-reference semantics. It does not own product code, repo-local engineering truth, mutable scheduler state, or runtime memory.
+This repository defines cross-repository workforce identity, authority, evidence contracts, portfolio membership, reusable templates, relevance-gated capability/discovery routing, and shared external-reference semantics. It does not own product code, repo-local engineering truth, or product runtime memory.
 
 Primary operating principle:
 
@@ -25,7 +25,48 @@ If live access is unavailable, fail closed. Never reconstruct current repository
 
 Scheduled/external execution hosts must start from [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) on live `main`.
 
-That bootstrap owns the current downstream read order, execution-mode routing, portfolio derivation, capability/reference discovery and fail-closed behavior. Scheduler prompts must not duplicate the full canonical file list, capability registry, or reference catalog.
+That bootstrap owns the current downstream read order, execution-mode routing, portfolio derivation, checkpoint routing, capability/reference discovery and fail-closed behavior. Scheduler prompts must not duplicate the full canonical file list, checkpoint contract, capability registry, or reference catalog.
+
+## End-to-End Workforce Execution Flow
+
+```text
+Scheduler / Execution Host
+        ↓
+WORKFORCE_BOOTSTRAP.md
+        ↓
+Workforce Canon + Role/Policy Contracts
+        ↓
+Live Portfolio + Target Repository
+        ↓
+Target Repo Local Authority
+        ↓
+Conditional Capability / Reference Routing
+        ↓
+Quality Scout oder Process Scout
+        ↓
+Repo Health Book
+  ├─ Initial Baseline / Finding Delta
+  └─ mutable Scout Checkpoint
+        ↓
+Workforce Supervisor
+        ↓
+Meta Issue #3
+  ├─ material supervisor review comments
+  └─ mutable Supervisor Checkpoint
+        ↓
+Owner Escalation nur bei echtem Interventionsbedarf
+```
+
+The diagram is navigation, not a second specification. Detailed behavior remains owned by [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md), [`docs/WORKFORCE_POLICY.md`](docs/WORKFORCE_POLICY.md), the Scout role files, [`contracts/CHECKPOINT_CONTRACT.md`](contracts/CHECKPOINT_CONTRACT.md), [`contracts/FINDING_CONTRACT.md`](contracts/FINDING_CONTRACT.md), the portfolio, Health Book template, and target-repository authority.
+
+Operationally the state model stays deliberately small:
+
+```text
+Scout: read checkpoint -> inspect -> write material evidence when needed -> update checkpoint
+Supervisor: read cursor -> review newer Scout outputs -> advance cursor
+```
+
+No second durable runtime-state mechanism is part of V1.1.
 
 ## Capability routing
 
@@ -75,9 +116,10 @@ Current classes:
 
 The topology describes shared capabilities and ownership boundaries only. It does not override target-repository authority and does not create implicit runtime dependencies.
 
-## V1 workforce
+## V1.1 workforce
 
 - [Stable execution bootstrap](WORKFORCE_BOOTSTRAP.md)
+- [Checkpoint contract](contracts/CHECKPOINT_CONTRACT.md)
 - [Capability routing](docs/CAPABILITY_ROUTING.md)
 - [Capability registry](capabilities/REGISTRY.yml)
 - [Reuse before build](docs/REUSE_BEFORE_BUILD.md)
@@ -95,6 +137,8 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 
 ## Authority boundaries
 
-`agent-workforce` owns versioned workforce canon only. Each monitored repository owns its own code, repository rules, CI, issues, PRs, Repo Health Book, and repository-specific external-reference relevance. V1 intentionally has no runtime database, scheduler ledger, generated dashboard, or hosted GitHub Actions workflow.
+`agent-workforce` owns versioned workforce canon only. Each monitored repository owns its own code, repository rules, CI, issues, PRs, Repo Health Book, and repository-specific external-reference relevance.
 
-Mutable execution metadata and machine-local capability/reference locations belong to the execution host and are never copied into role, policy, capability, or reference files as canonical truth.
+V1.1 intentionally has no runtime database, generated dashboard, or hosted GitHub Actions workflow. Durable Scout/Supervisor cursors are limited to the mutable GitHub checkpoint comments defined by the Checkpoint Contract; transient scheduler/task metadata remains execution-host state.
+
+Machine-local capability/reference locations are never copied into role, policy, capability, or reference files as canonical truth.
