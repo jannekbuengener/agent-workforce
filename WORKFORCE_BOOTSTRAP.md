@@ -1,0 +1,107 @@
+# Agent Workforce — Stable Execution Bootstrap
+
+## Purpose
+
+This file is the stable execution-host entry point for Agent Workforce V1.
+
+Execution hosts may hard-code only:
+
+- repository: `jannekbuengener/agent-workforce`;
+- branch: `main`;
+- bootstrap path: `WORKFORCE_BOOTSTRAP.md`;
+- requested execution mode: `quality-scout`, `process-scout`, or `supervisor`.
+
+All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy and reporting cardinality are discovered from live repository canon through this file.
+
+Do not copy the downstream read list into scheduler/automation prompts.
+
+## Fail-closed bootstrap rule
+
+Before any repository inspection or GitHub write:
+
+1. fetch this file from live `main`;
+2. follow the current required-read order below;
+3. resolve the requested execution mode to its live role contract/read set;
+4. derive portfolio membership and Health Book URLs from the live portfolio;
+5. enter the selected target repository and read its local authority before applying workforce assumptions.
+
+If this bootstrap file, a required workforce authority file, the requested role contract, or the target repository's required authority cannot be read or resolved, do not reconstruct it from memory or an older prompt. Return an explicit blocked outcome (`BLOCKED_AUTHORITY_AMBIGUOUS`, `BLOCKED_NO_REPO_ACCESS`, or `BLOCKED_TOOL_UNAVAILABLE` as appropriate) and perform no evidence write that depends on the missing authority.
+
+## Required workforce read order
+
+Read the live `main` versions in this order:
+
+1. `README.md` — workforce front door and truth hierarchy;
+2. `AGENTS.md` — operating and fail-closed rules;
+3. `docs/META_TOPOLOGY.md` — shared meta-repository/metatool classification;
+4. `docs/WORKFORCE_POLICY.md` — selection, evidence, authority and baseline policy;
+5. `contracts/FINDING_CONTRACT.md` — finding identity/lifecycle contract;
+6. `portfolio/REPOSITORIES.md` — current monitored membership and canonical Health Books;
+7. `templates/REPO_HEALTH_BOOK.md` — evidence ledger format and silence rules;
+8. the execution-mode-specific read set below.
+
+The ordering above is canonical. If a downstream file is renamed or replaced, update this bootstrap contract; execution-host prompts remain unchanged.
+
+## Execution modes
+
+### `quality-scout`
+
+Read:
+
+- `agents/quality-scout.md`
+
+Then execute exactly one Quality Scout run according to the live role, policy, portfolio, finding and Health Book contracts.
+
+### `process-scout`
+
+Read:
+
+- `agents/process-scout.md`
+
+Then execute exactly one Process Scout run according to the live role, policy, portfolio, finding and Health Book contracts.
+
+### `supervisor`
+
+Read:
+
+- `agents/quality-scout.md`;
+- `agents/process-scout.md`;
+- Agent Workforce meta issue `#3`, including newer comments that supersede historical rollout snapshots.
+
+The supervisor validates scout output quality and contract adherence; it does not duplicate scout deep inspections or gain product-code authority.
+
+## Portfolio and baseline derivation
+
+`portfolio/REPOSITORIES.md` is the only canonical source of current monitored membership and Repo Health Book URLs.
+
+Never hard-code a repository count in an execution-host prompt. For reporting, derive the current denominator from the live in-scope portfolio. Baseline completion is `active scout roles × current in-scope repositories`.
+
+A newly added portfolio repository automatically enters missing-baseline priority for every active scout without a scheduler-prompt edit.
+
+## Target-repository authority handoff
+
+After selecting a target repository:
+
+1. use GitHub/repository live state as current truth;
+2. read the target repository's local `AGENTS.md` when present;
+3. read its README/front door and relevant canon/architecture/contracts/rules;
+4. use the portfolio row to locate its canonical Repo Health Book;
+5. only then apply the selected workforce role's analytical lens.
+
+Target-repository local authority outranks generic workforce assumptions. The meta layer does not grant implementation ownership or create implicit runtime dependencies.
+
+## Execution-host boundary
+
+Private MCP access is never a worker requirement. Use only tools/evidence available to the execution host. Tool, connector, scheduler or budget failures are operational failures, not repository defects.
+
+The scheduler owns cadence and transient run metadata only. This repository owns versioned workforce canon. Do not persist mutable scheduler state here merely to support routing.
+
+## Regression invariants
+
+The bootstrap contract is correct only while all of these remain true:
+
+- adding/removing a portfolio member requires changing the live portfolio, not each scheduler prompt;
+- renaming a downstream canon file requires changing this bootstrap, not each scheduler prompt;
+- an unreadable bootstrap or required authority blocks instead of falling back to memory;
+- target-repository local authority remains above workforce assumptions;
+- no execution-host prompt carries a second full copy of the downstream canonical read list.
