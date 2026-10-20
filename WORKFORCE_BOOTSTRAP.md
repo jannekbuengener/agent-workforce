@@ -151,4 +151,5 @@ The bootstrap contract is correct only while all of these remain true:
 - shared catalog membership never becomes target-repository usage/dependency evidence;
 - repo-local manifests use concrete relevance signals and keep inactive material parked;
 - unrelated tasks do not load or invoke registered capabilities/references solely because they exist;
-- no execution-host prompt carries a second full copy of the downstream canonical read list, capability registry, or shared reference catalog.
+- no execution-host prompt carries a second full copy of the downstream canonical read list, capability registry, or shared reference catalog;
+- authorized GitHub issue creation inherits its canonical issue-creation rules from `docs/WORKFORCE_POLICY.md`; scheduler/worker prompts do not duplicate those rules.
