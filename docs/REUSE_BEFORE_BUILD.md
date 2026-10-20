@@ -83,6 +83,8 @@ External evidence should normally be weighted in this order:
 
 Community knowledge can expose real-world edge cases and debugging experience, but it does not override newer official/upstream evidence or target-repository live truth.
 
+For shared source classification, repo-local relevance manifests and reusable discovery anchors, follow [`../contracts/EXTERNAL_REFERENCE_CONTRACT.md`](../contracts/EXTERNAL_REFERENCE_CONTRACT.md). That contract does not change the reuse-before-build decision order above.
+
 ## Bounded discovery
 
 Discovery must be sufficient to support the engineering decision, not exhaustive.
@@ -152,4 +154,4 @@ Any selected implementation still follows the target repository's normal authori
 
 It has no mandatory named tool. The registry entry is a routing trigger to this contract. Specialized `REQUIRED` capabilities remain independent; for example, reverse-engineering work still follows the REA hard gate when that trigger applies.
 
-External-reference catalogs and repo-local external-doc manifests are separate work owned by issues #12 and #13 and are not required for this contract to function.
+The shared external-reference catalog may provide bounded discovery anchors when external evidence is relevant. Repo-local external-reference manifests remain owned by each target repository; issue #13 owns the portfolio rollout and normalization of those manifests.
