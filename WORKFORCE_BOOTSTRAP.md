@@ -11,9 +11,9 @@ Execution hosts may hard-code only:
 - bootstrap path: `WORKFORCE_BOOTSTRAP.md`;
 - requested execution mode: `quality-scout`, `process-scout`, or `supervisor`.
 
-All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, capability-routing rules, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
+All downstream workforce paths, portfolio membership, Health Book locations, role contracts, policy, capability/reference routing rules, reporting cardinality, and scheduled-run output rules are discovered from live repository canon through this file.
 
-Do not copy the downstream read list or capability registry into scheduler/automation prompts.
+Do not copy the downstream read list, capability registry, or shared reference catalog into scheduler/automation prompts.
 
 ## Fail-closed bootstrap rule
 
@@ -23,7 +23,7 @@ Before any repository inspection or GitHub write:
 2. follow the current required-read order below;
 3. resolve the requested execution mode to its live role contract/read set;
 4. derive portfolio membership and Health Book URLs from the live portfolio;
-5. enter the selected target repository and read its local authority before applying workforce assumptions or capability routing.
+5. enter the selected target repository and read its local authority before applying workforce assumptions, capability routing, or external-reference routing.
 
 If this bootstrap file, a required workforce authority file, the requested role contract, or the target repository's required authority cannot be read or resolved, do not reconstruct it from memory or an older prompt. Return an explicit blocked outcome (`BLOCKED_AUTHORITY_AMBIGUOUS`, `BLOCKED_NO_REPO_ACCESS`, or `BLOCKED_TOOL_UNAVAILABLE` as appropriate) and perform no evidence write that depends on the missing authority.
 
@@ -43,7 +43,12 @@ Read the live `main` versions in this order:
 
 The ordering above is canonical. If a downstream file is renamed or replaced, update this bootstrap contract; execution-host prompts remain unchanged.
 
-`capabilities/REGISTRY.yml` and capability-specific contracts such as `docs/REUSE_BEFORE_BUILD.md` are intentionally not part of the unconditional read set. Consult them only after target-repository authority handoff and only when the current task matches a capability trigger or the target repository explicitly routes to a registered capability.
+The following are intentionally **conditional**, not unconditional bootstrap reads:
+
+- `capabilities/REGISTRY.yml` and capability-specific contracts such as `docs/REUSE_BEFORE_BUILD.md` — consult only after target-repository authority handoff and only when the current task matches a capability trigger or local authority explicitly routes to one;
+- `contracts/EXTERNAL_REFERENCE_CONTRACT.md`, `references/CATALOG.yml`, and target-repository external-reference manifests — consult only when external documentation, technical precedent or reuse/discovery evidence is materially relevant to the current task.
+
+Do not bulk-load the shared reference catalog or a whole repo-local manifest solely because those files exist.
 
 ## Execution modes
 
@@ -115,11 +120,14 @@ After selecting a target repository:
 4. use the portfolio row to locate its canonical Repo Health Book;
 5. classify the current task against `docs/CAPABILITY_ROUTING.md` only after the local authority above is established;
 6. if and only if a capability trigger matches or local authority explicitly routes to one, consult the matching entry in `capabilities/REGISTRY.yml`, read any contract referenced by that entry, and enforce its requirement/availability/discovery rules;
-7. only then apply the selected workforce role's analytical lens.
+7. when external documentation, engineering precedent, or external reuse evidence is materially relevant, follow `contracts/EXTERNAL_REFERENCE_CONTRACT.md`; use the target repository's canonical external-reference manifest when one exists, and consult only matching entries from `references/CATALOG.yml` as reusable discovery/reference anchors;
+8. only then apply the selected workforce role's analytical lens.
 
-Target-repository local authority outranks generic workforce assumptions and generic capability routing. The meta layer does not grant implementation ownership or create implicit runtime dependencies. Capability routing selects tools or discovery obligations; it does not create repository authority or mutation permission.
+Target-repository local authority outranks generic workforce assumptions, capability routing, repo-local external-reference manifests, and external sources. The meta layer does not grant implementation ownership or create implicit runtime dependencies. Capability/reference routing selects tools, discovery obligations, or evidence sources; it does not create repository authority or mutation permission.
 
-For relevant planning/implementation work, a `DISCOVERY_REQUIRED` route such as `reuse_before_build` must complete before selecting a new custom implementation path. Trivial or unrelated work must not trigger broad discovery solely because the registry entry exists.
+For relevant planning/implementation work, a `DISCOVERY_REQUIRED` route such as `reuse_before_build` must complete before selecting a new custom implementation path. Trivial or unrelated work must not trigger broad discovery solely because the registry or shared reference catalog exists.
+
+A shared reference catalog entry never proves that the target repository uses that technology/source. Repo-local `P0`/`P1` relevance must be backed by current repository signals; `P2` remains parked until concrete scope activates it.
 
 ## Execution-host boundary
 
@@ -127,7 +135,7 @@ Private MCP access is never a worker requirement. Use only tools/evidence availa
 
 When a matching registry entry is `REQUIRED`, unavailability or lack of authorization produces `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE`; do not silently substitute another tool.
 
-The scheduler owns cadence and transient run metadata only. This repository owns versioned workforce canon. Do not persist mutable scheduler state or machine-local capability paths here merely to support routing.
+The scheduler owns cadence and transient run metadata only. This repository owns versioned workforce canon. Do not persist mutable scheduler state, machine-local capability paths, or machine-local reference paths here merely to support routing.
 
 ## Regression invariants
 
@@ -136,9 +144,11 @@ The bootstrap contract is correct only while all of these remain true:
 - adding/removing a portfolio member requires changing the live portfolio, not each scheduler prompt;
 - renaming a downstream canon file requires changing this bootstrap, not each scheduler prompt;
 - an unreadable bootstrap or required authority blocks instead of falling back to memory;
-- target-repository local authority remains above workforce assumptions and capability routing;
-- capability matching occurs after target-repository authority handoff;
+- target-repository local authority remains above workforce assumptions, capability routing and external references;
+- capability/reference matching occurs after target-repository authority handoff;
 - matching registry entries can route to a capability-specific contract without adding that contract to every scheduler prompt;
 - relevant new implementation-path decisions honor `DISCOVERY_REQUIRED` before custom build choices;
-- unrelated tasks do not load or invoke registered capabilities solely because they exist;
-- no execution-host prompt carries a second full copy of the downstream canonical read list or capability registry.
+- shared catalog membership never becomes target-repository usage/dependency evidence;
+- repo-local manifests use concrete relevance signals and keep inactive material parked;
+- unrelated tasks do not load or invoke registered capabilities/references solely because they exist;
+- no execution-host prompt carries a second full copy of the downstream canonical read list, capability registry, or shared reference catalog.
