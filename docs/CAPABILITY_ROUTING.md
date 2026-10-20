@@ -118,6 +118,20 @@ The discovery order prefers existing repo code and existing accepted dependencie
 
 Discovery does not itself authorize dependency installation, OSS adoption, architecture changes, or any other target-repository mutation.
 
+## External references during discovery
+
+External-reference semantics are defined by [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](../contracts/EXTERNAL_REFERENCE_CONTRACT.md).
+
+When external documentation, technical precedent, or external reuse evidence is materially relevant after target-repository authority has been established:
+
+- use the target repository's own canonical external-reference manifest when present;
+- consult [`references/CATALOG.yml`](../references/CATALOG.yml) only for matching shared discovery/reference anchors;
+- load only sources relevant to the current task;
+- treat shared catalog membership as source discovery, never as evidence that the target repository uses or should adopt a technology;
+- prefer official/upstream evidence over community/example sources for consequential claims.
+
+The external-reference contract supplies evidence sources; it does not alter capability requirement levels or the reuse-before-build discovery order.
+
 ## Execution-host boundary
 
 Capability availability belongs to the execution host. This repository records only portable routing policy.
@@ -128,6 +142,6 @@ The one exception is an explicitly `REQUIRED` registered capability: if that cap
 
 For `DISCOVERY_REQUIRED`, an execution host must use the evidence sources actually available and authorized to it. If the minimum evidence required to make the implementation-path decision cannot be obtained, use the existing operational blocked outcomes rather than guessing.
 
-## Relationship to external-reference work
+## Relationship to repo-local reference rollout
 
-This contract owns capability/tool and discovery routing semantics. Shared external-reference catalogs and repo-local external-doc manifests are separate contracts owned by issues #12 and #13. Reuse-before-build works without those future catalogs and must not depend on their rollout.
+This contract owns capability/tool and discovery routing semantics. The external-reference contract and shared catalog are available now as conditional evidence-routing surfaces. Repository-specific manifest ownership remains local to each target repository, and issue #13 owns the portfolio-wide rollout/normalization of those manifests.
