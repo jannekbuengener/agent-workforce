@@ -58,6 +58,28 @@ Allowed: read/analyze live state, append evidence-backed Health Book observation
 
 Forbidden: product-code mutation, implementation PRs, governance changes, secret changes, specialist-agent creation, automatic follow-up issue creation, direct pushes to protected/default branches.
 
+## GitHub issue creation
+
+This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1 prohibition on automatic follow-up issue creation.
+
+For every new GitHub issue created through Agent Workforce routing or by a workforce-directed agent in a target repository:
+
+- write the issue title in German by default;
+- make the title as self-explanatory as practical so that the concrete technical purpose, change, or problem is understandable without opening the issue body;
+- short technical prefixes such as `[BUG]`, `[DOCS]`, `[POLICY]`, `[OPS]` may remain, but the meaningful title text after the prefix must be German and descriptive;
+- do not use titles that depend only on internal acronyms, slice numbers, issue numbers, or generic wording such as `Fix issue`, `Update docs`, or `Slice 5`;
+- the issue body may use whichever language is most appropriate for the repository, contract, or technical task;
+- target-repository title conventions remain authoritative and may add stricter requirements; if a local convention conflicts materially with this generic default, follow the target repository's explicit authority and document the exception when needed.
+
+Examples:
+
+- Good: `[DOCS] Externe Referenzliste an den Workforce-Contract anpassen`
+- Good: `[BUG] Audio-Vorschau stoppt nach Sample-Wechsel nicht zuverlässig`
+- Bad: `[BUG] Fix issue 42`
+- Bad: `Slice 5`
+
+The canonical wording lives here. Scheduler prompts, worker prompts, and role files should reference this policy rather than carry their own copied version of the title rule.
+
 ## State separation
 
 | Class | Examples | Authority |
