@@ -98,7 +98,7 @@ The seed is deliberately small. Catalog membership does not imply target-repo re
 
 Committed reference files must not contain:
 
-- workstation-specific absolute paths such as `D:\...`;
+- workstation-specific absolute installation or checkout paths;
 - credentials, tokens, private endpoints, internal hostnames or secrets;
 - transient installation/connection state;
 - copied repository truth that belongs in source/config/CI/live GitHub.
