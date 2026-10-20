@@ -26,7 +26,7 @@ After reading target-repository authority:
 1. classify the task intent;
 2. determine whether it matches a documented capability trigger or an explicit repo-local route;
 3. only then consult the matching entry in [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml);
-4. enforce that entry's requirement level and availability/authorization behavior.
+4. enforce that entry's requirement level and availability/authorization or discovery behavior.
 
 If no capability trigger matches, continue under normal repository/workforce rules without loading unrelated capability details.
 
@@ -47,6 +47,8 @@ The documented discovery step must be completed before choosing an implementatio
 
 This level requires evidence that the relevant discovery occurred; it does not itself authorize dependency installation, code mutation, or adoption of a discovered tool.
 
+A `DISCOVERY_REQUIRED` entry may route to a contract rather than a named execution tool. Discovery remains bounded and relevance-gated; it is not a requirement to perform broad research for unrelated or trivial work.
+
 ### `PREFERRED`
 
 Use the named capability when available and suitable. A technically equivalent alternative is allowed when the agent records why the preferred capability is unsuitable or unavailable and the replacement does not violate repo-local authority.
@@ -64,7 +66,8 @@ Registry entries may contain:
 - stable capability id;
 - requirement level;
 - relevance triggers and exclusions;
-- canonical tool name and portable upstream identity;
+- a canonical contract path and/or tool identity;
+- ordered discovery behavior and compact outcomes where applicable;
 - availability/authorization expectations;
 - blocked outcome for mandatory capabilities.
 
@@ -80,7 +83,7 @@ Execution hosts may discover a local checkout, CLI, MCP, plugin, package or othe
 
 ## Reverse Engineering V1
 
-`reverse_engineering` is the first registered capability and is `REQUIRED`.
+`reverse_engineering` is registered as `REQUIRED`.
 
 Canonical tool:
 
@@ -103,6 +106,18 @@ REA unavailable OR unauthorized
     -> no silent substitute
 ```
 
+## Reuse Before Build V1
+
+`reuse_before_build` is registered as `DISCOVERY_REQUIRED` and routes to [`docs/REUSE_BEFORE_BUILD.md`](REUSE_BEFORE_BUILD.md).
+
+Use it only when planning or implementation would make a meaningful build-vs-reuse decision, such as adding a new subsystem, dependency, external tool/service, infrastructure path, or substantial custom capability.
+
+Do not trigger broad ecosystem research for trivial bug fixes, documentation-only work, straightforward use of existing repository primitives, or tasks that do not select an implementation path.
+
+The discovery order prefers existing repo code and existing accepted dependencies before external libraries, OSS projects, workforce capabilities, and finally custom implementation. The contract requires a compact outcome of `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM` with material decision evidence.
+
+Discovery does not itself authorize dependency installation, OSS adoption, architecture changes, or any other target-repository mutation.
+
 ## Execution-host boundary
 
 Capability availability belongs to the execution host. This repository records only portable routing policy.
@@ -111,6 +126,8 @@ Private MCP access is never assumed. A worker must not be told that a private op
 
 The one exception is an explicitly `REQUIRED` registered capability: if that capability is not available or authorized on the current execution host, the correct result is the registry's blocked outcome, not an invented replacement.
 
-## Relationship to future capability work
+For `DISCOVERY_REQUIRED`, an execution host must use the evidence sources actually available and authorized to it. If the minimum evidence required to make the implementation-path decision cannot be obtained, use the existing operational blocked outcomes rather than guessing.
 
-This contract owns tool/capability routing semantics. Reuse-before-build discovery, shared external-reference catalogs, and repo-local external-doc manifests are separate contracts/issues and must not be folded into this V1 registry until their own scopes are approved.
+## Relationship to external-reference work
+
+This contract owns capability/tool and discovery routing semantics. Shared external-reference catalogs and repo-local external-doc manifests are separate contracts owned by issues #12 and #13. Reuse-before-build works without those future catalogs and must not depend on their rollout.

@@ -37,3 +37,39 @@ capabilities:
       unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
       unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
       silent_substitution: false
+
+  reuse_before_build:
+    requirement: DISCOVERY_REQUIRED
+    description: >
+      Bounded engineering discovery before a meaningful implementation-path
+      decision would introduce new code, dependencies, tooling, services,
+      subsystems, or infrastructure.
+    contract: docs/REUSE_BEFORE_BUILD.md
+    triggers:
+      - planning a new implementation path
+      - adding a new capability or subsystem
+      - considering a new dependency or package
+      - considering a new external tool or service
+      - introducing new infrastructure or runtime machinery
+      - substantial custom functionality with plausible existing alternatives
+    exclusions:
+      - trivial bug fix with an existing clear solution
+      - documentation-only change
+      - straightforward use of an existing repository primitive
+      - small refactor without a meaningful build-vs-reuse decision
+      - analysis that does not select an implementation path
+    discovery:
+      order:
+        - existing repository implementation or reusable primitives
+        - dependencies already used by the target repository
+        - established language/runtime libraries or packages
+        - suitable maintained open-source projects or tools
+        - existing Agent Workforce capabilities or tools
+        - official documentation, upstream issues, release notes, and compatibility constraints
+        - custom implementation when prior options are insufficient
+      outcomes:
+        - REUSE_EXISTING
+        - ADOPT_DEPENDENCY_OR_TOOL
+        - BUILD_CUSTOM
+      bounded: true
+      automatic_mutation_authority: false

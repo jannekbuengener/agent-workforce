@@ -4,7 +4,7 @@ Canonical role and policy repository for Jannek's cross-repository AI engineerin
 
 ## Purpose
 
-This repository defines cross-repository workforce identity, authority, evidence contracts, portfolio membership, reusable templates, and relevance-gated capability routing. It does not own product code, repo-local engineering truth, mutable scheduler state, or runtime memory.
+This repository defines cross-repository workforce identity, authority, evidence contracts, portfolio membership, reusable templates, and relevance-gated capability/discovery routing. It does not own product code, repo-local engineering truth, mutable scheduler state, or runtime memory.
 
 Primary operating principle:
 
@@ -35,7 +35,18 @@ Capability routing is relevance-gated and runs only after target-repository loca
 
 Requirement levels are `REQUIRED`, `DISCOVERY_REQUIRED`, `PREFERRED`, and `ADVISORY`. A matching `REQUIRED` capability that is unavailable or unauthorized fails closed with `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE` rather than silently substituting another tool.
 
-V1 registers Reverse Engineering as `REQUIRED` with REA (`morluto/rea`) as the canonical tool.
+V1 routes:
+
+- Reverse Engineering -> `REQUIRED` -> REA (`morluto/rea`).
+- Reuse Before Build -> `DISCOVERY_REQUIRED` -> [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md).
+
+## Reuse before build
+
+For relevant planning/implementation work, check existing repository code and existing accepted dependencies before adding a new library, tool, service, infrastructure path, or custom implementation.
+
+The canonical decision procedure is [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md). It is intentionally bounded: trivial fixes, documentation-only changes, straightforward reuse of an existing repo primitive, and tasks with no meaningful build-vs-reuse decision do not trigger broad ecosystem research.
+
+Discovery can conclude `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM`. A discovery outcome is evidence for the engineering decision; it does not itself authorize dependency installation or repository mutation.
 
 ## Cross-repository meta topology
 
@@ -56,6 +67,7 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 - [Stable execution bootstrap](WORKFORCE_BOOTSTRAP.md)
 - [Capability routing](docs/CAPABILITY_ROUTING.md)
 - [Capability registry](capabilities/REGISTRY.yml)
+- [Reuse before build](docs/REUSE_BEFORE_BUILD.md)
 - [Quality Scout](agents/quality-scout.md)
 - [Process Scout](agents/process-scout.md)
 - [Finding contract](contracts/FINDING_CONTRACT.md)

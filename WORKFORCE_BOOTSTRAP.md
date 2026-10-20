@@ -43,7 +43,7 @@ Read the live `main` versions in this order:
 
 The ordering above is canonical. If a downstream file is renamed or replaced, update this bootstrap contract; execution-host prompts remain unchanged.
 
-`capabilities/REGISTRY.yml` is intentionally not part of the unconditional read set. Consult it only after target-repository authority handoff and only when the current task matches a capability trigger or the target repository explicitly routes to a registered capability.
+`capabilities/REGISTRY.yml` and capability-specific contracts such as `docs/REUSE_BEFORE_BUILD.md` are intentionally not part of the unconditional read set. Consult them only after target-repository authority handoff and only when the current task matches a capability trigger or the target repository explicitly routes to a registered capability.
 
 ## Execution modes
 
@@ -114,10 +114,12 @@ After selecting a target repository:
 3. read its README/front door and relevant canon/architecture/contracts/rules;
 4. use the portfolio row to locate its canonical Repo Health Book;
 5. classify the current task against `docs/CAPABILITY_ROUTING.md` only after the local authority above is established;
-6. if and only if a capability trigger matches or local authority explicitly routes to one, consult the matching entry in `capabilities/REGISTRY.yml` and enforce its requirement/availability rules;
+6. if and only if a capability trigger matches or local authority explicitly routes to one, consult the matching entry in `capabilities/REGISTRY.yml`, read any contract referenced by that entry, and enforce its requirement/availability/discovery rules;
 7. only then apply the selected workforce role's analytical lens.
 
-Target-repository local authority outranks generic workforce assumptions and generic capability routing. The meta layer does not grant implementation ownership or create implicit runtime dependencies. Capability routing selects tools; it does not create repository authority.
+Target-repository local authority outranks generic workforce assumptions and generic capability routing. The meta layer does not grant implementation ownership or create implicit runtime dependencies. Capability routing selects tools or discovery obligations; it does not create repository authority or mutation permission.
+
+For relevant planning/implementation work, a `DISCOVERY_REQUIRED` route such as `reuse_before_build` must complete before selecting a new custom implementation path. Trivial or unrelated work must not trigger broad discovery solely because the registry entry exists.
 
 ## Execution-host boundary
 
@@ -136,5 +138,7 @@ The bootstrap contract is correct only while all of these remain true:
 - an unreadable bootstrap or required authority blocks instead of falling back to memory;
 - target-repository local authority remains above workforce assumptions and capability routing;
 - capability matching occurs after target-repository authority handoff;
+- matching registry entries can route to a capability-specific contract without adding that contract to every scheduler prompt;
+- relevant new implementation-path decisions honor `DISCOVERY_REQUIRED` before custom build choices;
 - unrelated tasks do not load or invoke registered capabilities solely because they exist;
 - no execution-host prompt carries a second full copy of the downstream canonical read list or capability registry.
