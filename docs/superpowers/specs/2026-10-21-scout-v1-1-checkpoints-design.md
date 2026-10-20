@@ -147,13 +147,15 @@ Der Checkpoint selbst ist operative Metadatenpflege und zählt nicht als Finding
 
 ### 5.4 Lazy Migration
 
-Bestehende Repositories werden nicht rückwirkend mit erfundenen historischen Cursorwerten befüllt.
+Bestehende Repositories werden nicht rückwirkend mit erfundenen historischen Inspektionswerten befüllt.
 
 Beim nächsten echten Lauf eines Scouts:
 
 - existiert kein Checkpoint, wird genau einer mit den **aktuellen** Laufdaten angelegt;
+- `last_inspected_at` und `last_repo_head` werden niemals aus alten Kommentaren rückgerechnet;
 - vorhandene Baseline-/Finding-Historie bleibt unverändert;
-- `baseline_complete` wird nur dann `true`, wenn die Baseline für diesen Scout tatsächlich im Health Book nachweisbar existiert oder im aktuellen Lauf erzeugt wird.
+- `baseline_complete` wird nur dann `true`, wenn die Baseline für diesen Scout tatsächlich im Health Book nachweisbar existiert oder im aktuellen Lauf erzeugt wird;
+- `last_material_output_comment_id` / `last_material_output_at` dürfen aus einem eindeutig dem Scout zuordenbaren vorhandenen Baseline-/Finding-Kommentar übernommen werden; ist die Zuordnung nicht eindeutig, bleiben sie bis zum nächsten materiellen Output `null`.
 
 ### 5.5 Failure Mode
 
@@ -201,6 +203,22 @@ Der Supervisor betrachtet nur Kommentare als reviewbare Scout-Outputs, die dem B
 Nach erfolgreicher Review neuer Scout-Outputs wird derselbe Supervisor-Checkpoint aktualisiert.
 
 Wenn kein neuer reviewbarer Scout-Output vorhanden ist, bleibt die bestehende Silence-Regel bestehen: kein neuer Meta-Issue-Kommentar. Der Checkpoint darf trotzdem auf den aktuellen Supervisor-Lauf aktualisiert werden, falls dies für den Review-Cursor erforderlich ist.
+
+### 7.1 Einmaliger V1.1-Cutover
+
+Der Supervisor-Checkpoint darf **nicht** leer bzw. mit pauschal `null` initialisiert werden. Sonst würde der erste V1.1-Supervisor historische, bereits geprüfte Scout-Outputs erneut als neu behandeln.
+
+Vor Aktivierung der neuen Supervisor-Semantik erfolgt genau ein evidence-basierter Reconciliation-Schritt:
+
+1. aktuelle Health Books aus dem Live-Portfolio bestimmen;
+2. je Health Book die vorhandenen `INITIAL BASELINE`- und `FINDING DELTA`-Kommentare identifizieren;
+3. bestehende Workforce-Supervisor-Kommentare in Meta-Issue #3 als Review-Evidence lesen;
+4. pro Health Book den höchsten Scout-Output-Comment-ID-Cursor setzen, dessen Review durch diese Supervisor-Evidence eindeutig belegt ist;
+5. lässt sich der letzte geprüfte Output für ein Health Book nicht eindeutig bestimmen, diesen Cursor **nicht raten**; der Cutover für dieses Health Book bleibt blockiert, bis die Zuordnung manuell/evidence-basiert geklärt ist.
+
+Der Cutover darf vorhandene doppelte Supervisor-Reviews als historische Tatsache akzeptieren, aber er erzeugt daraus keine neue Scout-Evidence und keine zusätzliche Recurrence.
+
+Nach erfolgreichem Cutover ist nur noch der Supervisor-Checkpoint für die Frage maßgeblich, welche Scout-Outputs bereits geprüft wurden.
 
 Kann der Review-Cursor nicht sicher gelesen oder aktualisiert werden, lautet der operative Zustand:
 
@@ -340,11 +358,12 @@ Der Implementierungsslice muss mindestens diese Fälle durchspielen:
 3. **No-delta run** — `SKIP_NO_DELTA` erzeugt keinen neuen Evidence-Kommentar und erhält korrekten Inspection-Cursor.
 4. **Material finding** — Finding Delta und Checkpoint werden getrennt aktualisiert; Finding-Zeitsemantik bleibt korrekt.
 5. **Supervisor dedup** — ein bereits reviewter Finding-Kommentar wird im Folgelauf nicht erneut als neu behandelt.
-6. **Checkpoint filtering** — Scout-/Supervisor-Checkpoint-Kommentare werden niemals als Baseline/Finding interpretiert.
-7. **Finding schema** — Template und Contract besitzen exakt dieselben Pflichtfelder und erlaubten Kategorien.
-8. **Identity ambiguity** — Finding-Identity-Unklarheit erzeugt keine erfundene ID und wird nicht als Authority-Ambiguität bezeichnet.
-9. **Authority** — Checkpoint-Mutation gewährt keine weitere Repo-/Produkt-Write-Authority.
-10. **Execution flow** — README-Übersicht verweist auf bestehende Canon-Flächen statt Regeln zu duplizieren.
+6. **Supervisor cutover** — bestehende Review-Historie initialisiert den Review-Cursor evidence-basiert; historische Outputs werden nicht pauschal erneut geprüft.
+7. **Checkpoint filtering** — Scout-/Supervisor-Checkpoint-Kommentare werden niemals als Baseline/Finding interpretiert.
+8. **Finding schema** — Template und Contract besitzen exakt dieselben Pflichtfelder und erlaubten Kategorien.
+9. **Identity ambiguity** — Finding-Identity-Unklarheit erzeugt keine erfundene ID und wird nicht als Authority-Ambiguität bezeichnet.
+10. **Authority** — Checkpoint-Mutation gewährt keine weitere Repo-/Produkt-Write-Authority.
+11. **Execution flow** — README-Übersicht verweist auf bestehende Canon-Flächen statt Regeln zu duplizieren.
 
 ## 13. Exit-Kriterien
 
@@ -352,6 +371,7 @@ Der Design-Slice ist implementierungsbereit, wenn:
 
 - Checkpoint-Identität und Felder eindeutig sind;
 - Lazy-Migration ohne historische Erfindung definiert ist;
+- Supervisor-Cutover ohne blindes Re-Review historischer Outputs definiert ist;
 - Selection- und Supervisor-Dedup-Semantik deterministisch aus GitHub-State rekonstruierbar sind;
 - Finding Contract und Template ein gemeinsames Schema besitzen;
 - neue Runtime-Outcomes klar von Repository-Findings getrennt sind;
