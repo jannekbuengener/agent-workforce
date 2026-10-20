@@ -34,6 +34,7 @@ Use a cheap preflight before deeper inspection. No deep audit is justified when 
 
 - Live repository/GitHub state beats historical comments, workforce documentation, NotebookLM, and memory.
 - Repo-local authority beats generic engineering assumptions when it intentionally defines a valid different rule.
+- Shared meta-layer roles are classified in [`META_TOPOLOGY.md`](META_TOPOLOGY.md); those roles never override target-repository authority or create implicit runtime dependencies.
 - Every deviation must be supported by concrete evidence.
 - Silence is preferable to manufactured findings.
 - Infrastructure/tool/budget failures are classified separately from repo quality.
@@ -59,7 +60,7 @@ Forbidden: product-code mutation, implementation PRs, governance changes, secret
 
 | Class | Examples | Authority |
 |---|---|---|
-| Versioned workforce canon | roles, policy, portfolio, templates | this repo |
+| Versioned workforce canon | roles, policy, portfolio, templates, meta topology | this repo |
 | Repo-live evidence | code, issues, PRs, CI, Health Book | owning repo / GitHub live |
 | Runtime metadata | task history, connector errors, transient scheduler state | execution host only |
 | Derived knowledge | NotebookLM | convenience only |
