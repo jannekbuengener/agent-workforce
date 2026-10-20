@@ -21,6 +21,12 @@ Primary operating principle:
 
 If live access is unavailable, fail closed. Never reconstruct current repository state from stale memory.
 
+## Stable execution bootstrap
+
+Scheduled/external execution hosts must start from [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) on live `main`.
+
+That bootstrap owns the current downstream read order, execution-mode routing, portfolio derivation and fail-closed behavior. Scheduler prompts must not duplicate the full canonical file list.
+
 ## Cross-repository meta topology
 
 The canonical shared meta-layer map is [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md).
@@ -37,6 +43,7 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 
 ## V1 workforce
 
+- [Stable execution bootstrap](WORKFORCE_BOOTSTRAP.md)
 - [Quality Scout](agents/quality-scout.md)
 - [Process Scout](agents/process-scout.md)
 - [Finding contract](contracts/FINDING_CONTRACT.md)

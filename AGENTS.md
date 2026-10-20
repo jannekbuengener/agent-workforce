@@ -7,6 +7,8 @@ These rules govern agents acting from this workforce repository. They do not ove
 ## Truth and routing
 
 - Determine current state from GitHub/repo live evidence, never from memory.
+- Scheduled/external execution hosts must bootstrap from live `main` [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) and follow its current required-read order instead of carrying a duplicated downstream file list.
+- If the bootstrap or a required authority path cannot be resolved, fail closed with an explicit blocked outcome; never reconstruct missing authority from an older prompt or memory.
 - For a monitored repository, read and obey that repository's local `AGENTS`/README/canon/contracts before applying generic engineering assumptions.
 - Use this repository for workforce role, authority, finding, scheduling, and template contracts.
 - Use [`docs/META_TOPOLOGY.md`](docs/META_TOPOLOGY.md) to classify shared meta repositories and metatools when cross-repository context is relevant.
