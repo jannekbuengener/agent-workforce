@@ -1,12 +1,14 @@
-# Workforce Policy V1
+# Workforce Policy V1.1
 
 ## Operating model
 
-V1 contains exactly two advisory scouts: Quality Scout and Process Scout. The organization grows only from observed recurring work.
+V1.1 contains exactly two advisory scouts: Quality Scout and Process Scout. The organization grows only from observed recurring work.
 
 A scheduled run may shallow-preflight all in-scope repositories but deep-inspects exactly one repository.
 
 Portfolio membership and baseline cardinality are derived from [`../portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md). Each active scout requires one initial baseline for every current in-scope repository; no fixed repository count is part of the policy contract.
+
+Operational inspection/review state uses exactly one mechanism: mutable GitHub checkpoint comments defined by [`../contracts/CHECKPOINT_CONTRACT.md`](../contracts/CHECKPOINT_CONTRACT.md). No parallel run-state ledger or runtime database is part of V1.1.
 
 ## Selection priority
 
@@ -14,10 +16,12 @@ Choose the first eligible class below; within a class choose the least-recently-
 
 1. missing baseline for the active scout;
 2. unresolved `HIGH`/`CRITICAL` finding due for recheck;
-3. meaningful new commit/PR/issue/CI activity since the last material scout observation;
+3. meaningful new commit/PR/issue/CI activity since the last Scout inspection;
 4. periodic sweep candidate that has gone longest without inspection.
 
-Generic bot activity, scout comments, and unchanged automated updates are not meaningful activity by themselves.
+`least-recently-inspected` is derived from the active Scout's checkpoint `last_inspected_at`. A repository without that Scout checkpoint is treated as `never inspected in checkpoint model` within its otherwise applicable priority class.
+
+Meaningful activity is evaluated relative to the active Scout checkpoint, not the most recent arbitrary Health Book comment. Generic bot activity, Scout/checkpoint comments, and unchanged automated updates are not meaningful activity by themselves.
 
 Activity labels are derived advisory labels only:
 
@@ -39,28 +43,30 @@ Use a cheap preflight before deeper inspection. No deep audit is justified when 
 - Shared meta-layer roles are classified in [`META_TOPOLOGY.md`](META_TOPOLOGY.md); those roles never override target-repository authority or create implicit runtime dependencies.
 - Every deviation must be supported by concrete evidence.
 - Silence is preferable to manufactured findings.
-- Infrastructure/tool/budget failures are classified separately from repo quality.
+- Infrastructure/tool/budget/checkpoint failures are classified separately from repo quality.
 
 ## Anti-noise and convergence
 
 - One underlying root cause has one stable finding identity.
 - Both scouts reuse that identity when they observe the same underlying condition.
-- `SKIP_NO_DELTA` creates no Health Book comment.
-- Routine unchanged `NO_MATERIAL_CHANGE` creates no comment.
+- `SKIP_NO_DELTA` creates no normal Health Book evidence comment.
+- Routine unchanged `NO_MATERIAL_CHANGE` creates no normal evidence comment.
+- Both outcomes still update the acting Scout's checkpoint because an inspection occurred.
+- Checkpoint-only updates never count as finding recurrence.
 - Recurrence increases only on materially new confirming evidence.
 - Resolution requires current evidence.
 - A recommended follow-up issue must name the finding it would resolve.
 - Repeated false positives are evidence to repair the role contract, not a reason to add more machinery.
 
-## Authority V1
+## Authority V1.1
 
-Allowed: read/analyze live state, append evidence-backed Health Book observations, recommend follow-up work, escalate uncertainty.
+Allowed: read/analyze live state, append evidence-backed Health Book observations, recommend follow-up work, escalate uncertainty, and create/update only the acting Scout's own checkpoint comment as defined by `CHECKPOINT_CONTRACT.md`.
 
-Forbidden: product-code mutation, implementation PRs, governance changes, secret changes, specialist-agent creation, automatic follow-up issue creation, direct pushes to protected/default branches.
+Forbidden: product-code mutation, implementation PRs, governance changes, secret changes, specialist-agent creation, automatic follow-up issue creation, direct pushes to protected/default branches, or creating a second mutable runtime-state mechanism.
 
 ## GitHub issue creation
 
-This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1 prohibition on automatic follow-up issue creation.
+This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1.1 prohibition on automatic follow-up issue creation.
 
 For every new GitHub issue created through Agent Workforce routing or by a workforce-directed agent in a target repository:
 
@@ -84,12 +90,13 @@ The canonical wording lives here. Scheduler prompts, worker prompts, and role fi
 
 | Class | Examples | Authority |
 |---|---|---|
-| Versioned workforce canon | roles, policy, portfolio, templates, meta topology | this repo |
-| Repo-live evidence | code, issues, PRs, CI, Health Book | owning repo / GitHub live |
-| Runtime metadata | task history, connector errors, transient scheduler state | execution host only |
+| Versioned workforce canon | roles, policy, portfolio, templates, contracts, meta topology | this repo |
+| Repo-live truth/evidence | code, issues, PRs, CI, Baselines, Finding Deltas | owning repo / GitHub live |
+| Mutable operational checkpoint state | Scout checkpoints in Health Books, Supervisor checkpoint in meta issue #3 | acting Scout/Supervisor under `CHECKPOINT_CONTRACT.md` |
+| Transient execution metadata | connector errors, scheduler task history, temporary host state | execution host only |
 | Derived knowledge | NotebookLM | convenience only |
 
-V1 has no dedicated mutable scheduling database and no committed `last_run` ledger. If future hosts need durable mutable state that cannot be reconstructed safely, it requires a separate runtime-state design.
+V1.1 has no dedicated runtime database and no committed `last_run` ledger. Durable inspection/review cursors are only the GitHub checkpoint comments defined by `CHECKPOINT_CONTRACT.md`.
 
 ## Role promotion
 

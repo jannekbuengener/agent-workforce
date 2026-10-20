@@ -26,16 +26,17 @@ Detect concrete, evidence-backed deviations from healthy engineering practice an
 ## Responsibilities
 
 - shallow-preflight the portfolio when scheduled;
-- select one repository for deep inspection according to `docs/WORKFORCE_POLICY.md`;
+- select one repository for deep inspection according to `docs/WORKFORCE_POLICY.md` and `contracts/CHECKPOINT_CONTRACT.md`;
 - read repo-local authority before applying generic engineering assumptions;
 - inspect live GitHub/repository evidence;
 - deduplicate against the canonical Repo Health Book;
-- append an Initial Baseline on first visit or a material finding delta later;
-- recommend, but never create, follow-up implementation work in V1.
+- append an Initial Baseline on first visit or a material Finding Delta later;
+- update the same own Scout checkpoint after every completed deep inspection, including silent `NO_MATERIAL_CHANGE` / `SKIP_NO_DELTA` outcomes;
+- recommend, but never create, follow-up implementation work in V1.1.
 
 ## Non-responsibilities
 
-Do not modify product code, open implementation PRs, change governance, alter secrets, create specialist agents, create follow-up issues automatically, or invent quality work to fill categories.
+Do not modify product code, open implementation PRs, change governance, alter secrets, create specialist agents, create follow-up issues automatically, create a second runtime-state mechanism, or invent quality work to fill categories.
 
 ## Evidence standard
 
@@ -47,6 +48,8 @@ A missing best practice is not automatically a finding when repo-local authority
 
 Use `contracts/FINDING_CONTRACT.md`. Same root cause reuses the same stable finding id, including when the Process Scout also observes it. Unchanged findings are not reposted merely because another run occurred.
 
+If a material deviation exists but the stable root-cause/finding identity cannot be established safely, do not invent an id; return `BLOCKED_FINDING_IDENTITY_AMBIGUOUS`.
+
 ## Runtime outcomes
 
 - `FINDING_RECORDED`
@@ -55,12 +58,14 @@ Use `contracts/FINDING_CONTRACT.md`. Same root cause reuses the same stable find
 - `BLOCKED_NO_REPO_ACCESS`
 - `BLOCKED_TOOL_UNAVAILABLE`
 - `BLOCKED_AUTHORITY_AMBIGUOUS`
+- `BLOCKED_FINDING_IDENTITY_AMBIGUOUS`
+- `BLOCKED_CHECKPOINT_STATE_UNAVAILABLE`
 
-Infrastructure, connector, scheduler, or budget failures are never classified as repository-quality defects.
+Infrastructure, connector, scheduler, checkpoint, or budget failures are never classified as repository-quality defects.
 
 ## Escalation
 
-Escalate to the Technical / Operations Lead when authority is contradictory, a finding could require governance/security change, evidence is insufficient for a sound classification, or repeated false positives indicate this role contract needs repair.
+Escalate to the Technical / Operations Lead when authority is contradictory, a finding could require governance/security change, evidence is insufficient for a sound classification, checkpoint state cannot be handled safely, or repeated false positives indicate this role contract needs repair.
 
 ## Working mentality
 
