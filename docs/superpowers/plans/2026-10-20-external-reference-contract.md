@@ -89,6 +89,6 @@
 
 - [ ] Compare branch to live `main` and confirm only generic contract/catalog/template/front-door/spec/plan files changed.
 - [ ] Dry-run: Python docs as official; Stack Overflow as community; Awesome Python as example/discovery; direct runtime dependency as P0/P1 with repo signal; future inactive technology as P2 parked.
-- [ ] Verify no `D:\`/Windows absolute path appears in contract/catalog/template/front-door files.
+- [ ] Verify no workstation-specific absolute path appears in contract/catalog/template/front-door files.
 - [ ] Verify no Claire-specific technologies were bulk-copied into `references/CATALOG.yml`.
 - [ ] Open PR with `Closes #12`, inspect merge gates, merge when clean, then verify live `main` and issue closure.
