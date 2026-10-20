@@ -26,8 +26,8 @@
 
 - **Duplicate checkpoint markers:** more than one matching checkpoint for the same Scout/Health Book must fail closed rather than choose one arbitrarily. Covered in Task 1 validation.
 - **Partial checkpoint update failure:** a run must not report successful selection-state advancement if the checkpoint write cannot be verified. Covered in Task 2 validation.
-- **Historical Supervisor ambiguity:** cutover must not guess a reviewed cursor when meta-issue evidence is insufficient. Covered in Task 5 reconciliation.
-- **Checkpoint comments mistaken for Scout output:** Supervisor and baseline accounting must ignore checkpoint markers. Covered in Tasks 1, 2, and 5.
+- **Historical Supervisor ambiguity:** cutover must not guess a reviewed cursor when meta-issue evidence is insufficient. Covered in Task 6 reconciliation.
+- **Checkpoint comments mistaken for Scout output:** Supervisor and baseline accounting must ignore checkpoint markers. Covered in Tasks 1, 2, and 6.
 - **Schema drift after V1.1:** Finding Contract and Health Book template must expose the same required fields and category vocabulary. Covered in Task 3 validation.
 
 ---
@@ -40,7 +40,7 @@
 
 **Interfaces:**
 - Consumes: design decisions from `docs/superpowers/specs/2026-10-21-scout-v1-1-checkpoints-design.md`.
-- Produces: canonical marker formats, checkpoint fields, read/update semantics, duplicate handling, migration rules, and operational blocked outcomes used by Tasks 2 and 5.
+- Produces: canonical marker formats, checkpoint fields, read/update semantics, duplicate handling, migration rules, and operational blocked outcomes used by Tasks 2 and 6.
 
 - [ ] **Step 1: Write a failing contract-presence validation**
 
@@ -223,6 +223,7 @@ required = [
 categories = ['CORRECTNESS','VALIDATION','CI','SECURITY','DEPENDENCY','ARCHITECTURE','OWNERSHIP','DOCUMENTATION','PROCESS','AUTOMATION','OTHER']
 contract = Path('contracts/FINDING_CONTRACT.md').read_text(encoding='utf-8').lower()
 template = Path('templates/REPO_HEALTH_BOOK.md').read_text(encoding='utf-8').lower()
+assert len(required) == 15
 for field in required:
     assert field in contract, f'contract missing {field}'
     assert field.replace('_',' ') in template or field in template, f'template missing {field}'
@@ -237,7 +238,7 @@ Expected: FAIL against current V1 template/contract.
 
 - [ ] **Step 2: Update `contracts/FINDING_CONTRACT.md`**
 
-Required fields become exactly:
+Required fields become exactly these 15 fields:
 
 `finding_id`, `repo`, `scout`, `category`, `summary`, `evidence`, `severity`, `confidence`, `first_seen`, `last_seen`, `recurrence`, `lifecycle`, `suggested_action`, `suggested_owner`, `disposition`.
 
@@ -257,7 +258,7 @@ Clarify:
 
 - [ ] **Step 3: Update `templates/REPO_HEALTH_BOOK.md`**
 
-- Replace the old Finding Delta shape with all 16 required fields using readable Markdown labels.
+- Replace the old Finding Delta shape with all 15 required fields using readable Markdown labels.
 - Include the same exact category vocabulary.
 - Add Scout checkpoint example/marker by reference to `contracts/CHECKPOINT_CONTRACT.md`; do not duplicate full semantics.
 - State checkpoint comments are excluded from baseline/finding accounting.
@@ -397,7 +398,7 @@ Suggested title:
 
 `[SCOUTS] V1.1-Checkpoints und Finding-Contract konsistent einführen`
 
-Body must reference `Closes #26`, the design spec, the implementation plan, validation evidence, and explicitly state that scheduler cadence/roles/product authority are unchanged.
+Body must reference issue #26, the design spec, the implementation plan, validation evidence, and explicitly state that scheduler cadence/roles/product authority are unchanged. Use `Relates to #26`; do **not** use `Closes #26`, because the issue must remain open until the live cutover in Task 6 is verified.
 
 - [ ] **Step 4: Review the exact final PR head**
 
@@ -413,7 +414,7 @@ Repair any in-scope finding on the PR branch and re-run Step 4 on the new exact 
 
 - [ ] **Step 5: Merge only when gates are satisfied**
 
-Use the repository-allowed merge method with exact-head lease. Verify the merge SHA is live on `main` and #26 is closed/completed after the operational cutover in Task 6; if `Closes #26` would close it before cutover evidence exists, do not claim `DONE_MERGED_CLOSED` until Task 6 is finished.
+Use the repository-allowed merge method with exact-head lease. Verify the merge SHA is live on `main`. Issue #26 intentionally remains open until Task 6 completes.
 
 ---
 
@@ -494,7 +495,7 @@ Cases not naturally exercised by the two acceptance runs are validated by contra
 
 - [ ] **Step 7: Close out issue #26**
 
-Add a compact delivery comment with PR, merge SHA, Supervisor checkpoint comment ID, acceptance-run selected repos/outcomes, and Golden Case result. Ensure #26 is `closed/completed` only now.
+Add a compact delivery comment with PR, merge SHA, Supervisor checkpoint comment ID, acceptance-run selected repos/outcomes, and Golden Case result. Close #26 as `completed` only now.
 
 - [ ] **Step 8: Final live verification**
 
