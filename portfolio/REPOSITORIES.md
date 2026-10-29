@@ -12,6 +12,7 @@ This file defines portfolio membership only. Activity classes are derived at run
 | `jannekbuengener/traum_taenzer` | https://github.com/jannekbuengener/traum_taenzer/issues/96 |
 | `jannekbuengener/Claire_de_Binare` | https://github.com/jannekbuengener/Claire_de_Binare/issues/4596 |
 | `jannekbuengener/agent-brain` | https://github.com/jannekbuengener/agent-brain/issues/25 |
+| `jannekbuengener/security-business` | https://github.com/jannekbuengener/security-business/issues/1 |
 
 ## Baseline accounting
 
