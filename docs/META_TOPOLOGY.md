@@ -96,3 +96,5 @@ Rules:
 This topology classifies shared repositories by architectural role. It does not define which repositories are currently monitored by the workforce.
 
 Current monitored membership is owned exclusively by [`portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md).
+
+Machine-readable routing facts for these and other spawn-point repositories live in [`routing/REPOSITORY_ROUTING.yml`](../routing/REPOSITORY_ROUTING.yml) ([contract](REPOSITORY_ROUTING.md)). Capability/skill source pointers remain in [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](../routing/REPOSITORY_CAPABILITY_SOURCES.yml).

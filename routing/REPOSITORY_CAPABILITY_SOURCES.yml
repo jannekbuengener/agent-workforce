@@ -3,8 +3,8 @@ purpose: >
   Declares where repository capability/skill authority lives for discovery.
   This file is a pointer contract, not a second capability source of truth.
   Monitored portfolio membership remains owned by portfolio/REPOSITORIES.md.
-  Producer/consumer relationships and portfolio role taxonomy belong to later
-  portfolio normalization, not this contract.
+  System role, owns/does-not-own, and producer/consumer relationships belong to
+  routing/REPOSITORY_ROUTING.yml, not this contract.
 
 repositories:
   jannekbuengener/agent-workforce:
@@ -19,4 +19,32 @@ repositories:
         path: capabilities/REGISTRY.yml
         discovery: registry_entries
         authority: workforce_routing
+        status: active
+
+  jannekbuengener/sample-brain:
+    portable_identity: jannekbuengener/sample-brain
+    routable: true
+    local_authority:
+      frontdoor: AGENTS.md
+      capability_ops: docs/operations/CAPABILITY_REGISTRY.json
+    capability_sources:
+      - id: primary
+        type: capability_registry_json
+        path: docs/operations/CAPABILITY_REGISTRY.json
+        discovery: registry_entries
+        authority: local_repo
+        status: active
+
+  jannekbuengener/Claire_de_Binare:
+    portable_identity: jannekbuengener/Claire_de_Binare
+    routable: true
+    local_authority:
+      frontdoor: AGENTS.md
+      skill_canon: docs/skills
+    capability_sources:
+      - id: skills
+        type: skill_canon_dir
+        path: docs/skills
+        discovery: skill_directories
+        authority: local_repo
         status: active

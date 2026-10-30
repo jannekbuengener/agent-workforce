@@ -49,6 +49,7 @@ The ordering above is canonical. If a downstream file is renamed or replaced, up
 The following are intentionally **conditional**, not unconditional bootstrap reads:
 
 - `capabilities/REGISTRY.yml` and capability-specific contracts such as `docs/REUSE_BEFORE_BUILD.md` — consult only after target-repository authority handoff and only when the current task matches a capability trigger or local authority explicitly routes to one;
+- `docs/REPOSITORY_ROUTING.md` and `routing/REPOSITORY_ROUTING.yml` — consult only when cross-repository ownership, spawn-point, or meta/metatool routing is materially relevant; this topology does not replace monitored portfolio membership or target-repository canon;
 - `docs/REPOSITORY_CAPABILITY_DISCOVERY.md`, `routing/REPOSITORY_CAPABILITY_SOURCES.yml`, and `generated/PORTFOLIO_CAPABILITY_INDEX.yml` — consult only when cross-repository capability/skill discovery is materially relevant; the generated index is derived discovery data, never authority;
 - `contracts/EXTERNAL_REFERENCE_CONTRACT.md`, `references/CATALOG.yml`, and target-repository external-reference manifests — consult only when external documentation, technical precedent or reuse/discovery evidence is materially relevant to the current task.
 
@@ -130,9 +131,10 @@ After selecting a target repository:
 4. use the portfolio row to locate its canonical Repo Health Book;
 5. classify the current task against `docs/CAPABILITY_ROUTING.md` only after the local authority above is established;
 6. if and only if a capability trigger matches or local authority explicitly routes to one, consult the matching entry in `capabilities/REGISTRY.yml`, read any contract referenced by that entry, and enforce its requirement/availability/discovery rules;
-7. when cross-repository capability/skill discovery is materially relevant, follow `docs/REPOSITORY_CAPABILITY_DISCOVERY.md`: use `routing/REPOSITORY_CAPABILITY_SOURCES.yml` to locate the target repository's capability/skill authority, treat `generated/PORTFOLIO_CAPABILITY_INDEX.yml` as derived discovery data only, then load the declared repo-local source selectively;
-8. when external documentation, engineering precedent, or external reuse evidence is materially relevant, follow `contracts/EXTERNAL_REFERENCE_CONTRACT.md`; use the target repository's canonical external-reference manifest when one exists, and consult only matching entries from `references/CATALOG.yml` as reusable discovery/reference anchors;
-9. only then apply the selected workforce role's analytical lens.
+7. when cross-repository ownership or spawn-point routing is materially relevant, consult `docs/REPOSITORY_ROUTING.md` / `routing/REPOSITORY_ROUTING.yml` for stable role, ownership, relationship and frontdoor facts without treating them as monitored membership or product canon;
+8. when cross-repository capability/skill discovery is materially relevant, follow `docs/REPOSITORY_CAPABILITY_DISCOVERY.md`: use `routing/REPOSITORY_CAPABILITY_SOURCES.yml` to locate the target repository's capability/skill authority, treat `generated/PORTFOLIO_CAPABILITY_INDEX.yml` as derived discovery data only, then load the declared repo-local source selectively;
+9. when external documentation, engineering precedent, or external reuse evidence is materially relevant, follow `contracts/EXTERNAL_REFERENCE_CONTRACT.md`; use the target repository's canonical external-reference manifest when one exists, and consult only matching entries from `references/CATALOG.yml` as reusable discovery/reference anchors;
+10. only then apply the selected workforce role's analytical lens.
 
 Target-repository local authority outranks generic workforce assumptions, capability routing, repository capability discovery data, repo-local external-reference manifests, and external sources. The meta layer does not grant implementation ownership or create implicit runtime dependencies. Capability/reference routing and repository capability discovery select tools, discovery obligations, or evidence sources; they do not create repository authority or mutation permission.
 
@@ -161,6 +163,7 @@ The bootstrap contract is correct only while all of these remain true:
 - target-repository local authority remains above workforce assumptions, capability routing and external references;
 - capability/reference matching occurs after target-repository authority handoff;
 - matching registry entries can route to a capability-specific contract without adding that contract to every scheduler prompt;
+- repository routing topology declares stable role/ownership/relationship/frontdoor facts without dual-writing monitored membership or copying skill bodies;
 - repository capability sources declare where local capability/skill authority lives without copying skill bodies or monitored-portfolio membership;
 - the portfolio capability index remains generated discovery data and never overrides source-declared authority;
 - relevant new implementation-path decisions honor `DISCOVERY_REQUIRED` before custom build choices;

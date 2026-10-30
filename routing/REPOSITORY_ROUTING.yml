@@ -1,0 +1,206 @@
+schema_version: 1
+purpose: >
+  Stable portfolio routing facts for spawn-point / cross-repository decisions.
+  Answers identity, system role, ownership boundaries, directional relationships,
+  local authority frontdoors, and capability-source pointers.
+  Does not own monitored Scout membership (portfolio/REPOSITORIES.md),
+  skill bodies, or product canon.
+  routable repository != monitored workforce repository.
+
+repositories:
+  jannekbuengener/agent-workforce:
+    portable_identity: jannekbuengener/agent-workforce
+    system_role: workforce_meta
+    owns:
+      - cross-repository workforce identity, authority, routing and operating policy
+      - Scout/Supervisor role contracts, finding and Health Book contracts
+      - monitored portfolio membership declaration
+    does_not_own:
+      - product or component implementation in other repositories
+      - Agent Brain or ARVP implementation
+      - mutable scheduler/runtime state as canonical Git state
+    relationships: []
+    local_authority:
+      frontdoor: WORKFORCE_BOOTSTRAP.md
+      agents: AGENTS.md
+    capability_source: jannekbuengener/agent-workforce
+    routing_notes: >
+      Meta-layer workforce front door. Capability routing and repository
+      discovery live here; they never override target-repository authority.
+
+  jannekbuengener/agent-brain:
+    portable_identity: jannekbuengener/agent-brain
+    system_role: shared_context_meta
+    owns:
+      - product-neutral knowledge, context, evidence, decision, memory and retrieval infrastructure under local canon
+    does_not_own:
+      - GitHub or repository live truth
+      - workforce identity, authority or routing policy
+      - product/application state in consumer repositories
+      - ARVP validation/evaluation contracts
+    relationships: []
+    local_authority:
+      frontdoor: AGENTS.md
+      start: docs/START_HIER.md
+    capability_source: null
+    capability_discovery: missing_machine_readable_source
+    routing_notes: >
+      Global workforce capability shared_context_evidence routes here.
+      No repo-local machine-readable capability registry found on live main;
+      enter via AGENTS.md and local extraction/canon docs. Not an implicit
+      runtime dependency of consumer repositories.
+
+  jannekbuengener/arvp:
+    portable_identity: jannekbuengener/arvp
+    system_role: validation_metatool
+    owns:
+      - domain-neutral deterministic validation, evaluation, gates, provenance, stability and Evidence Bundle contracts
+    does_not_own:
+      - product behavior or release authority in consumer repositories
+      - workforce routing or authority
+      - Agent Brain knowledge/memory/retrieval behavior
+    relationships: []
+    local_authority:
+      frontdoor: README.md
+      architecture: docs/architecture-v0.2.md
+    capability_source: null
+    capability_discovery: missing_machine_readable_source
+    routing_notes: >
+      Global workforce capability deterministic_validation routes here.
+      No AGENTS.md or capability registry on live main; README and docs/
+      contracts are the frontdoor. Use only when a consumer explicitly adopts ARVP.
+
+  morluto/rea:
+    portable_identity: morluto/rea
+    system_role: reverse_engineering_metatool
+    owns:
+      - local-only reverse-engineering tool workflows and evidence provenance under REA canon
+    does_not_own:
+      - workforce portfolio membership
+      - product implementation in consumer repositories
+    relationships: []
+    local_authority:
+      frontdoor: AGENTS.md
+    capability_source: null
+    capability_discovery: missing_machine_readable_source
+    routing_notes: >
+      Global workforce capability reverse_engineering routes here (REQUIRED).
+      Routable for capability execution; not auto-added to Scout monitoring by this file.
+
+  jannekbuengener/sample-brain:
+    portable_identity: jannekbuengener/sample-brain
+    system_role: product_application
+    owns:
+      - product integration, Catalog/DB persistence, Workbench/QML/UI, product state
+      - consumer compatibility, adapters and acceptance around the Analysis package
+      - Sample Brain policy/docs and local capability/skill routing
+    does_not_own:
+      - deterministic Analysis package API, DTOs and compute semantics (sample-brain-analysis)
+      - Agent Brain or ARVP implementation
+      - workforce policy ownership
+    relationships:
+      - type: consumes_package
+        target: jannekbuengener/sample-brain-analysis
+        direction: consumer_to_producer
+        summary: Consumes a versioned released sample-brain-analysis distribution for package-owned Analysis API/compute.
+      - type: navigates_meta
+        target: jannekbuengener/agent-workforce
+        direction: consumer_to_support
+        summary: Shared workforce/meta routing only; not an implicit Sample Brain runtime dependency.
+      - type: navigates_meta
+        target: jannekbuengener/agent-brain
+        direction: consumer_to_support
+        summary: Optional context/evidence use only through an explicit authorized integration.
+      - type: may_use_metatool
+        target: jannekbuengener/arvp
+        direction: consumer_to_support
+        summary: Optional deterministic evaluation/evidence support; ARVP does not own product behavior.
+    local_authority:
+      frontdoor: AGENTS.md
+      ecosystem: docs/REPOSITORY_ECOSYSTEM.md
+      analysis_boundary: docs/ANALYSIS_PACKAGE_BOUNDARY_V1.md
+    capability_source: jannekbuengener/sample-brain
+    routing_notes: >
+      Analysis defects in package-owned API/compute must route to
+      sample-brain-analysis, not auto-implement inside sample-brain.
+      Evidence: docs/REPOSITORY_ECOSYSTEM.md and docs/ANALYSIS_PACKAGE_BOUNDARY_V1.md.
+
+  jannekbuengener/sample-brain-analysis:
+    portable_identity: jannekbuengener/sample-brain-analysis
+    system_role: analysis_package
+    owns:
+      - deterministic Analysis computation and Analysis contracts/package behavior
+      - public Analysis API/DTO surface and package-local validation
+    does_not_own:
+      - Catalog/DB persistence, product orchestration, Workbench/QML/UI
+      - Sample Brain consumer release or production readiness by itself
+    relationships:
+      - type: produces_package_for
+        target: jannekbuengener/sample-brain
+        direction: producer_to_consumer
+        summary: Ships versioned Analysis package artifacts consumed by sample-brain.
+    local_authority:
+      frontdoor: AGENTS.md
+      architecture: ARCHITECTURE.md
+      public_api: docs/contracts/analysis-public-api-v1.md
+    capability_source: null
+    capability_discovery: missing_machine_readable_source
+    routing_notes: >
+      Independent Python distribution sample-brain-analysis. No machine-readable
+      capability registry on live main; enter via AGENTS.md and package contracts.
+
+  jannekbuengener/Claire_de_Binare:
+    portable_identity: jannekbuengener/Claire_de_Binare
+    system_role: product_application
+    owns:
+      - Claire de Binare product implementation and local agent/skill governance
+      - canonical skill corpus under docs/skills/
+    does_not_own:
+      - Agent Workforce portfolio or cross-repo workforce policy
+    relationships: []
+    local_authority:
+      frontdoor: AGENTS.md
+      skill_surface_registry: docs/skills/SKILL_SURFACE_REGISTRY.md
+    capability_source: jannekbuengener/Claire_de_Binare
+    routing_notes: >
+      docs/skills/ is the canonical skill source of truth. Tool-specific trees
+      such as .cursor/skills/, .codex/cdb_skills/, and .opencode/skills/ are
+      mirrors/surfaces, not separate capabilities. Do not copy CDB governance
+      into agent-workforce.
+
+  jannekbuengener/traum_taenzer:
+    portable_identity: jannekbuengener/traum_taenzer
+    system_role: product_governance
+    owns:
+      - Traumtänzer governance, safety, privacy, claims and knowledge canon
+      - local agent charter and responsible-AI system boundaries
+    does_not_own:
+      - workforce policy or other products' implementation
+    relationships: []
+    local_authority:
+      frontdoor: agents/AGENTS.md
+      agent_policy: knowledge/governance/AGENT_POLICY.md
+      constitution: knowledge/governance/CONSTITUTION.md
+    capability_source: null
+    capability_discovery: missing_machine_readable_source
+    routing_notes: >
+      Safety, privacy and claim rules stay in this repository. No machine-readable
+      capability/skill registry found on live main; enter via agents/AGENTS.md
+      and knowledge/governance/. Keep product-specific rules local.
+
+  jannekbuengener/security-business:
+    portable_identity: jannekbuengener/security-business
+    system_role: product_security
+    owns:
+      - security-business product and local agent rules under AGENTS.md
+    does_not_own:
+      - workforce policy ownership
+    relationships: []
+    local_authority:
+      frontdoor: AGENTS.md
+    capability_source: null
+    capability_discovery: missing_machine_readable_source
+    routing_notes: >
+      Included because it is already a monitored portfolio member and needs a
+      stable routing frontdoor. Plugin-local skills under integrations are not
+      promoted to portfolio capability sources here.

@@ -81,13 +81,15 @@ V1 routes:
 - Reverse Engineering -> `REQUIRED` -> REA (`morluto/rea`).
 - Reuse Before Build -> `DISCOVERY_REQUIRED` -> [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md).
 
-## Repository capability discovery
+## Repository routing and capability discovery
 
-Cross-repository capability/skill discovery is defined by [`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](docs/REPOSITORY_CAPABILITY_DISCOVERY.md).
+Stable portfolio routing facts are defined by [`docs/REPOSITORY_ROUTING.md`](docs/REPOSITORY_ROUTING.md).
 
-- [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](routing/REPOSITORY_CAPABILITY_SOURCES.yml) declares where each routable repository's capability/skill authority lives.
+- [`routing/REPOSITORY_ROUTING.yml`](routing/REPOSITORY_ROUTING.yml) records identity, system role, owns/does-not-own, directional relationships, and local authority frontdoors for routable repositories.
+- Cross-repository capability/skill discovery is defined by [`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](docs/REPOSITORY_CAPABILITY_DISCOVERY.md).
+- [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](routing/REPOSITORY_CAPABILITY_SOURCES.yml) declares where machine-readable capability/skill authority lives.
 - [`generated/PORTFOLIO_CAPABILITY_INDEX.yml`](generated/PORTFOLIO_CAPABILITY_INDEX.yml) is a derived discovery view with separate `global_capabilities` and `repository_capabilities` sections.
-- Monitored Scout membership remains owned by [`portfolio/REPOSITORIES.md`](portfolio/REPOSITORIES.md); this discovery layer does not duplicate it.
+- Monitored Scout membership remains owned by [`portfolio/REPOSITORIES.md`](portfolio/REPOSITORIES.md); routing and discovery do not duplicate it.
 - The generated index copies source-declared authority exactly and never becomes a second source of truth.
 
 ## Reuse before build
@@ -131,6 +133,8 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 - [Checkpoint contract](contracts/CHECKPOINT_CONTRACT.md)
 - [Capability routing](docs/CAPABILITY_ROUTING.md)
 - [Capability registry](capabilities/REGISTRY.yml)
+- [Repository routing](docs/REPOSITORY_ROUTING.md)
+- [Repository routing topology](routing/REPOSITORY_ROUTING.yml)
 - [Repository capability discovery](docs/REPOSITORY_CAPABILITY_DISCOVERY.md)
 - [Repository capability sources](routing/REPOSITORY_CAPABILITY_SOURCES.yml)
 - [Portfolio capability index](generated/PORTFOLIO_CAPABILITY_INDEX.yml)
