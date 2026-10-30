@@ -1,0 +1,143 @@
+schema_version: 1
+purpose: >
+  Fixture-only consumer pack for structural plugin/skill routing validation.
+  Not a production plugin inventory.
+consumers:
+  - id: fixture-global-router
+    kind: global_router
+    intent: Select the matching workforce capability for cross-repository work.
+    claims_global_routing: true
+    owns:
+      - cross-repository capability selection
+    does_not_own:
+      - target repository implementation behavior
+      - specialist reverse-engineering procedure
+    triggers:
+      explicit:
+        - use the agent capability router
+      semantic:
+        - route this task to the right shared capability
+      dependency: []
+      authority: []
+    exclusions:
+      - ordinary single-repository coding with no routing decision
+    requires_capabilities: []
+    optional_capabilities:
+      - id: shared_context_evidence
+        requirement: PREFERRED
+    output: capability route or blocked outcome
+    exit: when a provider route is selected or REQUIRED capability blocks
+    private_mcp: never_worker_dependency
+
+  - id: fixture-reverse-engineering-specialist
+    kind: specialist
+    intent: Reconstruct undocumented binary or application behavior.
+    claims_global_routing: false
+    owns:
+      - black-box binary and undocumented behavior reconstruction
+    does_not_own:
+      - ordinary source-code review
+      - ordinary web research
+      - generic repository planning
+    triggers:
+      explicit:
+        - use reverse engineering specialist
+      semantic:
+        - reconstruct proprietary application behavior from a binary
+      dependency:
+        - reverse_engineering
+      authority: []
+    exclusions:
+      - source-available code review that does not require reverse engineering
+    requires_capabilities:
+      - id: reverse_engineering
+        requirement: REQUIRED
+    optional_capabilities:
+      - id: shared_context_evidence
+        requirement: ADVISORY
+    output: reverse-engineering evidence under target-repository authority
+    exit: when reconstruction evidence is complete or REQUIRED capability blocks
+    private_mcp: never_worker_dependency
+
+  - id: fixture-project-orchestrator
+    kind: project_orchestrator
+    intent: Project-scoped orchestration inside one declared product authority.
+    claims_global_routing: false
+    owns:
+      - project-local session and authority routing
+    does_not_own:
+      - global capability matrix ownership
+    triggers:
+      explicit:
+        - run the project orchestrator
+      semantic:
+        - coordinate multi-step work inside the declared project scope
+      dependency: []
+      authority:
+        - target repository AGENTS.md routes project orchestration locally
+    exclusions:
+      - cross-repository global capability selection
+    requires_capabilities: []
+    optional_capabilities:
+      - id: deterministic_validation
+        requirement: PREFERRED
+      - id: reuse_before_build
+        requirement: DISCOVERY_REQUIRED
+    output: project-scoped next step under local authority
+    exit: when the scoped project handoff completes
+    private_mcp: never_worker_dependency
+
+  - id: fixture-execution-provider
+    kind: execution_provider
+    intent: Execute an already selected worker surface.
+    claims_global_routing: false
+    owns:
+      - execution supervision for an explicitly selected worker surface
+    does_not_own:
+      - global capability routing
+    triggers:
+      explicit:
+        - use the selected execution provider
+      semantic: []
+      dependency: []
+      authority: []
+    exclusions:
+      - any coding work that might benefit from this surface without selection
+    requires_capabilities: []
+    optional_capabilities: []
+    output: execution receipt
+    exit: when the selected execution finishes or is blocked by host tools
+    private_mcp: never_worker_dependency
+
+capability_dependency_edges: []
+
+routing_regression_cases:
+  - id: specialist-should-trigger-binary-reconstruction
+    consumer_id: fixture-reverse-engineering-specialist
+    type: should_trigger
+    intent_summary: Reconstruct undocumented behavior from a proprietary binary.
+    expected: TRIGGER
+
+  - id: specialist-should-not-trigger-source-review
+    consumer_id: fixture-reverse-engineering-specialist
+    type: should_not_trigger
+    intent_summary: Ordinary source-available code review in a public repository.
+    expected: NO_TRIGGER
+
+  - id: global-collision-reserved
+    consumer_id: fixture-global-router
+    type: collision_case
+    intent_summary: Two global routers claim the same exclusive top-level owns entry.
+    expected: COLLISION
+
+  - id: dependency-pulls-reverse-engineering
+    consumer_id: fixture-reverse-engineering-specialist
+    type: dependency_case
+    intent_summary: Selected router requests capability id reverse_engineering.
+    expected: RESOLVE_CAPABILITY
+
+  - id: missing-required-blocks
+    consumer_id: fixture-reverse-engineering-specialist
+    type: missing_required_capability_case
+    intent_summary: Reverse-engineering task when REQUIRED provider route is undefined.
+    expected: BLOCK

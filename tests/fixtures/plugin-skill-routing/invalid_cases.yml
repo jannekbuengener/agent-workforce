@@ -1,0 +1,261 @@
+schema_version: 1
+purpose: >
+  Fixture-only negative cases for structural plugin/skill routing validation.
+  Each pack is validated independently.
+
+packs:
+  unknown_capability:
+    consumers:
+      - id: bad-unknown-cap
+        kind: specialist
+        intent: Refer to a capability that does not exist.
+        claims_global_routing: false
+        owns:
+          - narrow specialist scope
+        does_not_own:
+          - global routing
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities:
+          - id: totally_unknown_capability_xyz
+            requirement: PREFERRED
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - UNKNOWN_CAPABILITY
+
+  required_without_canonical_provider:
+    consumers:
+      - id: bad-required-no-provider
+        kind: specialist
+        intent: Require a REQUIRED capability that lacks a canonical provider in the injected registry.
+        claims_global_routing: false
+        owns:
+          - narrow specialist scope
+        does_not_own:
+          - global routing
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities:
+          - id: required_orphan_capability
+            requirement: REQUIRED
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    registry_override:
+      schema_version: 1
+      requirement_levels:
+        - REQUIRED
+        - DISCOVERY_REQUIRED
+        - PREFERRED
+        - ADVISORY
+      capabilities:
+        required_orphan_capability:
+          requirement: REQUIRED
+          description: Fixture REQUIRED capability without tool or contract provider.
+          triggers:
+            - fixture only
+          exclusions:
+            - production use
+          availability:
+            require_available: true
+            require_authorized: true
+            silent_substitution: false
+    expect:
+      - REQUIRED_WITHOUT_CANONICAL_PROVIDER
+
+  cyclic_dependency:
+    consumers:
+      - id: cycle-consumer
+        kind: specialist
+        intent: Exercise structured capability dependency cycle detection.
+        claims_global_routing: false
+        owns:
+          - narrow specialist scope
+        does_not_own:
+          - global routing
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities:
+          - id: reverse_engineering
+            requirement: REQUIRED
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges:
+      - from: reverse_engineering
+        to: shared_context_evidence
+      - from: shared_context_evidence
+        to: deterministic_validation
+      - from: deterministic_validation
+        to: reverse_engineering
+    expect:
+      - CYCLIC_DEPENDENCY
+
+  competing_global_ownership:
+    consumers:
+      - id: global-a
+        kind: global_router
+        intent: First global router.
+        claims_global_routing: true
+        owns:
+          - exclusive-top-level-routing
+        does_not_own:
+          - specialist work
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities: []
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+      - id: global-b
+        kind: global_router
+        intent: Second global router with colliding owns entry.
+        claims_global_routing: true
+        owns:
+          - exclusive-top-level-routing
+        does_not_own:
+          - specialist work
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities: []
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - COMPETING_GLOBAL_OWNERSHIP
+
+  specialist_overreach:
+    consumers:
+      - id: overreaching-specialist
+        kind: specialist
+        intent: Specialist illegally claims global routing via structured field.
+        claims_global_routing: true
+        owns:
+          - narrow specialist scope
+        does_not_own:
+          - nothing useful
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities: []
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - SPECIALIST_OVERREACH
+
+  direct_plugin_coupling:
+    consumers:
+      - id: coupled-specialist
+        kind: specialist
+        intent: Put a plugin display name into a capability-id-only field.
+        claims_global_routing: false
+        owns:
+          - narrow specialist scope
+        does_not_own:
+          - global routing
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities:
+          - id: Reverse Engineering Orchestrator
+            requirement: REQUIRED
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - DIRECT_PLUGIN_COUPLING
+
+  repo_capability_duplication:
+    consumers:
+      - id: duplicating-router
+        kind: global_router
+        intent: Illegally embed a copied repo-local capability list.
+        claims_global_routing: true
+        owns:
+          - cross-repository capability selection
+        does_not_own:
+          - target repository implementation
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities: []
+        optional_capabilities: []
+        repository_capabilities_copy:
+          - sample-brain-control-orchestrator
+          - sample-brain-ci-debugger
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - REPO_CAPABILITY_DUPLICATION
+
+  missing_source_pointer:
+    consumers:
+      - id: missing-source-specialist
+        kind: specialist
+        intent: Reference a repo-local provider without a discoverable source pointer.
+        claims_global_routing: false
+        owns:
+          - narrow specialist scope
+        does_not_own:
+          - global routing
+        triggers:
+          explicit: []
+          semantic: []
+          dependency: []
+          authority: []
+        exclusions: []
+        requires_capabilities: []
+        optional_capabilities: []
+        repository_provider: nonexistent-org/nonexistent-repo
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - MISSING_SOURCE_POINTER
