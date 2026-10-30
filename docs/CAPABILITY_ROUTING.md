@@ -81,6 +81,42 @@ The registry must not contain:
 
 Execution hosts may discover a local checkout, CLI, MCP, plugin, package or other authorized installation at runtime. That host-local location is operational state, not workforce canon.
 
+## Standard shared capability routes
+
+The following shared repositories are first-class routing targets in the workforce registry. They are standard **discovery/routing options**, not unconditional dependencies that must be invoked on every task.
+
+### Agent Brain — shared context/evidence
+
+`shared_context_evidence` is registered as `PREFERRED`.
+
+Canonical capability:
+
+- **Name:** Agent Brain
+- **Portable identity:** `jannekbuengener/agent-brain`
+- **Upstream:** https://github.com/jannekbuengener/agent-brain
+
+Route to Agent Brain when the task materially benefits from shared or cross-repository knowledge, context, provenance-aware evidence, durable decision context, memory/retrieval infrastructure, or structured ingestion for agent work.
+
+Do not route ordinary repository live-state inspection, simple source-code reading, or GitHub issue/PR truth through Agent Brain when the authoritative target repository or GitHub already supplies the needed evidence.
+
+Agent Brain remains context/evidence infrastructure. It does not become product authority or an implicit runtime dependency merely because it is registered.
+
+### ARVP — deterministic validation/evaluation
+
+`deterministic_validation` is registered as `PREFERRED`.
+
+Canonical capability:
+
+- **Name:** ARVP
+- **Portable identity:** `jannekbuengener/arvp`
+- **Upstream:** https://github.com/jannekbuengener/arvp
+
+Route to ARVP when acceptance materially depends on deterministic evaluation, reproducible evidence bundles, baseline comparisons, PASS/FAIL/HOLD gates, stability/resampling validation, or portable validation contracts beyond ordinary repository tests.
+
+Do not invoke ARVP merely to decorate routine unit tests, lint, formatting, or tasks where the target repository already owns a sufficient equivalent validation contract.
+
+ARVP evidence supports acceptance; it does not override target-repository canon, CI, or release authority.
+
 ## Reverse Engineering V1
 
 `reverse_engineering` is registered as `REQUIRED`.

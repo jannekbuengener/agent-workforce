@@ -7,6 +7,61 @@ requirement_levels:
   - ADVISORY
 
 capabilities:
+  shared_context_evidence:
+    requirement: PREFERRED
+    description: >
+      Shared product-neutral knowledge, context, evidence, decision, memory, and
+      retrieval support when a task materially benefits from cross-session,
+      cross-repository, provenance-aware, or structured context/evidence work.
+    triggers:
+      - shared agent context retrieval
+      - cross-repository context synthesis
+      - provenance-aware evidence retrieval
+      - durable decision context
+      - agent memory or retrieval infrastructure
+      - knowledge or evidence ingestion for agent work
+    exclusions:
+      - ordinary repository live-state inspection
+      - GitHub issue or pull-request truth
+      - simple source-code reading within one repository
+      - tasks where target-repository local evidence is already sufficient
+    tool:
+      name: Agent Brain
+      identity: jannekbuengener/agent-brain
+      upstream: https://github.com/jannekbuengener/agent-brain
+    availability:
+      require_available: false
+      require_authorized: true
+      silent_substitution: true
+
+  deterministic_validation:
+    requirement: PREFERRED
+    description: >
+      Domain-neutral deterministic validation, evaluation, gates, provenance,
+      comparisons, stability analysis, and evidence bundles when acceptance
+      materially depends on reproducible evaluation rather than ordinary tests alone.
+    triggers:
+      - deterministic evaluation
+      - acceptance gate design
+      - reproducible evidence bundle
+      - baseline comparison
+      - PASS FAIL HOLD decision logic
+      - stability or resampling validation
+      - portable validation contract
+    exclusions:
+      - ordinary unit tests with sufficient repository-local assertions
+      - routine lint or formatting checks
+      - tasks where the target repository already owns an equivalent validation contract
+      - subjective review without a deterministic evaluation target
+    tool:
+      name: ARVP
+      identity: jannekbuengener/arvp
+      upstream: https://github.com/jannekbuengener/arvp
+    availability:
+      require_available: false
+      require_authorized: true
+      silent_substitution: true
+
   reverse_engineering:
     requirement: REQUIRED
     description: >
