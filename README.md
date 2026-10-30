@@ -102,6 +102,15 @@ Plugins, orchestrators, and skills that participate in cross-repository routing 
 - Structural validation lives in `tools/check_plugin_skill_routing.py`; fixtures under `tests/fixtures/plugin-skill-routing/` are not a production plugin inventory.
 - Evidence-backed consumer status is recorded in [`docs/PLUGIN_SKILL_ROUTING_AUDIT.md`](docs/PLUGIN_SKILL_ROUTING_AUDIT.md).
 
+## ChatGPT Workflows backoffice
+
+Exportable ChatGPT Project bootstrap for the **Workflows — Meta Planning / Execution Workspace** lives in [`backoffice/chatgpt-workflows/`](backoffice/chatgpt-workflows/).
+
+- The four files (`01_PROJECT_CORE.md`, `02_OPERATING_MODEL.md`, `03_CHATGPT_PROJECT_INSTRUCTIONS.md`, `MANIFEST.json`) are static orientation only.
+- Live authority remains [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) on `jannekbuengener/agent-workforce@main`; this bundle does not copy Workforce canon, repository topology, or capability inventories.
+- Structural validation: `python tools/check_chatgpt_workflows_backoffice.py`
+- Refresh file hashes / `source_canon_commit`: `python tools/refresh_chatgpt_workflows_manifest.py`
+
 ## Reuse before build
 
 For relevant planning/implementation work, check existing repository code and existing accepted dependencies before adding a new library, tool, service, infrastructure path, or custom implementation.
@@ -159,6 +168,7 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 - [Portfolio](portfolio/REPOSITORIES.md)
 - [Workforce policy](docs/WORKFORCE_POLICY.md)
 - [Meta topology](docs/META_TOPOLOGY.md)
+- [ChatGPT Workflows backoffice](backoffice/chatgpt-workflows/)
 - [NotebookLM guidance](docs/NOTEBOOKLM.md)
 
 ## Authority boundaries
