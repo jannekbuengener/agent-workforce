@@ -81,6 +81,15 @@ V1 routes:
 - Reverse Engineering -> `REQUIRED` -> REA (`morluto/rea`).
 - Reuse Before Build -> `DISCOVERY_REQUIRED` -> [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md).
 
+## Repository capability discovery
+
+Cross-repository capability/skill discovery is defined by [`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](docs/REPOSITORY_CAPABILITY_DISCOVERY.md).
+
+- [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](routing/REPOSITORY_CAPABILITY_SOURCES.yml) declares where each routable repository's capability/skill authority lives.
+- [`generated/PORTFOLIO_CAPABILITY_INDEX.yml`](generated/PORTFOLIO_CAPABILITY_INDEX.yml) is a derived discovery view with separate `global_capabilities` and `repository_capabilities` sections.
+- Monitored Scout membership remains owned by [`portfolio/REPOSITORIES.md`](portfolio/REPOSITORIES.md); this discovery layer does not duplicate it.
+- The generated index copies source-declared authority exactly and never becomes a second source of truth.
+
 ## Reuse before build
 
 For relevant planning/implementation work, check existing repository code and existing accepted dependencies before adding a new library, tool, service, infrastructure path, or custom implementation.
@@ -122,6 +131,9 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 - [Checkpoint contract](contracts/CHECKPOINT_CONTRACT.md)
 - [Capability routing](docs/CAPABILITY_ROUTING.md)
 - [Capability registry](capabilities/REGISTRY.yml)
+- [Repository capability discovery](docs/REPOSITORY_CAPABILITY_DISCOVERY.md)
+- [Repository capability sources](routing/REPOSITORY_CAPABILITY_SOURCES.yml)
+- [Portfolio capability index](generated/PORTFOLIO_CAPABILITY_INDEX.yml)
 - [Reuse before build](docs/REUSE_BEFORE_BUILD.md)
 - [External reference contract](contracts/EXTERNAL_REFERENCE_CONTRACT.md)
 - [Shared reference catalog](references/CATALOG.yml)
@@ -139,6 +151,6 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 
 `agent-workforce` owns versioned workforce canon only. Each monitored repository owns its own code, repository rules, CI, issues, PRs, Repo Health Book, and repository-specific external-reference relevance.
 
-V1.1 intentionally has no runtime database, generated dashboard, or hosted GitHub Actions workflow. Durable Scout/Supervisor cursors are limited to the mutable GitHub checkpoint comments defined by the Checkpoint Contract; transient scheduler/task metadata remains execution-host state.
+V1.1 intentionally has no runtime database, hosted dashboard, or hosted GitHub Actions workflow. The portfolio capability index is committed derived discovery data under generator/drift control, not a second authority store or interactive dashboard. Durable Scout/Supervisor cursors are limited to the mutable GitHub checkpoint comments defined by the Checkpoint Contract; transient scheduler/task metadata remains execution-host state.
 
 Machine-local capability/reference locations are never copied into role, policy, capability, or reference files as canonical truth.

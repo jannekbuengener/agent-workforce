@@ -1,0 +1,3 @@
+# Sole optional/dev dependency for portfolio capability discovery tools.
+# Existing workforce registries are YAML; stdlib cannot parse them cleanly.
+PyYAML>=6.0,<7

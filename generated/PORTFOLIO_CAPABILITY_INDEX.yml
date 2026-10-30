@@ -1,0 +1,39 @@
+schema_version: 1
+generated: true
+generator: tools/generate_portfolio_capability_index.py
+source_fingerprint: f1c790717314edd9067bfc902ebe0c1cce8786a712686443987d5d021af71104
+authority_note: Derived discovery data only. Copy authority exactly from source declarations. Never treat this index as repository or workforce authority.
+global_capabilities:
+- capability_id: deterministic_validation
+  intent: Domain-neutral deterministic validation, evaluation, gates, provenance, comparisons, stability analysis, and evidence bundles when acceptance materially depends on reproducible evaluation rather than ordinary tests alone.
+  provider_kind: registry_entry
+  source_id: workforce-global-registry
+  source_path: capabilities/REGISTRY.yml
+  source_type: workforce_capability_registry
+  authority: workforce_routing
+  requirement: PREFERRED
+- capability_id: reuse_before_build
+  intent: Bounded engineering discovery before a meaningful implementation-path decision would introduce new code, dependencies, tooling, services, subsystems, or infrastructure.
+  provider_kind: registry_entry
+  source_id: workforce-global-registry
+  source_path: capabilities/REGISTRY.yml
+  source_type: workforce_capability_registry
+  authority: workforce_routing
+  requirement: DISCOVERY_REQUIRED
+- capability_id: reverse_engineering
+  intent: Reverse engineering of binaries, applications, packaged runtimes, and behavior where the task intent is to reconstruct or inspect implementation rather than perform ordinary documentation or web research.
+  provider_kind: registry_entry
+  source_id: workforce-global-registry
+  source_path: capabilities/REGISTRY.yml
+  source_type: workforce_capability_registry
+  authority: workforce_routing
+  requirement: REQUIRED
+- capability_id: shared_context_evidence
+  intent: Shared product-neutral knowledge, context, evidence, decision, memory, and retrieval support when a task materially benefits from cross-session, cross-repository, provenance-aware, or structured context/evidence work.
+  provider_kind: registry_entry
+  source_id: workforce-global-registry
+  source_path: capabilities/REGISTRY.yml
+  source_type: workforce_capability_registry
+  authority: workforce_routing
+  requirement: PREFERRED
+repository_capabilities: []
