@@ -92,6 +92,16 @@ Stable portfolio routing facts are defined by [`docs/REPOSITORY_ROUTING.md`](doc
 - Monitored Scout membership remains owned by [`portfolio/REPOSITORIES.md`](portfolio/REPOSITORIES.md); routing and discovery do not duplicate it.
 - The generated index copies source-declared authority exactly and never becomes a second source of truth.
 
+## Plugin / skill consumer routing
+
+Plugins, orchestrators, and skills that participate in cross-repository routing must follow [`contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md`](contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md).
+
+- Consumers declare ownership/triggers and reference **Capability IDs**; Agent Workforce resolves providers.
+- Agent Workforce owns cross-repository selection and capability resolution; target repositories own behavior once selected; execution hosts override neither.
+- Private MCP remains ChatGPT-only and is never a worker dependency.
+- Structural validation lives in `tools/check_plugin_skill_routing.py`; fixtures under `tests/fixtures/plugin-skill-routing/` are not a production plugin inventory.
+- Evidence-backed consumer status is recorded in [`docs/PLUGIN_SKILL_ROUTING_AUDIT.md`](docs/PLUGIN_SKILL_ROUTING_AUDIT.md).
+
 ## Reuse before build
 
 For relevant planning/implementation work, check existing repository code and existing accepted dependencies before adding a new library, tool, service, infrastructure path, or custom implementation.

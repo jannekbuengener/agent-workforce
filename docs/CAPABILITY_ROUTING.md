@@ -186,6 +186,9 @@ Global workforce capability routing (this contract + [`capabilities/REGISTRY.yml
 - Use [`docs/REPOSITORY_ROUTING.md`](REPOSITORY_ROUTING.md) for stable ownership, relationships and frontdoors when spawn-point routing matters.
 - Use [`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](REPOSITORY_CAPABILITY_DISCOVERY.md) to locate **repository-local** capability/skill authority and the derived portfolio capability index.
 - The generated index keeps `global_capabilities` and `repository_capabilities` in separate sections so the two layers are not flattened into one truth.
+- Use [`contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md`](../contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md) when plugins/skills/orchestrators must declare how they consume Capability IDs without becoming a second registry or global router.
+
+Authority domains: Agent Workforce owns cross-repository selection and capability resolution; target-repository authority owns behavior once selected; execution hosts implement but override neither.
 
 Monitored Scout portfolio membership remains owned by [`portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md), not by repository routing or capability sources.
 
