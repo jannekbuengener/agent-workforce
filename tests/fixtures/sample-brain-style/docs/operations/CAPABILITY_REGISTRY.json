@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "updated_note": "Fixture only. Mirrors Sample Brain capability_registry_json shape for adapter tests.",
+  "capabilities": [
+    {
+      "id": "fixture-root-cause",
+      "type": "skill",
+      "purpose": "Isolate an evidenced cause before proposing a fix.",
+      "lifecycle": "active",
+      "authority": "local-repo",
+      "canonical_source": "docs/skills/fixture-root-cause/SKILL.md",
+      "source_kind": "local"
+    },
+    {
+      "id": "fixture-session-plan",
+      "type": "skill",
+      "purpose": "Turn one scoped issue into a small session plan.",
+      "lifecycle": "active",
+      "authority": "local-repo",
+      "canonical_source": "docs/skills/fixture-session-plan/SKILL.md",
+      "source_kind": "local"
+    },
+    {
+      "id": "fixture-external-helper",
+      "type": "external-tool",
+      "purpose": "Optional external helper declared in the local registry.",
+      "lifecycle": "on-demand",
+      "authority": "external-example",
+      "canonical_source": "external:example/helper",
+      "source_kind": "external"
+    }
+  ]
+}

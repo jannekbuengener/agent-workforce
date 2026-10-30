@@ -1,0 +1,22 @@
+schema_version: 1
+purpose: >
+  Declares where repository capability/skill authority lives for discovery.
+  This file is a pointer contract, not a second capability source of truth.
+  Monitored portfolio membership remains owned by portfolio/REPOSITORIES.md.
+  Producer/consumer relationships and portfolio role taxonomy belong to later
+  portfolio normalization, not this contract.
+
+repositories:
+  jannekbuengener/agent-workforce:
+    portable_identity: jannekbuengener/agent-workforce
+    routable: true
+    local_authority:
+      frontdoor: WORKFORCE_BOOTSTRAP.md
+      agents: AGENTS.md
+    capability_sources:
+      - id: workforce-global-registry
+        type: workforce_capability_registry
+        path: capabilities/REGISTRY.yml
+        discovery: registry_entries
+        authority: workforce_routing
+        status: active
