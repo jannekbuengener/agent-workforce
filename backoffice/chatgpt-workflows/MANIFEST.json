@@ -2,26 +2,26 @@
   "schema_version": 1,
   "bundle_name": "chatgpt-workflows-backoffice",
   "bundle_kind": "chatgpt_workflows_backoffice",
-  "purpose": "Static ChatGPT Project bootstrap for Workflows meta planning; not live operational truth.",
+  "purpose": "Static ChatGPT Project bootstrap for WorkForce Executive Planning & Routing; not live operational truth.",
   "source": {
     "repository": "jannekbuengener/agent-workforce",
     "branch": "main",
-    "source_canon_commit": "b0f7df721fd38b78cb5ef06f89773b3ea60ff889",
+    "source_canon_commit": "865caa29c38cc2353fc848b9c7e932e2da8218b7",
     "source_canon_commit_semantics": "Agent Workforce canon tip against which this bundle was authored/validated. Not the SHA of a commit that contains this MANIFEST.json."
   },
-  "validated_at": "2026-10-30",
+  "validated_at": "2026-10-31",
   "files": [
     {
       "path": "01_PROJECT_CORE.md",
-      "sha256": "23781c1acb6d6f1a54da953dcb7af60d7c03d730d8a703d9dcb7d482024c354a"
+      "sha256": "78147222ff66ee605475a883083ebedc3fff9f2700a3bed5ebc9c379bc598dd5"
     },
     {
       "path": "02_OPERATING_MODEL.md",
-      "sha256": "7a93895d8e57596f49f914fe7f5a48ab6803b468696f917c476da0a29c461e86"
+      "sha256": "28c3933c8e3eb0744e859eb7943c60d1cebcc720e32183eee2a3eb6a64ba5b77"
     },
     {
       "path": "03_CHATGPT_PROJECT_INSTRUCTIONS.md",
-      "sha256": "d7ff21d5f212d201b9fb518369a332691f092e7c3c93d5126676322625043c76"
+      "sha256": "5db19d5019531678a724e29f0343bdf134016f168924c09e961d8876600f33c4"
     }
   ]
 }

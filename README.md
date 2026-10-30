@@ -104,7 +104,7 @@ Plugins, orchestrators, and skills that participate in cross-repository routing 
 
 ## ChatGPT Workflows backoffice
 
-Exportable ChatGPT Project bootstrap for the **Workflows — Meta Planning / Execution Workspace** lives in [`backoffice/chatgpt-workflows/`](backoffice/chatgpt-workflows/).
+Exportable ChatGPT Project bootstrap for the **WorkForce — Executive Planning & Routing Workspace** lives in [`backoffice/chatgpt-workflows/`](backoffice/chatgpt-workflows/).
 
 - The four files (`01_PROJECT_CORE.md`, `02_OPERATING_MODEL.md`, `03_CHATGPT_PROJECT_INSTRUCTIONS.md`, `MANIFEST.json`) are static orientation only.
 - Live authority remains [`WORKFORCE_BOOTSTRAP.md`](WORKFORCE_BOOTSTRAP.md) on `jannekbuengener/agent-workforce@main`; this bundle does not copy Workforce canon, repository topology, or capability inventories.
