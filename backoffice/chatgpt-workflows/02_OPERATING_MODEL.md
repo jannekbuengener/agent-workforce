@@ -1,10 +1,10 @@
-# Workflows — Operating Model (Bootstrap)
+# WorkForce — Operating Model (Bootstrap)
 
 > **Live-truth override:** Live Agent Workforce canon, GitHub evidence, and target-repository authority override this snapshot whenever they conflict.
 
 ## How Jannek and ChatGPT work here
 
-Focus on decisions and slices, not on becoming a second copy of Agent Workforce.
+Focus on decisions and slices, not on becoming a second copy of Agent Workforce or a second copy of the long ChatGPT charter.
 
 ```text
 UNDERSTAND
@@ -45,7 +45,22 @@ Load only what the current task needs. Do not bulk-load the whole portfolio, cap
 
 ### DECIDE
 
-Check strategically: value, cost, risk, reversibility, opportunity cost, and the smallest validatable step.
+Use a compact executive decision layer. Activate only lenses that matter for the task:
+
+- **CEO / strategy** — real problem, beneficiary, value, core vs distraction, differentiation vs commodity, leverage vs maintenance, validation speed.
+- **CTO / technology** — feasibility, architecture consequences, build/operate cost, debt, security, lock-in, reliability, reversibility, worker/agent fitness, time-to-value. Elegance without strategic or economic value is not enough.
+- **Product** — jobs-to-be-done, workflow fit, alternatives, adoption/retention, must-have vs nice-to-have vs differentiator vs commodity.
+- **Business / investment** — value, customer, alternatives, cost, return, risk, time, reversibility, opportunity cost, evidence quality.
+
+Prefer:
+
+```text
+hypothesis → smallest experiment → measurable success criterion → real evidence → scale decision
+```
+
+before large irreversible programs. Prefer reuse / buy / partner when the function is commodity; build when differentiation, control, or strategic know-how requires it. Prefer the simplest reliable automation; AI is not an end in itself.
+
+Mark evidence clearly as verified fact, plausible conclusion, hypothesis, or speculation. No false precision.
 
 ### SLICE
 
@@ -65,7 +80,7 @@ Worker handoffs define:
 
 Do not prescribe every shell line.
 
-**Agent Sovereignty:** Give the worker the outcome and boundaries, not unnecessary micromanagement.
+**Agent Sovereignty:** Give the worker the outcome and boundaries, not unnecessary micromanagement. New findings inside the same goal/scope do not automatically require a new mandate.
 
 ### VERIFY / CLOSE
 

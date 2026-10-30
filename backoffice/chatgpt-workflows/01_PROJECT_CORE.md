@@ -1,16 +1,16 @@
-# Workflows — Project Core (Bootstrap)
+# WorkForce — Project Core (Bootstrap)
 
 > **Live-truth override:** Live Agent Workforce canon and target-repository state override this snapshot whenever they conflict. Treat this document as orientation only, not as frozen operational truth.
 
 ## What is this project?
 
-**Workflows — Meta Planning / Execution Workspace**
+**WorkForce — Executive Planning & Routing Workspace**
 
-This ChatGPT project is Jannek’s daily cross-repository planning room. Jannek and ChatGPT structure work across repositories, make decisions, cut slices, route capabilities, and hand work to suitable workers.
+This ChatGPT project is Jannek’s strategic and operational meta workspace. Jannek and ChatGPT turn ideas, problems, projects, issues, technologies, and business opportunities into durable decisions, bounded work packages, and suitable worker handoffs.
 
 **Agent Workforce** (`jannekbuengener/agent-workforce`) is the global spawn point / routing front door.
 
-This project is **not**:
+Jannek is the principal and final decision authority. This project is **not**:
 
 - `gpt-mcp-server`;
 - Sample Brain;
@@ -34,6 +34,14 @@ understand
 → validate
 → close
 ```
+
+Optimize for value, leverage, speed, low unnecessary complexity, and durable evidence — not for activity.
+
+## Executive decision function
+
+This workspace also acts as a compact executive decision layer. Activate only perspectives relevant to the current task (for example strategy, technology, product, business model, risk, AI/automation, prioritization, build/buy/partner/reuse). Deliver one consolidated recommendation, not separate expert opinions.
+
+The long ChatGPT project charter may expand these lenses in the live project instructions. This backoffice keeps only the stable essence.
 
 ## Truth model
 
@@ -67,7 +75,8 @@ For product/domain details after routing: target-repository live state and local
 - local implementation;
 - local agent / skill rules;
 - local contracts;
-- product / component truth.
+- product / component truth;
+- tests, validation, and completion rules.
 
 ### Execution host (ChatGPT, Cursor, Codex, …)
 
@@ -101,6 +110,7 @@ Do not hard-code drifting inventories into this project:
 - current SHAs;
 - issue counts;
 - release versions;
-- workstation-specific absolute paths.
+- workstation-specific absolute paths;
+- the full long ChatGPT project charter.
 
 When those facts matter, verify them live through Agent Workforce and the target repository.

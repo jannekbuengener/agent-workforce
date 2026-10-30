@@ -123,8 +123,8 @@ def build_manifest(
         "bundle_name": BUNDLE_NAME,
         "bundle_kind": BUNDLE_KIND,
         "purpose": (
-            "Static ChatGPT Project bootstrap for Workflows meta planning; "
-            "not live operational truth."
+            "Static ChatGPT Project bootstrap for WorkForce Executive "
+            "Planning & Routing; not live operational truth."
         ),
         "source": {
             "repository": SOURCE_REPOSITORY,
