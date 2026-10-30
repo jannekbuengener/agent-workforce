@@ -24,6 +24,8 @@ except ImportError as exc:  # pragma: no cover - exercised when dep missing
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 SOURCES_PATH = REPO_ROOT / "routing" / "REPOSITORY_CAPABILITY_SOURCES.yml"
+ROUTING_PATH = REPO_ROOT / "routing" / "REPOSITORY_ROUTING.yml"
+PORTFOLIO_PATH = REPO_ROOT / "portfolio" / "REPOSITORIES.md"
 INDEX_PATH = REPO_ROOT / "generated" / "PORTFOLIO_CAPABILITY_INDEX.yml"
 GENERATOR_NAME = "tools/generate_portfolio_capability_index.py"
 
@@ -35,8 +37,25 @@ ALLOWED_SOURCE_TYPES = {
 ALLOWED_DISCOVERY = {"registry_entries", "skill_directories"}
 ALLOWED_STATUS = {"active", "planned"}
 FORBIDDEN_SOURCE_KEYS = {"monitored", "relationships", "role", "blocked"}
+FORBIDDEN_ROUTING_KEYS = {"monitored", "blocked"}
+ALLOWED_RELATIONSHIP_TYPES = {
+    "consumes_package",
+    "produces_package_for",
+    "navigates_meta",
+    "may_use_metatool",
+}
+ALLOWED_CAPABILITY_DISCOVERY = {
+    "missing_machine_readable_source",
+}
+VOLATILE_ROUTING_HINT_RE = re.compile(
+    r"(?i)\b(sha-?256|commit\s+[0-9a-f]{7,}|#"
+    r"\d{1,5}\b|pull request #\d+|pr #\d+|v?\d+\.\d+\.\d+)\b"
+)
 ABSOLUTE_PATH_RE = re.compile(r"^(?:[A-Za-z]:[\\/]|/|\\\\)")
 FRONTMATTER_RE = re.compile(r"\A---\s*\n(.*?)\n---\s*\n?", re.DOTALL)
+PORTFOLIO_REPO_RE = re.compile(
+    r"\|\s*`(?P<identity>[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)`\s*\|"
+)
 
 
 @dataclass(frozen=True)
@@ -212,6 +231,41 @@ def resolve_repo_root(
     return None
 
 
+def discover_sibling_repo_roots(
+    identities: list[str] | set[str],
+    *,
+    workforce_root: Path = REPO_ROOT,
+) -> dict[str, Path]:
+    """Map portable identities to sibling checkouts next to agent-workforce.
+
+    No absolute paths are stored in contracts; this is runtime discovery only.
+    """
+    parent = workforce_root.resolve().parent
+    roots: dict[str, Path] = {}
+    for identity in identities:
+        if identity == "jannekbuengener/agent-workforce":
+            continue
+        name = identity.split("/", 1)[-1]
+        candidate = parent / name
+        if candidate.is_dir() and (candidate / ".git").exists():
+            roots[identity] = candidate.resolve()
+    return roots
+
+
+def merge_repo_roots(
+    explicit: dict[str, Path] | None,
+    *,
+    sources: dict[str, Any] | None = None,
+    workforce_root: Path = REPO_ROOT,
+) -> dict[str, Path]:
+    sources = sources if sources is not None else load_sources()
+    identities = set((sources.get("repositories") or {}).keys())
+    merged = discover_sibling_repo_roots(identities, workforce_root=workforce_root)
+    if explicit:
+        merged.update(explicit)
+    return merged
+
+
 def _section_for_type(source_type: str) -> str:
     if source_type == "workforce_capability_registry":
         return "global_capabilities"
@@ -380,9 +434,13 @@ def build_index(
     sources: dict[str, Any] | None = None,
     repo_roots: dict[str, Path] | None = None,
     include_planned: bool = False,
+    auto_discover_siblings: bool = True,
 ) -> dict[str, Any]:
     sources = sources if sources is not None else load_sources()
-    repo_roots = repo_roots or {}
+    if auto_discover_siblings:
+        repo_roots = merge_repo_roots(repo_roots, sources=sources)
+    else:
+        repo_roots = repo_roots or {}
     schema_problems = validate_sources_schema(sources)
     if schema_problems:
         raise ValueError("Invalid sources schema:\n- " + "\n- ".join(schema_problems))
@@ -515,6 +573,7 @@ def collect_drift_problems(
     sources: dict[str, Any] | None = None,
     repo_roots: dict[str, Path] | None = None,
     index_path: Path = INDEX_PATH,
+    auto_discover_siblings: bool = True,
 ) -> list[str]:
     sources = sources if sources is not None else load_sources()
     problems = validate_sources_schema(sources)
@@ -522,7 +581,11 @@ def collect_drift_problems(
         return [f"schema: {p}" for p in problems]
 
     try:
-        expected = build_index(sources=sources, repo_roots=repo_roots)
+        expected = build_index(
+            sources=sources,
+            repo_roots=repo_roots,
+            auto_discover_siblings=auto_discover_siblings,
+        )
     except ValueError as exc:
         return [str(exc)]
 
@@ -591,3 +654,179 @@ def collect_drift_problems(
             problems.append("Generated capability sections diverge from sources")
 
     return problems
+
+
+def load_routing(path: Path = ROUTING_PATH) -> dict[str, Any]:
+    data = load_yaml(path)
+    if not isinstance(data, dict):
+        raise ValueError(f"Routing file must be a mapping: {path}")
+    return data
+
+
+def parse_portfolio_identities(path: Path = PORTFOLIO_PATH) -> set[str]:
+    if not path.is_file():
+        return set()
+    text = path.read_text(encoding="utf-8")
+    return {match.group("identity") for match in PORTFOLIO_REPO_RE.finditer(text)}
+
+
+def _routing_text_fields(entry: dict[str, Any]) -> list[str]:
+    values: list[str] = []
+    for key in ("system_role", "routing_notes", "capability_discovery"):
+        value = entry.get(key)
+        if isinstance(value, str):
+            values.append(value)
+    for key in ("owns", "does_not_own"):
+        items = entry.get(key) or []
+        if isinstance(items, list):
+            values.extend(str(item) for item in items)
+    for rel in entry.get("relationships") or []:
+        if isinstance(rel, dict):
+            for key in ("type", "direction", "summary"):
+                if isinstance(rel.get(key), str):
+                    values.append(rel[key])
+    local_authority = entry.get("local_authority") or {}
+    if isinstance(local_authority, dict):
+        values.extend(str(v) for v in local_authority.values() if isinstance(v, str))
+    return values
+
+
+def validate_routing_schema(
+    routing: dict[str, Any],
+    *,
+    sources: dict[str, Any] | None = None,
+    portfolio_identities: set[str] | None = None,
+) -> list[str]:
+    problems: list[str] = []
+    if routing.get("schema_version") != 1:
+        problems.append("schema_version must be 1")
+    repositories = routing.get("repositories")
+    if not isinstance(repositories, dict) or not repositories:
+        problems.append("repositories must be a non-empty mapping")
+        return problems
+
+    sources = sources if sources is not None else load_sources()
+    source_repos = set((sources.get("repositories") or {}).keys())
+    if portfolio_identities is None:
+        portfolio_identities = parse_portfolio_identities()
+
+    for repo_key, entry in repositories.items():
+        prefix = f"repositories[{repo_key}]"
+        if not isinstance(entry, dict):
+            problems.append(f"{prefix} must be a mapping")
+            continue
+        for forbidden in FORBIDDEN_ROUTING_KEYS:
+            if forbidden in entry:
+                problems.append(
+                    f"{prefix} must not declare '{forbidden}' "
+                    "(monitored membership stays in portfolio/REPOSITORIES.md)"
+                )
+        if entry.get("portable_identity") != repo_key:
+            problems.append(
+                f"{prefix}.portable_identity must equal mapping key '{repo_key}'"
+            )
+        if not isinstance(entry.get("system_role"), str) or not entry["system_role"].strip():
+            problems.append(f"{prefix}.system_role is required")
+        for list_key in ("owns", "does_not_own"):
+            items = entry.get(list_key)
+            if not isinstance(items, list) or not items:
+                problems.append(f"{prefix}.{list_key} must be a non-empty list")
+            elif not all(isinstance(item, str) and item.strip() for item in items):
+                problems.append(f"{prefix}.{list_key} entries must be non-empty strings")
+        local_authority = entry.get("local_authority")
+        if not isinstance(local_authority, dict) or not local_authority.get("frontdoor"):
+            problems.append(f"{prefix}.local_authority.frontdoor is required")
+        else:
+            for key, value in local_authority.items():
+                if isinstance(value, str) and is_absolute_path(value):
+                    problems.append(
+                        f"{prefix}.local_authority.{key} must not be an absolute path"
+                    )
+
+        cap_source = entry.get("capability_source", "__missing__")
+        if cap_source is None:
+            discovery = entry.get("capability_discovery")
+            if discovery not in ALLOWED_CAPABILITY_DISCOVERY:
+                problems.append(
+                    f"{prefix}.capability_discovery must be one of "
+                    f"{sorted(ALLOWED_CAPABILITY_DISCOVERY)} when capability_source is null"
+                )
+        elif cap_source == "__missing__":
+            problems.append(f"{prefix}.capability_source is required (portable id or null)")
+        elif not isinstance(cap_source, str) or not cap_source:
+            problems.append(f"{prefix}.capability_source must be a portable identity or null")
+        elif cap_source not in source_repos:
+            problems.append(
+                f"{prefix}.capability_source '{cap_source}' missing from "
+                "REPOSITORY_CAPABILITY_SOURCES.yml"
+            )
+        elif cap_source != repo_key:
+            problems.append(
+                f"{prefix}.capability_source must equal this repository's "
+                f"portable identity when set (got '{cap_source}')"
+            )
+
+        relationships = entry.get("relationships")
+        if relationships is None:
+            problems.append(f"{prefix}.relationships must be a list (empty allowed)")
+        elif not isinstance(relationships, list):
+            problems.append(f"{prefix}.relationships must be a list")
+        else:
+            for index, rel in enumerate(relationships):
+                rp = f"{prefix}.relationships[{index}]"
+                if not isinstance(rel, dict):
+                    problems.append(f"{rp} must be a mapping")
+                    continue
+                rel_type = rel.get("type")
+                if rel_type not in ALLOWED_RELATIONSHIP_TYPES:
+                    problems.append(
+                        f"{rp}.type must be one of {sorted(ALLOWED_RELATIONSHIP_TYPES)}"
+                    )
+                target = rel.get("target")
+                if not isinstance(target, str) or not target:
+                    problems.append(f"{rp}.target is required")
+                elif target not in repositories:
+                    problems.append(
+                        f"{rp}.target '{target}' must be a routable repository "
+                        "declared in REPOSITORY_ROUTING.yml"
+                    )
+                if not isinstance(rel.get("direction"), str) or not rel["direction"].strip():
+                    problems.append(f"{rp}.direction is required")
+                if not isinstance(rel.get("summary"), str) or not rel["summary"].strip():
+                    problems.append(f"{rp}.summary is required")
+
+        for text in _routing_text_fields(entry):
+            if is_absolute_path(text):
+                problems.append(f"{prefix} must not embed absolute paths ({text!r})")
+            if VOLATILE_ROUTING_HINT_RE.search(text):
+                problems.append(
+                    f"{prefix} appears to embed volatile SHA/version/issue/PR truth "
+                    f"({text!r})"
+                )
+
+    # Capability sources that exist must be routable in topology.
+    for source_id in sorted(source_repos):
+        if source_id not in repositories:
+            problems.append(
+                f"capability source '{source_id}' is not declared in REPOSITORY_ROUTING.yml"
+            )
+
+    # Portfolio members should be routable so scouts have a frontdoor map.
+    for identity in sorted(portfolio_identities):
+        if identity not in repositories:
+            problems.append(
+                f"monitored portfolio member '{identity}' missing from "
+                "REPOSITORY_ROUTING.yml (routable map; not a monitored dual-write)"
+            )
+
+    return problems
+
+
+def collect_routing_problems(
+    *,
+    routing: dict[str, Any] | None = None,
+    sources: dict[str, Any] | None = None,
+) -> list[str]:
+    routing = routing if routing is not None else load_routing()
+    sources = sources if sources is not None else load_sources()
+    return validate_routing_schema(routing, sources=sources)

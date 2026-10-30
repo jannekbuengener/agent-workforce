@@ -35,12 +35,35 @@ class PortfolioCapabilityDiscoveryTests(unittest.TestCase):
         index = lib.build_index()
         self.assertTrue(index["generated"])
         self.assertGreaterEqual(len(index["global_capabilities"]), 1)
-        self.assertEqual(index["repository_capabilities"], [])
+        self.assertGreaterEqual(len(index["repository_capabilities"]), 1)
         for row in index["global_capabilities"]:
             self.assertEqual(row["source_type"], "workforce_capability_registry")
             self.assertNotIn("repository", row)
             self.assertEqual(row["authority"], "workforce_routing")
             self.assertIn("requirement", row)
+        repos = {row["repository"] for row in index["repository_capabilities"]}
+        self.assertIn("jannekbuengener/sample-brain", repos)
+        self.assertIn("jannekbuengener/Claire_de_Binare", repos)
+        for row in index["repository_capabilities"]:
+            self.assertNotEqual(row["source_type"], "workforce_capability_registry")
+            self.assertEqual(row["authority"], "local_repo")
+
+    def test_production_sources_include_sample_brain_and_cdb(self) -> None:
+        sources = lib.load_sources()
+        repos = sources["repositories"]
+        self.assertIn("jannekbuengener/sample-brain", repos)
+        self.assertIn("jannekbuengener/Claire_de_Binare", repos)
+        self.assertEqual(
+            repos["jannekbuengener/sample-brain"]["capability_sources"][0]["type"],
+            "capability_registry_json",
+        )
+        self.assertEqual(
+            repos["jannekbuengener/Claire_de_Binare"]["capability_sources"][0]["type"],
+            "skill_canon_dir",
+        )
+        for key in ("monitored", "relationships", "role"):
+            self.assertNotIn(key, repos["jannekbuengener/sample-brain"])
+            self.assertNotIn(key, repos["jannekbuengener/Claire_de_Binare"])
 
     def test_sample_brain_style_fixture_adapter(self) -> None:
         source = {
@@ -166,7 +189,11 @@ class PortfolioCapabilityDiscoveryTests(unittest.TestCase):
             },
         }
         with self.assertRaises(ValueError) as ctx:
-            lib.build_index(sources=sources, repo_roots={})
+            lib.build_index(
+                sources=sources,
+                repo_roots={},
+                auto_discover_siblings=False,
+            )
         self.assertIn("Unresolvable active source root", str(ctx.exception))
 
     def test_schema_rejects_monitored_relationships_blocked_and_absolute_paths(self) -> None:

@@ -178,15 +178,16 @@ The one exception is an explicitly `REQUIRED` registered capability: if that cap
 
 For `DISCOVERY_REQUIRED`, an execution host must use the evidence sources actually available and authorized to it. If the minimum evidence required to make the implementation-path decision cannot be obtained, use the existing operational blocked outcomes rather than guessing.
 
-## Relationship to repository capability discovery
+## Relationship to repository routing and capability discovery
 
-Global workforce capability routing (this contract + [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml)) is separate from per-repository capability/skill source discovery.
+Global workforce capability routing (this contract + [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml)) is separate from portfolio routing topology and per-repository capability/skill source discovery.
 
 - Use this contract to decide whether a **global** workforce capability such as REA, ARVP, Agent Brain, or reuse-before-build applies.
+- Use [`docs/REPOSITORY_ROUTING.md`](REPOSITORY_ROUTING.md) for stable ownership, relationships and frontdoors when spawn-point routing matters.
 - Use [`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](REPOSITORY_CAPABILITY_DISCOVERY.md) to locate **repository-local** capability/skill authority and the derived portfolio capability index.
 - The generated index keeps `global_capabilities` and `repository_capabilities` in separate sections so the two layers are not flattened into one truth.
 
-Monitored Scout portfolio membership remains owned by [`portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md), not by repository capability sources.
+Monitored Scout portfolio membership remains owned by [`portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md), not by repository routing or capability sources.
 
 ## Relationship to repo-local reference rollout
 

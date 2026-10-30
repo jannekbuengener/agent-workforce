@@ -30,10 +30,12 @@ Selective Capability / Skill Loading
 
 | Artifact | Role |
 |---|---|
-| [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](../routing/REPOSITORY_CAPABILITY_SOURCES.yml) | Hand-authored pointer contract: where authority lives |
+| [`routing/REPOSITORY_ROUTING.yml`](../routing/REPOSITORY_ROUTING.yml) | Stable routing topology: role, ownership, relationships, frontdoors |
+| [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](../routing/REPOSITORY_CAPABILITY_SOURCES.yml) | Hand-authored pointer contract: where capability/skill authority lives |
 | [`generated/PORTFOLIO_CAPABILITY_INDEX.yml`](../generated/PORTFOLIO_CAPABILITY_INDEX.yml) | Derived discovery view only; regenerate to update |
 | [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml) | Global workforce capability routing obligations |
 | [`portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md) | Monitored Scout portfolio membership only |
+| [`docs/REPOSITORY_ROUTING.md`](REPOSITORY_ROUTING.md) | Routing topology contract |
 
 ## Hard separations
 
@@ -44,7 +46,7 @@ global workforce capabilities != repository-local capabilities
 ```
 
 - **Monitored** membership is owned exclusively by `portfolio/REPOSITORIES.md`. This discovery contract stores only `routable`.
-- **Producer/consumer relationships** and portfolio role taxonomy are out of scope here; they belong to portfolio normalization work.
+- **Producer/consumer relationships** and portfolio role taxonomy belong to [`routing/REPOSITORY_ROUTING.yml`](../routing/REPOSITORY_ROUTING.yml), not this pointer contract.
 - **Runtime blocked state** does not belong in the durable source contract. Source `status` is only `active` or `planned`. An `active` source that cannot be resolved fails closed in validation.
 - **Fixtures** under `tests/fixtures/` exercise adapters only. They must never appear as production `repositories:` entries.
 
@@ -75,7 +77,7 @@ repositories:
         status: active
 ```
 
-No absolute workstation paths. No `monitored`, `relationships`, or premature role enums.
+No absolute workstation paths. No `monitored`, `relationships`, or role enums — those live in the routing topology.
 
 ### Supported source types
 
@@ -98,19 +100,20 @@ repository_capabilities: []   # repo-local capabilities/skills
 
 Do not hand-edit the index. Regenerate it after source or resolved artifact changes.
 
-Until portfolio normalization adds real repository sources, `repository_capabilities` may be empty while `global_capabilities` reflects the workforce registry. That split is intentional.
+`global_capabilities` and `repository_capabilities` remain separate. Real repository sources (for example Sample Brain JSON registry and Claire de Binare skill canon) populate `repository_capabilities` after regeneration against live checkouts.
 
 ## Commands
 
 Requires Python 3 and PyYAML (sole small optional/dev dependency; see [`requirements-dev.txt`](../requirements-dev.txt)).
 
 ```text
+python tools/check_repository_routing.py
 python tools/generate_portfolio_capability_index.py
 python tools/check_portfolio_capability_drift.py
-python -m unittest tools.tests.test_portfolio_capability_discovery -v
+python -m unittest tools.tests.test_portfolio_capability_discovery tools.tests.test_repository_routing -v
 ```
 
-Optional live checkout mapping:
+Optional live checkout mapping (sibling checkouts next to this repo are auto-discovered when omitted):
 
 ```text
 python tools/generate_portfolio_capability_index.py --repo-root owner/name=PATH
@@ -145,14 +148,8 @@ After discovering a relevant source pointer, read the target repository's local 
 
 This discovery contract owns where repository-local capability/skill authority can be found and how a compact derived index is produced. It does not replace requirement levels, relevance triggers, or blocked outcomes in the global registry.
 
-## Handoff for portfolio normalization
+## Relationship to repository routing
 
-Later portfolio work should:
+[`docs/REPOSITORY_ROUTING.md`](REPOSITORY_ROUTING.md) owns stable portfolio routing facts (system role, owns/does-not-own, relationships, frontdoors).
 
-1. add real portable repository entries to `routing/REPOSITORY_CAPABILITY_SOURCES.yml`;
-2. keep Sample Brain JSON-registry and Claire de Binare skill-canon models intact;
-3. derive monitored status from `portfolio/REPOSITORIES.md` instead of duplicating it;
-4. introduce producer/consumer relationships only when routing-relevant and evidence-backed;
-5. regenerate and drift-check the index after each source change.
-
-This issue's infrastructure is complete when adapters, validation, and the global/repository index split exist without requiring the full portfolio to be filled first.
+This discovery contract owns only capability/skill source pointers and the derived index. Repositories may be routable in the topology without a machine-readable capability source; those rows set `capability_source: null` and `capability_discovery: missing_machine_readable_source` instead of inventing adapters.
