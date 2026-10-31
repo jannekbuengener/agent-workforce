@@ -443,5 +443,189 @@ class ProductionConsumerValidationTests(unittest.TestCase):
         self.assertIn("validate_production_consumer_packs", src)
 
 
+class MetaEpicChildDeliveryCapabilityRoutingTests(unittest.TestCase):
+    """Issue #56: child delivery via capability id, not direct skill coupling."""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        cls.registry = lib.load_registry()
+        cls.sources = lib.load_sources()
+        cls.routing = lib.load_routing()
+        cls.pack = lib.load_yaml(
+            ROOT
+            / "docs"
+            / "skills"
+            / "cursor-meta-epic-executor"
+            / "consumer.yml"
+        )
+        cls.consumer = cls.pack["consumers"][0]
+
+    @classmethod
+    def _discovery_ids(cls) -> set[str]:
+        return lib.discoverable_skill_capability_ids(
+            repo_root=ROOT,
+            sources=cls.sources,
+        )
+
+    def _capability_refs(self) -> list[dict[str, Any]]:
+        refs: list[dict[str, Any]] = []
+        for field in ("requires_capabilities", "optional_capabilities"):
+            for ref in self.consumer.get(field) or []:
+                if isinstance(ref, dict):
+                    refs.append(ref)
+        return refs
+
+    def test_red_gap_machine_readable_child_delivery_dependency(self) -> None:
+        """Child delivery needs evidence-backed-delivery capability in consumer.yml."""
+        ids = {ref.get("id") for ref in self._capability_refs()}
+        self.assertIn(
+            "evidence-backed-delivery",
+            ids,
+            "cursor-meta-epic-executor must declare capability dependency "
+            "evidence-backed-delivery (not only SKILL.md prose)",
+        )
+
+    def test_child_delivery_dependency_is_conditional_relevance_id(self) -> None:
+        ebd = next(
+            ref
+            for ref in self._capability_refs()
+            if ref.get("id") == "evidence-backed-delivery"
+        )
+        self.assertEqual(ebd.get("requirement"), "REQUIRED")
+        self.assertEqual(ebd.get("relevance"), ["child_delivery"])
+
+    def test_child_delivery_relevant_resolves_capability(self) -> None:
+        resolved = lib.resolve_capability_dependencies(
+            self.consumer,
+            active_relevance={"child_delivery"},
+        )
+        self.assertIn("evidence-backed-delivery", resolved)
+
+    def test_no_child_delivery_does_not_force_dependency(self) -> None:
+        resolved = lib.resolve_capability_dependencies(
+            self.consumer,
+            active_relevance=set(),
+        )
+        self.assertNotIn("evidence-backed-delivery", resolved)
+        resolved_other = lib.resolve_capability_dependencies(
+            self.consumer,
+            active_relevance={"unrelated_relevance"},
+        )
+        self.assertNotIn("evidence-backed-delivery", resolved_other)
+
+    def test_dependency_uses_capability_id_not_provider_name(self) -> None:
+        ebd = next(
+            ref
+            for ref in self._capability_refs()
+            if ref.get("id") == "evidence-backed-delivery"
+        )
+        self.assertTrue(lib.CAPABILITY_ID_RE.fullmatch(str(ebd["id"])))
+        # No provider/plugin display-name coupling in structured fields.
+        for field in ("requires_capabilities", "optional_capabilities"):
+            for ref in self.consumer.get(field) or []:
+                self.assertNotIn("provider", ref)
+                self.assertNotIn("plugin", ref)
+                self.assertNotIn("skill", ref)
+
+    def test_provider_substitution_keeps_capability_identity(self) -> None:
+        """Capability id stays the dependency identity even if provider_kind differs."""
+        discovery_ids = self._discovery_ids()
+        self.assertIn("evidence-backed-delivery", discovery_ids)
+        # Simulate discovery reporting a different provider_kind for the same id.
+        fake_provider_kind = "contract"
+        dependency_id = "evidence-backed-delivery"
+        self.assertEqual(dependency_id, "evidence-backed-delivery")
+        self.assertNotEqual(fake_provider_kind, dependency_id)
+
+    def test_orchestrator_boundary_preserved(self) -> None:
+        self.assertEqual(self.consumer["kind"], "project_orchestrator")
+        self.assertIs(self.consumer["claims_global_routing"], False)
+        problems = lib.collect_consumer_pack_problems(
+            self.pack,
+            registry=self.registry,
+            sources=self.sources,
+            routing=self.routing,
+            extra_known_ids=self._discovery_ids(),
+        )
+        self.assertEqual(problems, [])
+        self.assertNotIn("SPECIALIST_OVERREACH", lib.problem_codes(problems))
+
+    def test_discovery_set_reuses_portfolio_skill_identity(self) -> None:
+        discovery_ids = self._discovery_ids()
+        self.assertIn("evidence-backed-delivery", discovery_ids)
+        self.assertIn("cursor-meta-epic-executor", discovery_ids)
+        # Must not invent a second identity rule — portfolio adapter is source.
+        import portfolio_capability_lib as portfolio
+
+        source = next(
+            s
+            for entry in self.sources["repositories"].values()
+            for s in entry["capability_sources"]
+            if s.get("type") == "skill_canon_dir" and s.get("status") == "active"
+        )
+        rows = portfolio.collect_rows_from_source(
+            repository="jannekbuengener/agent-workforce",
+            source=source,
+            root=ROOT,
+        )
+        portfolio_ids = {row.capability_id for row in rows}
+        self.assertTrue(discovery_ids >= portfolio_ids)
+
+    def test_invalid_relevance_id_fails_structurally(self) -> None:
+        pack = _pack_for_consumers(
+            _minimal_consumer(
+                id="bad-relevance",
+                requires_capabilities=[
+                    {
+                        "id": "reuse_before_build",
+                        "requirement": "DISCOVERY_REQUIRED",
+                        "relevance": ["Not A Stable Id"],
+                    }
+                ],
+            )
+        )
+        problems = lib.collect_consumer_pack_problems(
+            pack,
+            registry=self.registry,
+            sources=self.sources,
+            routing=self.routing,
+        )
+        self.assertIn("UNKNOWN_CAPABILITY", lib.problem_codes(problems))
+
+    def test_unknown_discovery_capability_still_fails_without_discovery_set(
+        self,
+    ) -> None:
+        pack = _pack_for_consumers(
+            _minimal_consumer(
+                id="unknown-local-cap",
+                requires_capabilities=[
+                    {
+                        "id": "evidence-backed-delivery",
+                        "requirement": "REQUIRED",
+                        "relevance": ["child_delivery"],
+                    }
+                ],
+            )
+        )
+        # Without discovery set, repo-local capability id is unknown.
+        problems = lib.collect_consumer_pack_problems(
+            pack,
+            registry=self.registry,
+            sources=self.sources,
+            routing=self.routing,
+            extra_known_ids=None,
+        )
+        self.assertIn("UNKNOWN_CAPABILITY", lib.problem_codes(problems))
+        # With discovery set, same id resolves.
+        ok = lib.collect_consumer_pack_problems(
+            pack,
+            registry=self.registry,
+            sources=self.sources,
+            routing=self.routing,
+            extra_known_ids=self._discovery_ids(),
+        )
+        self.assertEqual(ok, [])
+
+
 if __name__ == "__main__":
     unittest.main()

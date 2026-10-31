@@ -35,7 +35,11 @@ consumers:
       - research-only analysis without execution mandate
       - inventing the product goal
       - unclear target repository or authority
-    requires_capabilities: []
+    requires_capabilities:
+      - id: evidence-backed-delivery
+        requirement: REQUIRED
+        relevance:
+          - child_delivery
     optional_capabilities:
       - id: reuse_before_build
         requirement: DISCOVERY_REQUIRED
@@ -58,4 +62,18 @@ routing_regression_cases:
     consumer_id: cursor-meta-epic-executor
     type: should_not_trigger
     intent_summary: Fix a one-line typo in README with a clear single change.
+    expected: NO_TRIGGER
+  - id: child-delivery-resolves-evidence-backed-delivery
+    consumer_id: cursor-meta-epic-executor
+    type: dependency_case
+    intent_summary: >
+      Meta-Epic run contains child Issue→PR→Evidence→Merge delivery
+      (active relevance id child_delivery).
+    expected: RESOLVE_CAPABILITY
+  - id: analysis-without-child-delivery-no-forced-dependency
+    consumer_id: cursor-meta-epic-executor
+    type: should_not_trigger
+    intent_summary: >
+      Meta-Epic analysis/reconciliation run without child delivery
+      (no active relevance id child_delivery).
     expected: NO_TRIGGER
