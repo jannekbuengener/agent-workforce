@@ -1,0 +1,65 @@
+schema_version: 1
+purpose: >
+  Skill-colocated machine-readable consumer declaration for
+  evidence-backed-delivery. Not a new capabilities/consumers inventory tree.
+  Validated structurally against PLUGIN_SKILL_ROUTING_CONTRACT.md.
+consumers:
+  - id: evidence-backed-delivery
+    kind: project_orchestrator
+    intent: >
+      Apply the global Agent Workforce Issue→PR→Evidence→Merge→Close contract
+      with modality-matched, locator-checked, final-head-bound evidence and
+      fail-closed merge-order / owner gates without becoming a second router.
+    claims_global_routing: false
+    owns:
+      - global minimum delivery evidence and acceptance procedure
+      - Issue/PR contract field checks and acceptance verdicts for that run
+    does_not_own:
+      - global cross-repository capability matrix
+      - target repository product authority, CI, or merge rulesets
+      - Claire_de_Binare lane/lock/LR/trading/batch control plane
+      - inventing product goals or Meta-Epics
+      - ChatGPT private MCP as a worker dependency
+    triggers:
+      explicit:
+        - use evidence-backed-delivery
+        - required execution skill evidence-backed-delivery
+      semantic:
+        - deliver an issue with inspectable PR evidence bound to final head
+        - evidence by modality / merge order / issue close verification
+      dependency: []
+      authority:
+        - target work consumes Agent Workforce evidence-backed delivery contract
+    exclusions:
+      - inventing the product goal
+      - replacing target-repo merge authority
+      - building a second PR router or agent runtime
+      - unclear target repository or authority
+    requires_capabilities: []
+    optional_capabilities:
+      - id: reuse_before_build
+        requirement: DISCOVERY_REQUIRED
+      - id: deterministic_validation
+        requirement: PREFERRED
+    output: >
+      delivery receipt with issue/PR verdict, locator-checked evidence,
+      final-head binding, merge order, and residual work
+    exit: >
+      when delivery Exit is evidenced on live main or an explicit
+      HOLD/BLOCKED/AWAITING_OWNER verdict is returned
+    private_mcp: never_worker_dependency
+    repository_provider: jannekbuengener/agent-workforce
+
+capability_dependency_edges: []
+
+routing_regression_cases:
+  - id: should-trigger-explicit-delivery
+    consumer_id: evidence-backed-delivery
+    type: should_trigger
+    intent_summary: Required execution skill evidence-backed-delivery on Issue #43.
+    expected: TRIGGER
+  - id: should-not-trigger-invent-goal
+    consumer_id: evidence-backed-delivery
+    type: should_not_trigger
+    intent_summary: Invent a new product Meta-Epic goal from scratch with no target repo.
+    expected: NO_TRIGGER

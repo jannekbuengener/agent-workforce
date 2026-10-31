@@ -61,5 +61,6 @@ Live state decides what is still required.
 ## Related
 
 - Skill: [`docs/skills/cursor-meta-epic-executor/SKILL.md`](skills/cursor-meta-epic-executor/SKILL.md)
+- Child delivery contract: [`contracts/EVIDENCE_BACKED_DELIVERY_CONTRACT.md`](../contracts/EVIDENCE_BACKED_DELIVERY_CONTRACT.md) / [`docs/skills/evidence-backed-delivery/SKILL.md`](skills/evidence-backed-delivery/SKILL.md)
 - Consumer kind: `project_orchestrator` per [`contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md`](../contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md)
 - Distribution: [`docs/CURSOR_META_EPIC_EXECUTOR.md`](CURSOR_META_EPIC_EXECUTOR.md)

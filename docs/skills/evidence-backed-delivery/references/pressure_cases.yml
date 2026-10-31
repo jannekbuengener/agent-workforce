@@ -1,0 +1,409 @@
+schema_version: 1
+skill_id: evidence-backed-delivery
+purpose: >
+  Structured pressure cases for deterministic Layer-A contract tests of the
+  global evidence-backed delivery contract (#43). Not LLM prompts by themselves.
+
+locator_kinds:
+  - PR_EMBEDDED
+  - GITHUB_ATTACHMENT
+  - WORKFLOW_ARTIFACT
+  - STABLE_REVIEW_URL
+  - LOCAL_ONLY
+
+cases:
+  - id: ui_green_missing_screenshot
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      tests_green: true
+      human_perception_required: true
+      artifacts: []
+      head_sha: abc111
+      evidence_head_sha: null
+    expect:
+      verdict: BLOCKED_MISSING_EVIDENCE
+      merge_candidate: false
+
+  - id: ui_local_only_temp_path
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      tests_green: true
+      human_perception_required: true
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: LOCAL_ONLY
+          locator: "D:\\Temp\\ui-after.png"
+          head_sha: abc111
+      head_sha: abc111
+      evidence_head_sha: abc111
+    expect:
+      verdict: BLOCKED_MISSING_EVIDENCE
+      locator_kind: LOCAL_ONLY
+      merge_candidate: false
+
+  - id: ui_embedded_current_head
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      tests_green: true
+      human_perception_required: true
+      owner_acceptance_required: false
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: abc111
+          what_to_inspect: "primary workbench layout after theme change"
+      head_sha: abc111
+      evidence_head_sha: abc111
+      review_index_present: true
+      unresolved_must_fix: []
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      evidence_status: ACCEPTABLE
+      locator_kind: PR_EMBEDDED
+      merge_candidate: true
+      verdict: MERGE_CANDIDATE
+
+  - id: audio_unit_test_only
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: audio
+      tests_green: true
+      human_perception_required: true
+      artifacts:
+        - id: unit
+          modality: test
+          locator_kind: PR_EMBEDDED
+          locator: "test_dsp_gain PASSED"
+          head_sha: abc222
+      head_sha: abc222
+      evidence_head_sha: abc222
+    expect:
+      verdict: BLOCKED_MISSING_EVIDENCE
+      merge_candidate: false
+
+  - id: audio_with_audible_artifact
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: audio
+      tests_green: true
+      human_perception_required: true
+      owner_acceptance_required: false
+      artifacts:
+        - id: wav1
+          modality: audio
+          locator_kind: GITHUB_ATTACHMENT
+          locator: "https://github.com/org/repo/files/1/after.wav"
+          head_sha: abc222
+          what_to_inspect: "listen for click-free gain ramp"
+        - id: metrics
+          modality: measurement
+          locator_kind: PR_EMBEDDED
+          locator: "peak=-6.1dBFS"
+          head_sha: abc222
+      head_sha: abc222
+      evidence_head_sha: abc222
+      review_index_present: true
+      unresolved_must_fix: []
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      evidence_status: ACCEPTABLE
+      verdict: MERGE_CANDIDATE
+      merge_candidate: true
+
+  - id: stale_screenshot_after_ui_change
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      artifacts:
+        - id: shot_old
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![old](https://github.com/org/repo/assets/1/old.png)"
+          head_sha: aaa000
+          what_to_inspect: "layout"
+      head_sha: bbb111
+      evidence_head_sha: aaa000
+      commits_since_evidence:
+        - { sha: bbb111, touches_claim_surface: true, kind: ui }
+      carry_forward_justified: false
+    expect:
+      verdict: BLOCKED_STALE_EVIDENCE
+      merge_candidate: false
+
+  - id: docs_only_carry_forward
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: aaa000
+          what_to_inspect: "layout"
+      head_sha: ccc222
+      evidence_head_sha: aaa000
+      commits_since_evidence:
+        - { sha: ccc222, touches_claim_surface: false, kind: docs }
+      carry_forward_justified: true
+      carry_forward_reason: "docs-only README edit; no UI/QML/CSS touched"
+      review_index_present: true
+      tests_green: true
+      unresolved_must_fix: []
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+      owner_acceptance_required: false
+    expect:
+      evidence_status: CARRY_FORWARD_OK
+      verdict: MERGE_CANDIDATE
+      merge_candidate: true
+
+  - id: independent_prs_parallel
+    layer: A
+    behavioral_required: true
+    input:
+      prs:
+        - { id: "A", files: [a.py], depends_on: [], authority: module_a }
+        - { id: "B", files: [b.py], depends_on: [], authority: module_b }
+    expect:
+      relation: INDEPENDENT
+      parallel_prep_allowed: true
+      hold: null
+
+  - id: upstream_merge_invalidates_downstream
+    layer: A
+    behavioral_required: true
+    input:
+      prs:
+        - { id: "A", files: [shared_auth.py], depends_on: [], authority: auth, state: MERGED }
+        - { id: "B", files: [shared_auth.py, feature.py], depends_on: ["A"], authority: auth, state: OPEN }
+      upstream_merged: true
+      shared_authority_changed: true
+    expect:
+      relation: DOWNSTREAM_DEPENDENCY
+      parallel_prep_allowed: false
+      require_reconcile: true
+      evidence_action: REEVALUATE
+
+  - id: owner_visual_agent_self_pass
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      owner_acceptance_required: true
+      agent_declares_owner_pass: true
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: abc111
+          what_to_inspect: "hero layout"
+      head_sha: abc111
+      evidence_head_sha: abc111
+      tests_green: true
+      unresolved_must_fix: []
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      verdict: AWAITING_OWNER
+      merge_candidate: false
+      agent_may_self_pass_owner: false
+
+  - id: child_merged_parent_exit_open
+    layer: A
+    behavioral_required: true
+    input:
+      child_pr_merged: true
+      parent_meta_exit_evidenced: false
+      parent_issue_state: OPEN
+    expect:
+      parent_may_close: false
+      parent_issue_state: OPEN
+      residual_required: true
+
+  - id: green_tests_unresolved_must_fix
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: internal
+      tests_green: true
+      human_perception_required: false
+      artifacts:
+        - id: unit
+          modality: test
+          locator_kind: PR_EMBEDDED
+          locator: "unittest PASS"
+          head_sha: abc333
+      head_sha: abc333
+      evidence_head_sha: abc333
+      unresolved_must_fix: ["MUST_FIX: missing error path"]
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+      owner_acceptance_required: false
+    expect:
+      verdict: BLOCKED_REVIEW_FINDINGS
+      merge_candidate: false
+
+  - id: screenshot_dump_without_index
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      artifacts:
+        - { id: s1, modality: ui_visual, locator_kind: PR_EMBEDDED, locator: "img1", head_sha: abc111 }
+        - { id: s2, modality: ui_visual, locator_kind: PR_EMBEDDED, locator: "img2", head_sha: abc111 }
+        - { id: s3, modality: ui_visual, locator_kind: PR_EMBEDDED, locator: "img3", head_sha: abc111 }
+        - { id: s4, modality: ui_visual, locator_kind: PR_EMBEDDED, locator: "img4", head_sha: abc111 }
+        - { id: s5, modality: ui_visual, locator_kind: PR_EMBEDDED, locator: "img5", head_sha: abc111 }
+        - { id: s6, modality: ui_visual, locator_kind: PR_EMBEDDED, locator: "img6", head_sha: abc111 }
+      large_pack_without_index: true
+      review_index_present: false
+      head_sha: abc111
+      evidence_head_sha: abc111
+    expect:
+      verdict: CURRENT_PR_REWORK_REQUIRED
+      evidence_ux: REWORK_REQUIRED
+      merge_candidate: false
+
+  - id: bugfix_missing_before_fail
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: bugfix
+      require_before_fail: true
+      require_after_pass: true
+      artifacts:
+        - id: after
+          modality: bugfix_after
+          locator_kind: PR_EMBEDDED
+          locator: "repro now passes"
+          head_sha: abc444
+      head_sha: abc444
+      evidence_head_sha: abc444
+      tests_green: true
+    expect:
+      verdict: BLOCKED_MISSING_EVIDENCE
+      evidence_incomplete: true
+      merge_candidate: false
+
+  - id: incomplete_issue_contract
+    layer: A
+    behavioral_required: false
+    input:
+      issue:
+        intent: "fix delivery evidence"
+        goal: null
+        authority: "agent-workforce"
+        scope: "global skill"
+        constraints: []
+        non_goals: []
+        dependencies: []
+        acceptance_criteria: null
+        required_evidence: null
+        exit: null
+    expect:
+      issue_status: HOLD_ISSUE_CONTRACT_INCOMPLETE
+      implementation_authorized: false
+
+  - id: merge_order_unclear
+    layer: A
+    behavioral_required: false
+    input:
+      prs:
+        - { id: "A", files: [x.py], depends_on: ["B"], authority: shared }
+        - { id: "B", files: [x.py], depends_on: ["A"], authority: shared }
+    expect:
+      relation: MERGE_ORDER_UNCLEAR
+      hold: HOLD_MERGE_ORDER_UNCLEAR
+      parallel_prep_allowed: false
+
+  - id: tests_green_omitted_not_merge
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      owner_acceptance_required: false
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: abc111
+          what_to_inspect: "layout"
+      head_sha: abc111
+      evidence_head_sha: abc111
+      review_index_present: true
+      unresolved_must_fix: []
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      verdict: CURRENT_PR_REWORK_REQUIRED
+      merge_candidate: false
+      reason: tests_green_not_evidenced
+
+  - id: head_mismatch_empty_commits_stale
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      artifacts:
+        - id: shot_old
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![old](https://github.com/org/repo/assets/1/old.png)"
+          head_sha: aaa000
+          what_to_inspect: "layout"
+      head_sha: bbb111
+      evidence_head_sha: aaa000
+      commits_since_evidence: []
+      carry_forward_justified: false
+    expect:
+      verdict: BLOCKED_STALE_EVIDENCE
+      merge_candidate: false
+
+  - id: owner_gate_with_must_fix_precedence
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      owner_acceptance_required: true
+      agent_declares_owner_pass: false
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: abc111
+          what_to_inspect: "hero layout"
+      head_sha: abc111
+      evidence_head_sha: abc111
+      tests_green: true
+      unresolved_must_fix: ["MUST_FIX: accessibility contrast"]
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      verdict: BLOCKED_REVIEW_FINDINGS
+      merge_candidate: false
