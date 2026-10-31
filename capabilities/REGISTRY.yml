@@ -281,11 +281,13 @@ capabilities:
     requirement: REQUIRED
     description: >
       Produce the Head of Knowledge weekly Owner report under
-      docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md. Does not invent data-quality KPIs
-      without a reproducible method. Does not authorize generic Memory/Knowledge
-      writes, raw database admin, or target-repository product mutation.
-      Until the #73 contract body is complete, productive report generation
-      must fail closed rather than invent format or percentages.
+      docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md. Requires all six mandatory
+      sections, forbids inventing data-quality percentages without a
+      reproducible method_id, and keeps immediate escalation off the weekly
+      artifact. Does not authorize generic Memory/Knowledge writes, raw
+      database admin, or target-repository product mutation. Operational use
+      requires ACTIVE runtime; defining the contract does not activate the
+      employee.
     contract: docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md
     triggers:
       - produce weekly Head of Knowledge Owner report
