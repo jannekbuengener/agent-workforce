@@ -51,9 +51,12 @@ READ < OBSERVATION_WRITE < MANAGEMENT_WRITE < GITHUB_ISSUE_CREATE
 - Lifecycle gemäß Matrix transitionieren;
 - Work Items / PRs / Verification Results verlinken.
 
-### GitHub mutation (`improvement_github_issue_create`) — only under #51
+### GitHub mutation (`improvement_github_issue_create`)
 
-- genau ein Implementation-Issue im owning Repository, wenn alle Gates erfüllt sind;
+- genau ein Implementation-Issue im owning Repository, wenn alle Gates aus
+  [`docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md`](../docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md)
+  erfüllt sind;
+- bestehende aktive Work Items wiederverwenden; Create-Retries ohne Duplikat;
 - nie Produktcode/PRs aus diesem Rollenvertrag heraus erzeugen.
 
 ## Forbidden

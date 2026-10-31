@@ -177,8 +177,10 @@ substitutes for the REQUIRED improvement write capabilities
 (silent_substitution: false).
 
 GitHub issue handoff is intentionally a Workforce-owned contract capability, not
-an Agent Brain Memory write. Until issue #51 completes its gates, matching work
-must HOLD / GITHUB_ISSUE_CREATE_DEFERRED rather than create issues.
+an Agent Brain Memory write. Matching work must obey
+[`IMPROVEMENT_GITHUB_ISSUE_CREATE.md`](IMPROVEMENT_GITHUB_ISSUE_CREATE.md):
+fail closed on missing gates; reuse active work items; idempotent retries;
+never treat a closed GitHub issue as automatic `VERIFIED`.
 
 Role canon: [../agents/improvement-board-manager.md](../agents/improvement-board-manager.md).
 
