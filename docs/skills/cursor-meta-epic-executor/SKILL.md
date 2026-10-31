@@ -90,6 +90,24 @@ all Slices DONE ≠ Meta Goal PASS
 PR created/merged ≠ Meta Goal PASS
 ```
 
+### Slice Gate
+
+A **Slice** is a bounded execution unit toward the Meta Goal (one child,
+one coherent deliverable cluster, or one planned dependency cut).
+
+Before closing a slice as PASS:
+
+1. Every material step in the slice is `STEP_PASS` or
+   `STEP_SUPERSEDED_BY_LIVE_STATE`.
+2. Slice Expected Evidence from the plan is inspectable.
+3. Slice Boundaries / Non-goals held.
+4. If the slice used parallel lanes, Integration Gate already passed.
+5. Parent Meta Goal is re-evaluated; next slice is chosen from live state,
+   not from a stale script.
+
+Outcomes: `SLICE_PASS` | `SLICE_REWORK` | `SLICE_BLOCKED` |
+`SLICE_SUPERSEDED_BY_LIVE_STATE` | `SLICE_OWNER_DECISION_REQUIRED`.
+
 ### Lane / Multitask gates
 
 Each parallel lane declares `LANE_GOAL`, `LANE_EVIDENCE`, `LANE_BOUNDARY`,

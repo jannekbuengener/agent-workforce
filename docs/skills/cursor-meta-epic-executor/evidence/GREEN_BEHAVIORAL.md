@@ -23,7 +23,9 @@ GREEN agent with skill: opposite mutations; live board honored.
 
 ## Layer A
 
-`pytest tools/tests/test_meta_epic_executor.py` — all pressure cases match expect (see CI / local run).
+`pytest tools/tests/test_meta_epic_executor.py` — all pressure cases match
+expect (local run on this branch; workforce has no dedicated GitHub Actions
+workflow for this module yet).
 
 ## Verdict
 

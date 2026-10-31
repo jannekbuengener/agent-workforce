@@ -175,18 +175,7 @@ def evaluate_all(path: Path | None = None) -> list[dict[str, Any]]:
 
 def skill_mandates_material_step_gate(text: str | None = None) -> bool:
     body = text if text is not None else SKILL_MD.read_text(encoding="utf-8")
-    required = [
-        "Material Step Goal Gate",
-        "STEP_PASS",
-        "STEP_SUPERSEDED_BY_LIVE_STATE",
-        "Subtask DONE",
-        "plan before write",
-        "LIVE",
-        "SKILL_LEARNING_RECOMMENDATION",
-        "must not mutate itself",
-    ]
     lowered = body.lower()
-    # Keep case-flexible checks where headings vary
     checks = [
         "material step goal gate" in lowered,
         "STEP_PASS" in body,
@@ -196,5 +185,6 @@ def skill_mandates_material_step_gate(text: str | None = None) -> bool:
         "reconcile live" in lowered or "live state" in lowered,
         "SKILL_LEARNING_RECOMMENDATION" in body,
         "must not mutate itself" in lowered or "not mutate itself" in lowered,
+        "slice gate" in lowered or "slice_pass" in lowered,
     ]
-    return all(checks) and all(True for _ in required)
+    return all(checks)
