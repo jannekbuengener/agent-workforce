@@ -27,8 +27,8 @@ class KnowledgeDepartmentAuthorityTests(unittest.TestCase):
     def test_registry_encodes_knowledge_capabilities(self) -> None:
         self.assertTrue(authority.registry_encodes_knowledge_capabilities())
 
-    def test_employee_record_stays_planned_only(self) -> None:
-        self.assertTrue(authority.employee_record_authority_defined_not_activated())
+    def test_employee_record_encodes_founding_solo_capabilities(self) -> None:
+        self.assertTrue(authority.employee_record_encodes_founding_solo_capabilities())
 
     def test_authority_docs_present(self) -> None:
         self.assertTrue(authority.authority_docs_present())

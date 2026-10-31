@@ -209,16 +209,27 @@ def registry_encodes_knowledge_capabilities(
     )
 
 
-def employee_record_authority_defined_not_activated() -> bool:
+def employee_record_encodes_founding_solo_capabilities() -> bool:
+    """Authority IDs present regardless of lifecycle (activation owned by #71)."""
     text = EMPLOYEE_MD.read_text(encoding="utf-8")
     return all(
         [
-            "employment_state: PLANNED_ONLY" in text,
-            "runtime_exists: false" in text,
-            "AUTHORITY_DEFINED_NOT_ACTIVATED" in text,
             "knowledge_department_decision" in text,
             "knowledge_owner_report" in text,
             "improvement_management_write" in text,
+            "docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md" in text,
+            "self_grant_authority" in text,
+        ]
+    )
+
+
+def employee_record_authority_defined_not_activated() -> bool:
+    """Historical #70 helper: true only while still planned-only."""
+    text = EMPLOYEE_MD.read_text(encoding="utf-8")
+    return employee_record_encodes_founding_solo_capabilities() and all(
+        [
+            "employment_state: PLANNED_ONLY" in text,
+            "runtime_exists: false" in text,
             "active: false" in text,
         ]
     )
