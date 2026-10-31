@@ -128,3 +128,117 @@ capabilities:
         - BUILD_CUSTOM
       bounded: true
       automatic_mutation_authority: false
+
+  improvement_read:
+    requirement: PREFERRED
+    description: >
+      Read Improvement Blackboard records, observation history, dedupe
+      candidates, and relations without mutating blackboard state. Does not
+      authorize observation writes, management writes, general Agent Brain
+      Memory/Knowledge writes, or GitHub issue creation.
+    triggers:
+      - read open or active skill improvements
+      - inspect improvement observation history
+      - inspect improvement dedupe candidates or relations
+    exclusions:
+      - ordinary repository live-state inspection unrelated to the blackboard
+      - GitHub issue or pull-request truth as product authority
+      - general Agent Brain memory or knowledge retrieval outside improvements
+    tool:
+      name: Agent Brain
+      identity: jannekbuengener/agent-brain
+      upstream: https://github.com/jannekbuengener/agent-brain
+    availability:
+      require_available: false
+      require_authorized: true
+      silent_substitution: true
+
+  improvement_observation_write:
+    requirement: REQUIRED
+    description: >
+      Append Improvement Blackboard observations / evidence under the
+      Improvement Board Manager specialist. Not granted to Quality Scout,
+      Process Scout, or Workforce Supervisor. Not satisfied by
+      shared_context_evidence alone. Does not authorize management merges,
+      lifecycle transitions, general Memory/Knowledge writes, or GitHub issues.
+    triggers:
+      - record a skill-learning observation on the improvement blackboard
+      - append evidence to an existing improvement observation history
+    exclusions:
+      - Scout Health Book evidence comments
+      - Scout or Supervisor checkpoint updates
+      - general Agent Brain memory or knowledge writes
+      - improvement merge, priority, or lifecycle management
+      - GitHub issue creation
+    tool:
+      name: Agent Brain
+      identity: jannekbuengener/agent-brain
+      upstream: https://github.com/jannekbuengener/agent-brain
+    availability:
+      require_available: true
+      require_authorized: true
+      unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      silent_substitution: false
+
+  improvement_management_write:
+    requirement: REQUIRED
+    description: >
+      Authoritative Improvement Blackboard management writes: validate dedupe,
+      merge with audited lineage, set priority, transition lifecycle, link
+      related work, and record verification results. Authorized only for the
+      Improvement Board Manager specialist. Not granted to scouts or
+      Supervisor. Not satisfied by shared_context_evidence alone. Does not
+      authorize general Memory/Knowledge writes or GitHub issue creation.
+    triggers:
+      - validate improvement dedupe candidates
+      - merge improvements with audited lineage
+      - set or change improvement priority
+      - transition improvement lifecycle state
+      - link related improvements or work items
+      - record improvement verification results
+    exclusions:
+      - Scout advisory recommendations without blackboard management authority
+      - automatic follow-up issue creation by scouts or Supervisor
+      - general Agent Brain memory or knowledge writes
+      - skill-code mutation
+      - implementation pull-request creation
+      - GitHub issue creation (separate capability)
+    tool:
+      name: Agent Brain
+      identity: jannekbuengener/agent-brain
+      upstream: https://github.com/jannekbuengener/agent-brain
+    availability:
+      require_available: true
+      require_authorized: true
+      unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      silent_substitution: false
+
+  improvement_github_issue_create:
+    requirement: REQUIRED
+    description: >
+      Bounded creation of a GitHub implementation issue for a validated
+      Improvement in the owning repository. Separate from management write.
+      Authorized only for the Improvement Board Manager under the Workforce
+      contract stub docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md (issue #51).
+      Denied for Quality Scout, Process Scout, and Supervisor. Until #51 is
+      complete, hosts must HOLD rather than create issues.
+    contract: docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md
+    triggers:
+      - create GitHub implementation issue from a validated improvement
+      - hand off a planned improvement to owning-repository issue tracking
+    exclusions:
+      - Scout or Supervisor automatic follow-up issue creation
+      - management write without the separate issue-create capability
+      - issue creation when owning repository is ambiguous
+      - issue creation for unvalidated improvements
+      - implementation pull-request creation
+      - general Agent Brain memory or knowledge writes
+    availability:
+      require_available: true
+      require_authorized: true
+      unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      silent_substitution: false
+

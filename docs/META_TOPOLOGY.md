@@ -19,6 +19,7 @@ Owns:
 - workforce role contracts;
 - cross-repository workforce policy;
 - scout/supervisor authority boundaries;
+- bounded Improvement Board Manager governance and GitHub-issue routing policy for validated Improvements;
 - monitored-repository portfolio membership;
 - shared finding and Repo Health Book contracts;
 - workforce bootstrap/routing rules.
@@ -35,16 +36,24 @@ Does not own:
 
 Role: generic knowledge, context, evidence, decision, memory and retrieval infrastructure for agents.
 
-Owns product-neutral Agent Brain capabilities under its own repository canon.
+Owns product-neutral Agent Brain capabilities under its own repository canon, including the Improvement Blackboard implementation (contracts, observation/management ports, storage, projection).
 
 Does not own:
 
 - GitHub or repository live truth;
-- workforce identity, authority or routing policy;
+- workforce identity, authority or routing policy (including Board Manager role authorization);
 - product/application state in consumer repositories;
 - ARVP validation/evaluation contracts.
 
 Agent Brain is shared context/evidence infrastructure, not an implicit mandatory runtime dependency. Use it only when a target repository or authorized orchestration contract explicitly routes to it.
+
+Improvement Blackboard observation and management writes are Agent Brain domain
+capabilities routed by Workforce Capability IDs
+(improvement_observation_write, improvement_management_write). Workforce
+authorizes **who** may request those capabilities (Improvement Board Manager);
+Agent Brain owns the blackboard implementation. General Memory/Knowledge write
+authority is not implied. Quality Scout, Process Scout, and Supervisor remain
+denied for those write capabilities.
 
 ## METATOOLS
 
@@ -90,6 +99,9 @@ Rules:
 5. `arvp` supplies deterministic validation/evidence capabilities, not product ownership.
 6. No repository listed here becomes an implicit runtime dependency of another repository.
 7. Volatile facts such as branch SHAs, issue status, CI state or scheduler state do not belong in this topology contract.
+8. The Improvement Board Manager is a Workforce specialist role only; it does not
+   move product ownership into gent-workforce and does not grant scouts or the
+   Supervisor blackboard Management Write or GitHub Issue Create.
 
 ## Relationship to the monitored portfolio
 
