@@ -43,7 +43,8 @@ consumers:
         requirement: PREFERRED
     output: >
       delivery receipt with issue/PR verdict, locator-checked evidence,
-      final-head binding, merge order, and residual work
+      final-head binding, merge order, optional capability routing decisions
+      for matched PREFERRED capabilities, and residual work
     exit: >
       when delivery Exit is evidenced on live main or an explicit
       HOLD/BLOCKED/AWAITING_OWNER verdict is returned

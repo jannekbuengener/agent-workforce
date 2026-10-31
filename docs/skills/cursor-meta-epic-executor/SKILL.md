@@ -287,10 +287,19 @@ GOAL
 FINAL STATUS
 LIVE EXIT EVIDENCE
 WORK COMPLETED
+CAPABILITY ROUTING DECISIONS
 GATES PASSED / FAILED
 REMAINING BLOCKER (if any)
 SKILL LEARNING RECOMMENDATION
 ```
+
+`CAPABILITY ROUTING DECISIONS` records compact `PREFERRED_CAPABILITY_DECISION`
+entries only for materially matched `PREFERRED` capabilities declared by this
+consumer (today: `deterministic_validation`). Allowed decisions:
+`USED_PREFERRED`, `LOCAL_EQUIVALENT`, `NOT_USED_WITH_REASON`. Reasons are
+required for local-equivalent / non-use. Omit the section entirely when no
+preferred capability matched. Semantics:
+[`docs/CAPABILITY_ROUTING.md`](../../CAPABILITY_ROUTING.md).
 
 ## References
 

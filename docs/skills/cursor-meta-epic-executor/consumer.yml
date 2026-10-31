@@ -45,7 +45,9 @@ consumers:
         requirement: DISCOVERY_REQUIRED
       - id: deterministic_validation
         requirement: PREFERRED
-    output: run receipt with goal, status, live exit evidence, gates, learning
+    output: >
+      run receipt with goal, status, live exit evidence, optional capability
+      routing decisions for matched PREFERRED capabilities, gates, learning
     exit: when Meta-Epic Exit is evidenced or an explicit HOLD/BLOCKED code is returned
     private_mcp: never_worker_dependency
     repository_provider: jannekbuengener/agent-workforce

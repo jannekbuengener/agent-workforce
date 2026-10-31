@@ -144,6 +144,28 @@ Step Gate → Lane Gate → Integration Gate → Slice Gate → Meta Goal Gate
 Use this skill/contract for child Issue delivery, PR evidence, merge order,
 final-head evidence, and merge/close gates. Do not invent a parallel hierarchy.
 
+## Delivery receipt
+
+When this skill completes a delivery attempt, leave compact delivery evidence
+covering issue/PR verdict, locator-checked evidence, final-head binding, merge
+order, and residual work.
+
+If a declared `PREFERRED` capability materially matches for the run (today:
+`deterministic_validation` from [`consumer.yml`](consumer.yml)), also include:
+
+```text
+CAPABILITY ROUTING DECISIONS
+PREFERRED_CAPABILITY_DECISION
+Capability: <capability_id>
+Decision: USED_PREFERRED | LOCAL_EQUIVALENT | NOT_USED_WITH_REASON
+Reason: <required for LOCAL_EQUIVALENT and NOT_USED_WITH_REASON>
+```
+
+Omit `CAPABILITY ROUTING DECISIONS` entirely when no preferred capability
+matched. Do not emit `NO_MATCH` rows. Target-repo local twins remain valid
+`LOCAL_EQUIVALENT` routes. Semantics:
+[`docs/CAPABILITY_ROUTING.md`](../../CAPABILITY_ROUTING.md).
+
 ## Pressure cases
 
 Layer A twin: [`references/pressure_cases.yml`](references/pressure_cases.yml)

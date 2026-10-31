@@ -134,7 +134,7 @@ Reuse the existing Workforce levels only:
 |---|---|
 | `REQUIRED` | If applicable and provider/capability unavailable or unauthorized → **BLOCK**. No silent substitute. |
 | `DISCOVERY_REQUIRED` | Discovery must complete before the relevant build/routing decision. |
-| `PREFERRED` | Use when relevant, available, and authorized; justified local alternatives allowed. |
+| `PREFERRED` | Use when relevant, available, and authorized; justified local alternatives allowed. Matched decisions must be compactly visible on the consumer's existing receipt (`USED_PREFERRED` / `LOCAL_EQUIVALENT` / `NOT_USED_WITH_REASON`); unmatched preferred capabilities stay silent. Decision semantics are owned by [`docs/CAPABILITY_ROUTING.md`](../docs/CAPABILITY_ROUTING.md), not by this consumer contract. |
 | `ADVISORY` | Optional value; no blocked outcome by itself. |
 
 ## Trigger semantics
