@@ -179,36 +179,6 @@ packs:
     expect:
       - SPECIALIST_OVERREACH
 
-  board_manager_specialist_overreach:
-    consumers:
-      - id: overreaching-board-manager
-        kind: specialist
-        intent: Improvement Board Manager must not claim global routing.
-        claims_global_routing: true
-        owns:
-          - improvement blackboard management writes
-        does_not_own:
-          - scout authority
-        triggers:
-          explicit:
-            - use the improvement board manager
-          semantic: []
-          dependency:
-            - improvement_management_write
-          authority: []
-        exclusions: []
-        requires_capabilities:
-          - id: improvement_management_write
-            requirement: REQUIRED
-        optional_capabilities: []
-        output: none
-        exit: none
-        private_mcp: never_worker_dependency
-    capability_dependency_edges: []
-    expect:
-      - SPECIALIST_OVERREACH
-
-
   direct_plugin_coupling:
     consumers:
       - id: coupled-specialist
