@@ -132,13 +132,31 @@ class SkillDocumentTests(unittest.TestCase):
 class ConsumerPackTests(unittest.TestCase):
     def test_skill_colocated_consumer_validates(self) -> None:
         pack = yaml.safe_load(lib.CONSUMER_YML.read_text(encoding="utf-8"))
+        sources = routing.load_sources()
+        discovery_ids = routing.discoverable_skill_capability_ids(
+            repo_root=ROOT,
+            sources=sources,
+        )
         problems = routing.collect_consumer_pack_problems(
             pack,
             registry=routing.load_registry(),
-            sources=routing.load_sources(),
+            sources=sources,
             routing=routing.load_routing(),
+            extra_known_ids=discovery_ids,
         )
         self.assertEqual(problems, [])
+        consumer = pack["consumers"][0]
+        self.assertIs(consumer["claims_global_routing"], False)
+        self.assertEqual(
+            routing.resolve_capability_dependencies(
+                consumer, active_relevance={"child_delivery"}
+            ),
+            ["evidence-backed-delivery", "reuse_before_build", "deterministic_validation"],
+        )
+        without_child = routing.resolve_capability_dependencies(
+            consumer, active_relevance=set()
+        )
+        self.assertNotIn("evidence-backed-delivery", without_child)
 
 
 if __name__ == "__main__":

@@ -93,17 +93,24 @@ all Slices DONE ≠ Meta Goal PASS
 PR created/merged ≠ Meta Goal PASS
 ```
 
-### Child delivery (evidence-backed-delivery)
+### Child delivery (capability: evidence-backed-delivery)
 
-For child Issue → PR → Evidence → Merge Order → Merge → Verify main →
-Issue close, consume the global
-[`evidence-backed-delivery`](../evidence-backed-delivery/SKILL.md) skill and
+When a Meta-Epic run contains child Issue → PR → Evidence → Merge Order →
+Merge → Verify main → Issue close, the relevance id `child_delivery` is
+active. Resolve and use the canonical **capability**
+`evidence-backed-delivery` under Agent Workforce routing plus
+repository capability discovery and target-repository authority
+(see [`consumer.yml`](consumer.yml)). Then follow the **currently resolved
+provider** for that capability and
 [`EVIDENCE_BACKED_DELIVERY_CONTRACT`](../../../contracts/EVIDENCE_BACKED_DELIVERY_CONTRACT.md).
 
-Use it for modality-matched PR evidence, final-head binding, merge-order
-classification, and honest close/residual gates. Do **not** invent a second
-gate hierarchy; Step→Lane→Integration→Slice→Meta remains authoritative for
-Meta-Epic progress.
+Do **not** hard-wire a forever provider/skill name as the routing dependency
+identity. Capability ID ≠ provider. Use the resolved provider for
+modality-matched PR evidence, final-head binding, merge-order classification,
+and honest close/residual gates. Do **not** invent a second gate hierarchy;
+Step→Lane→Integration→Slice→Meta remains authoritative for Meta-Epic progress.
+Analysis/reconciliation runs without child delivery do **not** activate this
+dependency.
 
 ### Slice Gate
 
@@ -288,7 +295,7 @@ SKILL LEARNING RECOMMENDATION
 ## References
 
 - Meta-Epic field contract: [`docs/META_EPIC_CONTRACT.md`](../../META_EPIC_CONTRACT.md)
-- Child delivery: [`docs/skills/evidence-backed-delivery/SKILL.md`](../evidence-backed-delivery/SKILL.md)
+- Child delivery capability: `evidence-backed-delivery` (resolve via Workforce + discovery; current provider under [`docs/skills/evidence-backed-delivery/`](../evidence-backed-delivery/); contract [`EVIDENCE_BACKED_DELIVERY_CONTRACT`](../../../contracts/EVIDENCE_BACKED_DELIVERY_CONTRACT.md))
 - Pressure cases: [`references/pressure_cases.yml`](references/pressure_cases.yml)
 - Host visual evidence checklist: [`references/host_visual_evidence_checklist.md`](references/host_visual_evidence_checklist.md)
 - Distribution: [`docs/CURSOR_META_EPIC_EXECUTOR.md`](../../CURSOR_META_EPIC_EXECUTOR.md)
