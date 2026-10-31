@@ -31,9 +31,11 @@ replace target-repository authority.
 
 Planning that would **invent** a new Meta-Epic or Goal must first satisfy
 `AUTHORITY_RECONCILIATION_REQUIRED` in
-[`docs/WORKFORCE_POLICY.md`](WORKFORCE_POLICY.md#authority-reconciliation).
-The executor skill still does not invent Meta-Epics; it executes an already
-defined one after live reconcile.
+[`docs/WORKFORCE_POLICY.md`](WORKFORCE_POLICY.md#authority-reconciliation),
+including relevant local same-class precedent evaluation when deciding whether
+a new Meta-Epic is needed. Full procedure stays in Workforce Policy; this
+contract does not duplicate it. The executor skill still does not invent
+Meta-Epics; it executes an already defined one after live reconcile.
 
 ### Constraints
 

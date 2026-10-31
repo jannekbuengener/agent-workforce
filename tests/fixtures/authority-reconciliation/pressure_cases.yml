@@ -159,3 +159,149 @@ cases:
       requires_freshness_reconciliation: false
       overreach: true
       gate: AUTHORITY_RECONCILIATION_PASS
+
+  # Issue #69 — structural precedent + intent preservation (A–F)
+  - id: existing_owner_stops_without_precedents
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: meta_epic_candidate_clusters
+      candidate_analysis_requested: true
+      original_intent_preserved: true
+      local_precedent_status: NOT_EVALUATED
+      candidate_reconciliation_completed: false
+      existing_authorities:
+        - id: product_owner
+          kind: product_authority
+          owns_outcome: true
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: HOLD_PRECEDENT_EVALUATION_REQUIRED
+      decision: HOLD_PRECEDENT_EVALUATION_REQUIRED
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_HOLD
+
+  - id: candidate_belongs_to_existing_owner
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: cluster_already_owned_by_product
+      candidate_analysis_requested: true
+      original_intent_preserved: true
+      local_precedent_status: EVALUATED
+      candidate_reconciliation_completed: true
+      existing_authorities:
+        - id: product_owner
+          kind: product_authority
+          owns_outcome: true
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: UPDATE_EXISTING
+      decision: UPDATE_EXISTING
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_PASS
+
+  - id: genuine_structural_gap_after_precedents
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: cross_cutting_completion_gate_not_owned
+      candidate_analysis_requested: true
+      original_intent_preserved: true
+      local_precedent_status: EVALUATED
+      candidate_reconciliation_completed: true
+      existing_authorities:
+        - id: browser_epic
+          kind: epic
+          owns_outcome: partial
+          body_fully_read: true
+        - id: audio_epic
+          kind: epic
+          owns_outcome: partial
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: >
+        No existing owner can truthfully own the cross-cutting completion
+        gate without distorting browser-only or audio-only ownership.
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: true
+      preferred_decision: CREATE_NEW_AUTHORITY
+      decision: CREATE_NEW_AUTHORITY
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_PASS
+
+  - id: intent_collapsed_to_owner_cleanup
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: meta_epic_candidate_clusters
+      candidate_analysis_requested: true
+      original_intent_preserved: false
+      local_precedent_status: EVALUATED
+      candidate_reconciliation_completed: true
+      existing_authorities:
+        - id: product_owner
+          kind: product_authority
+          owns_outcome: true
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: INTENT_COLLAPSED_FAIL
+      decision: INTENT_COLLAPSED_FAIL
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_FAIL
+
+  - id: no_local_same_class_precedent
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: first_meta_epic_in_repo
+      candidate_analysis_requested: true
+      original_intent_preserved: true
+      local_precedent_status: NONE_FOUND
+      candidate_reconciliation_completed: true
+      existing_authorities: []
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: >
+        No existing durable owner can truthfully own the proposed
+        cross-cutting meta outcome; local same-class precedents NONE_FOUND
+        after bounded discovery.
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: true
+      preferred_decision: CREATE_NEW_AUTHORITY
+      decision: CREATE_NEW_AUTHORITY
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_PASS

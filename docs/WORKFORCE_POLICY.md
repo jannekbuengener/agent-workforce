@@ -74,7 +74,7 @@ Producer and planning flows that reach a structural decision after routing must 
 UNDERSTAND → VERIFY LIVE → ROUTE → AUTHORITY RECONCILIATION → DECIDE → …
 ```
 
-This gate prevents recommending, designing, or creating a new durable structuring authority when an existing canonical owner already owns the desired outcome or only needs update/reconciliation/linking. It does not replace target-repository authority and does not grant write permission.
+This gate prevents recommending, designing, or creating a new durable structuring authority when an existing canonical owner already owns the desired outcome or only needs update/reconciliation/linking. It also requires that structural candidate analysis preserve the original user question and evaluate relevant local same-class precedents as samples before a final create / reconcile / no-change decision. It does not replace target-repository authority and does not grant write permission.
 
 ### Relevance gate
 
@@ -89,24 +89,44 @@ Apply `AUTHORITY_RECONCILIATION_REQUIRED` when an agent considers recommending, 
 - Manager;
 - other durable organizational or planning owner structures.
 
-Do **not** inflate ordinary delivery work with this gate. Ordinary implementation children, small bugfix slices, documentation-only edits, and other bounded child work under an already-settled parent do not trigger a new authority-structure search merely because planning language appears in the request.
+Do **not** inflate ordinary delivery work with this gate. Ordinary implementation children, small bugfix slices, documentation-only edits, and other bounded child work under an already-settled parent do not trigger a new authority-structure search, same-class precedent ceremony, or candidate-reconciliation bureaucracy merely because planning language appears in the request.
 
 Reads remain relevance-gated. Do not inventory every parent or open issue in the portfolio solely because a planning ask arrived.
+
+### Preserve original structural intent
+
+When the user asks a structural candidate / clustering question (for example which open issues could justify a Goal or Meta-Epic), capture that original structural intent explicitly before reconciliation analysis.
+
+Reconciliation may change the **solution**. Reconciliation must not silently replace the **question** with a different task such as owner cleanup only.
+
+An existing owner is reconciliation evidence. Finding an existing owner must not automatically end structural candidate analysis or collapse the work into cleanup-only.
+
+### Local same-class precedents
+
+When the relevance gate matches and the ask is structural candidate analysis or create-new for a durable structure class, discover bounded relevant **same-class** local precedents in the target repository (Goals for Goal candidates, Epics for Epic candidates, Meta-Epics for Meta-Epic candidates, comparable roles for Manager/Coordinator candidates, comparable contracts for structural Contract candidates).
+
+- Read materially relevant samples fully enough to extract the recurring local structural pattern. Do not treat titles or issue-table placement as pattern evaluation.
+- Derive the pattern from real local examples. Do not impose a universal Meta-Epic template or import structure from other repositories unprompted.
+- Discovery stays bounded and relevance-gated. Do not load every historical artifact of the class.
+- If bounded discovery finds no relevant local same-class sample, record `NONE_FOUND` and continue using local authority plus the applicable contract. Absence of local samples is evidence, not an error, and must not block. `NONE_FOUND` means discovery ran; it does not mean discovery was skipped.
 
 ### Required order before CREATE NEW
 
 When the relevance gate matches, complete this order before any `CREATE_NEW_AUTHORITY` recommendation or creation:
 
-1. **Existing owner discovery** — identify existing authorities that already claim the desired outcome in whole or in part (for example Product Authority, Umbrella, Goal, Epic, Meta-Epic, Coordinator, Completion Gate, Parent Owner). Relevant candidates must be **fully read**. Title or search snippets alone are insufficient for the final create-new decision.
-2. **Scope overlap check** — state explicitly what the existing authority already owns and what would actually be new on the proposed owner. Thematic relatedness alone is not proof that authority is missing.
-3. **Freshness / delta reconciliation** — check chronology. An older parent plus a newer child, dependency, epic, or owner decision often requires reconciling the existing authority rather than inventing a new meta-owner. Default question: is the existing authority merely older than newer relevant decisions? If yes, evaluate update/reconcile first. A newer issue strand does not automatically justify a new meta-layer.
-4. **Update / reconcile / link test** — score these as real competing paths, not as a checklist mention:
+1. **Preserve original structural intent** — state the user's structural question when the ask is candidate analysis or create-new for a durable structure. Do not silently narrow it later.
+2. **Existing owner discovery** — identify existing authorities that already claim the desired outcome in whole or in part (for example Product Authority, Umbrella, Goal, Epic, Meta-Epic, Coordinator, Completion Gate, Parent Owner). Relevant candidates must be **fully read**. Title or search snippets alone are insufficient for the final create-new decision. Existing owner discovery alone does not satisfy the gate when same-class precedents or candidate clusters still need evaluation.
+3. **Local same-class precedent discovery and pattern extraction** — when structural candidate analysis or create-new for that class is in scope, evaluate relevant local same-class samples as samples and extract the local pattern. If none exist after bounded discovery, record `NONE_FOUND` and continue.
+4. **Candidate / cluster fit and candidate reconciliation** — for each serious structural candidate, reconcile against the local pattern and existing authority. An overarching existing owner must not globally terminate all candidate evaluation. Each material candidate gets its own outcome among the allowed decisions below.
+5. **Scope overlap check** — state explicitly what the existing authority already owns and what would actually be new on the proposed owner. Thematic relatedness alone is not proof that authority is missing.
+6. **Freshness / delta reconciliation** — check chronology. An older parent plus a newer child, dependency, epic, or owner decision often requires reconciling the existing authority rather than inventing a new meta-owner. Default question: is the existing authority merely older than newer relevant decisions? If yes, evaluate update/reconcile first. A newer issue strand does not automatically justify a new meta-layer.
+7. **Update / reconcile / link test** — score these as real competing paths, not as a checklist mention:
    - `UPDATE_EXISTING`
    - `RECONCILE_EXISTING`
    - `LINK_EXISTING`
    - `NO_STRUCTURAL_CHANGE`
-5. **Missing-authority proof** — name the necessary outcome/scope that **no** existing authority can truthfully own without ownership distortion.
-6. **Create new authority** — only if step 5 proves a real ownership gap.
+8. **Missing-authority proof** — name the necessary outcome/scope that **no** existing authority can truthfully own without ownership distortion.
+9. **Create new authority** — only if step 8 proves a real ownership gap.
 
 Default when the gap cannot be proven:
 
@@ -125,7 +145,7 @@ NO_STRUCTURAL_CHANGE
 CREATE_NEW_AUTHORITY   # only with documented missing-authority proof
 ```
 
-Fail closed on premature create-new behavior: designing a new Epic/Meta-Epic/Goal first and reconciling afterward; mentioning an existing owner without comparing scopes; skipping update/link/no-change as real alternatives; or recommending create-new from thematic clustering alone.
+Fail closed on premature create-new behavior: designing a new Epic/Meta-Epic/Goal first and reconciling afterward; mentioning an existing owner without comparing scopes; skipping update/link/no-change as real alternatives; recommending create-new from thematic clustering alone; collapsing a structural candidate question into owner-cleanup-only after finding an existing owner; or skipping same-class precedent evaluation when relevant local samples exist.
 
 ### Relationship to issue creation
 
