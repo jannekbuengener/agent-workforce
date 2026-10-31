@@ -4,10 +4,6 @@
 
 V1.1 contains exactly two advisory scouts: Quality Scout and Process Scout. The organization grows only from observed recurring work.
 
-Separately, and only by explicit policy change, Agent Workforce may authorize a
-bounded specialist such as the Improvement Board Manager. Specialists do not
-replace or promote the advisory scouts; scout V1.1 authority remains unchanged.
-
 A scheduled run may shallow-preflight all in-scope repositories but deep-inspects exactly one repository.
 
 Portfolio membership and baseline cardinality are derived from [`../portfolio/REPOSITORIES.md`](../portfolio/REPOSITORIES.md). Each active scout requires one initial baseline for every current in-scope repository; no fixed repository count is part of the policy contract.
@@ -67,49 +63,6 @@ Use a cheap preflight before deeper inspection. No deep audit is justified when 
 Allowed: read/analyze live state, append evidence-backed Health Book observations, recommend follow-up work, escalate uncertainty, and create/update only the acting Scout's own checkpoint comment as defined by `CHECKPOINT_CONTRACT.md`.
 
 Forbidden: product-code mutation, implementation PRs, governance changes, secret changes, specialist-agent creation, automatic follow-up issue creation, direct pushes to protected/default branches, or creating a second mutable runtime-state mechanism.
-
-
-Scout and Supervisor V1.1 authority is intentionally unchanged by specialist
-authorization below. Quality Scout, Process Scout, and Workforce Supervisor gain
-**no** Improvement Blackboard Observation Write, Management Write, or GitHub
-Issue Create authority from the Board Manager role.
-
-## Improvement Board Manager (specialist)
-
-Canonical role: [../agents/improvement-board-manager.md](../agents/improvement-board-manager.md).
-
-The Improvement Board Manager is an authorized specialist
-(claims_global_routing: false) for the Skill Improvement Blackboard. It is not
-a second global router, not a Repo Manager, and not a general Agent Brain
-Memory/Knowledge writer.
-
-Authority grows capability-by-capability only:
-
-`	ext
-READ                      → improvement_read
-OBSERVATION_WRITE         → improvement_observation_write
-MANAGEMENT_WRITE          → improvement_management_write
-GITHUB_ISSUE_CREATE       → improvement_github_issue_create  (#51 contract)
-`
-
-shared_context_evidence alone does **not** authorize Observation Write,
-Management Write, or GitHub Issue Create on the Improvement Blackboard.
-
-Allowed for the Board Manager within blackboard scope when the matching
-Capability ID is available and authorized: read improvements and evidence;
-append observations; validate dedupe; merge with audited lineage; set priority;
-transition lifecycle with evidence; link related work; record verification.
-
-GitHub implementation-issue creation requires the separate Capability ID
-improvement_github_issue_create and [IMPROVEMENT_GITHUB_ISSUE_CREATE.md](IMPROVEMENT_GITHUB_ISSUE_CREATE.md)
-(workforce issue #51). Until that contract's gates are complete → HOLD.
-
-Forbidden for the Board Manager: expanding Scout/Supervisor authority; overriding
-target-repository ownership; inventing routing when the owner is unclear;
-auto-merging when improvement identity is ambiguous; general Agent Brain
-Memory/Knowledge writes; skill-code mutation; implementation PRs from this role
-contract; secrets/governance/protected-branch mutation; creating new specialist
-roles; inventing a second mutable workforce runtime database for blackboard state.
 
 ## Authority reconciliation
 
@@ -180,7 +133,7 @@ When issue creation is already authorized and the proposed issue would itself be
 
 ## GitHub issue creation
 
-This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1.1 prohibition on automatic follow-up issue creation for Quality Scout, Process Scout, or Workforce Supervisor. The Improvement Board Manager may create implementation issues only when Capability ID improvement_github_issue_create and issue #51 gates are satisfied.
+This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1.1 prohibition on automatic follow-up issue creation.
 
 When the proposed issue is a durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent owner structure), complete [`Authority reconciliation`](#authority-reconciliation) first. Ordinary implementation or bugfix issues under an existing parent do not inherit that gate.
 
@@ -218,11 +171,6 @@ V1.1 has no dedicated runtime database and no committed `last_run` ledger. Durab
 
 Create a future manager or specialist only when recurring evidence shows sustained coordination work, repeated specialist judgment, recurring manual/agent tasks, ownership bottlenecks, or repeated failures that deterministic automation cannot solve more cheaply and reliably.
 
-The Improvement Board Manager is the first evidence-backed specialist authorized
-under this rule for Skill-Learning blackboard consolidation. Its existence does
-not auto-promote scouts and does not grant other roles Management Write or
-GitHub Issue Create.
-
 No role gains write authority automatically from age, run count, or personality.
 
 ## Improvement Board Manager (bounded specialist)
@@ -232,6 +180,6 @@ Canonical role: [`agents/improvement-board-manager.md`](../agents/improvement-bo
 V1.1 Quality Scout, Process Scout, and Supervisor remain advisory for follow-up issue creation. This specialist is the **only** workforce role authorized for:
 
 1. `improvement_management_write` on the Agent Brain Improvement Blackboard;
-2. `improvement_github_issue_create` under the bounded routing contract (issue #51 / `docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md` when present).
+2. `improvement_github_issue_create` under the bounded routing contract (`docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md` / issue #51).
 
 It does **not** receive general Agent Brain Memory/Knowledge write authority, does not become a `global_router`, and does not create a second mutable workforce runtime database. Capability IDs live in [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml).
