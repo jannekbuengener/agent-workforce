@@ -195,3 +195,43 @@ cases:
       allowed: false
       outcome: DENIED_WRONG_CAPABILITY
       gate: SHARED_CONTEXT_INSUFFICIENT
+
+  - id: denied_imaginary_dieter_approval_while_planned_only
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+      claims_dieter_approval: true
+      dieter_employment_state: PLANNED_ONLY
+      dieter_runtime_exists: false
+    expect:
+      allowed: false
+      outcome: DENIED_IMAGINARY_MANAGER_APPROVAL
+      gate: IMAGINARY_MANAGER_APPROVAL
+
+  - id: allowed_board_manager_without_dieter_approval_while_planned
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+      claims_dieter_approval: false
+      dieter_employment_state: PLANNED_ONLY
+      dieter_runtime_exists: false
+    expect:
+      allowed: true
+      outcome: MANAGEMENT_APPLIED
+      gate: BOARD_MANAGER_MANAGEMENT_ALLOWED

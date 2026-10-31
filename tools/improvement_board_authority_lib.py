@@ -83,7 +83,24 @@ def evaluate_case(
     claims_global = bool(data.get("claims_global_routing"))
     general_memory = bool(data.get("general_memory_write"))
     github_ready = bool(data.get("github_issue_contract_ready"))
+    claims_dieter_approval = bool(data.get("claims_dieter_approval"))
+    dieter_state = str(data.get("dieter_employment_state") or "")
+    dieter_runtime = data.get("dieter_runtime_exists")
     expected_cap = TIER_TO_CAPABILITY.get(tier)
+
+    if claims_dieter_approval and (
+        dieter_state != "ACTIVE" or dieter_runtime is False
+    ):
+        actual.update(
+            allowed=False,
+            outcome="DENIED_IMAGINARY_MANAGER_APPROVAL",
+            gate="IMAGINARY_MANAGER_APPROVAL",
+        )
+        actual["matches_expect"] = all(
+            actual.get(k) == expect.get(k) for k in expect
+        )
+        actual["expect"] = expect
+        return actual
 
     if claims_global:
         actual.update(
@@ -242,6 +259,8 @@ def policy_encodes_board_manager() -> bool:
             "claims_global_routing: false" in role,
             "HOLD" in role,
             "Memory" in role or "memory" in role.lower(),
+            "reports_to: workforce.employee.dieter-datenbank.v1" in role,
+            "IMAGINARY_MANAGER_APPROVAL" in role,
             "Improvement Board Manager" in topology,
             "improvement_management_write" in routing
             or "Improvement Blackboard" in routing,

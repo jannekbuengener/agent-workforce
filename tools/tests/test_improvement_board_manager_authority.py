@@ -20,6 +20,7 @@ REQUIRED_BEHAVIORAL = {
     "denied_ambiguous_routing",
     "denied_specialist_overreach",
     "allowed_board_manager_management",
+    "denied_imaginary_dieter_approval_while_planned_only",
 }
 
 
@@ -160,6 +161,29 @@ class ImprovementBoardPressureCaseTests(unittest.TestCase):
         self.assertTrue(authority.registry_encodes_improvement_capabilities())
         self.assertTrue(authority.policy_encodes_board_manager())
         self.assertTrue(authority.scouts_remain_advisory_unchanged())
+
+    def test_denied_imaginary_dieter_approval_while_planned_only(self) -> None:
+        pack = authority.load_pressure_cases()
+        case = next(
+            c
+            for c in pack["cases"]
+            if c["id"] == "denied_imaginary_dieter_approval_while_planned_only"
+        )
+        result = authority.evaluate_case(case, pack=pack)
+        self.assertTrue(result["matches_expect"])
+        self.assertFalse(result["allowed"])
+        self.assertEqual(result["gate"], "IMAGINARY_MANAGER_APPROVAL")
+
+    def test_board_manager_operable_without_dieter_while_planned(self) -> None:
+        pack = authority.load_pressure_cases()
+        case = next(
+            c
+            for c in pack["cases"]
+            if c["id"] == "allowed_board_manager_without_dieter_approval_while_planned"
+        )
+        result = authority.evaluate_case(case, pack=pack)
+        self.assertTrue(result["matches_expect"])
+        self.assertTrue(result["allowed"])
 
 
 if __name__ == "__main__":
