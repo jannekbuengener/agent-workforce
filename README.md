@@ -119,6 +119,15 @@ The canonical decision procedure is [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BE
 
 Discovery can conclude `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM`. A discovery outcome is evidence for the engineering decision; it does not itself authorize dependency installation or repository mutation.
 
+## Skill-TDD (RED fixture independence)
+
+When authoring or changing workforce skills, RED pressure fixtures must not
+pre-supply the behavior under test. Soft vs adversarial lanes and RED
+outcomes (`RED_FAIL_OBSERVED`, `RED_PASS_EXISTING_BEHAVIOR`,
+`RED_FIXTURE_INVALID`, `RED_INCONCLUSIVE`) are defined by
+[`contracts/SKILL_TDD_RED_FIXTURE_INDEPENDENCE_CONTRACT.md`](contracts/SKILL_TDD_RED_FIXTURE_INDEPENDENCE_CONTRACT.md)
+and the front door [`docs/SKILL_TDD.md`](docs/SKILL_TDD.md).
+
 ## External references
 
 The canonical semantics are [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](contracts/EXTERNAL_REFERENCE_CONTRACT.md). A small shared discovery/reference catalog lives at [`references/CATALOG.yml`](references/CATALOG.yml), and [`templates/EXTERNAL_REFERENCE_INDEX.md`](templates/EXTERNAL_REFERENCE_INDEX.md) defines the default repo-local manifest shape.
@@ -158,6 +167,7 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 - [Repository capability sources](routing/REPOSITORY_CAPABILITY_SOURCES.yml)
 - [Portfolio capability index](generated/PORTFOLIO_CAPABILITY_INDEX.yml)
 - [Reuse before build](docs/REUSE_BEFORE_BUILD.md)
+- [Skill-TDD / RED fixture independence](docs/SKILL_TDD.md)
 - [External reference contract](contracts/EXTERNAL_REFERENCE_CONTRACT.md)
 - [Shared reference catalog](references/CATALOG.yml)
 - [External reference manifest template](templates/EXTERNAL_REFERENCE_INDEX.md)

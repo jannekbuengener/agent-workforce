@@ -55,3 +55,8 @@ Expected future behavior:
 ### Run A (exploratory — not the RED proof)
 
 Agent `a3a0906c-0e90-4b63-979a-57a4f600e1c9` HOLDed when the Meta-Epic fixture itself already spelled settle / min-geometry / no-auto-judge rules. That shows fixture-authored constraints can mask skill gaps; Run B removes those from META_EPIC and relies on skill silence + operator velocity.
+
+Generic classification (post-#48): Run A is `RED_FIXTURE_INVALID` under
+[`contracts/SKILL_TDD_RED_FIXTURE_INDEPENDENCE_CONTRACT.md`](../../../../contracts/SKILL_TDD_RED_FIXTURE_INDEPENDENCE_CONTRACT.md)
+— the fixture pre-supplied the behavior under test. See also
+`docs/skill-tdd/references/pressure_cases.yml` → `historical_44_run_a_fixture_leak`.
