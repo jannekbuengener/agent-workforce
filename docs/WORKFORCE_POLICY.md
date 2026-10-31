@@ -133,7 +133,7 @@ When issue creation is already authorized and the proposed issue would itself be
 
 ## GitHub issue creation
 
-This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1.1 prohibition on automatic follow-up issue creation.
+This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1.1 prohibition on automatic follow-up issue creation by scouts. The bounded Improvement Board Manager exception for validated Improvements is defined only by [`IMPROVEMENT_GITHUB_ISSUE_CREATE.md`](IMPROVEMENT_GITHUB_ISSUE_CREATE.md).
 
 When the proposed issue is a durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent owner structure), complete [`Authority reconciliation`](#authority-reconciliation) first. Ordinary implementation or bugfix issues under an existing parent do not inherit that gate.
 
@@ -180,6 +180,6 @@ Canonical role: [`agents/improvement-board-manager.md`](../agents/improvement-bo
 V1.1 Quality Scout, Process Scout, and Supervisor remain advisory for follow-up issue creation. This specialist is the **only** workforce role authorized for:
 
 1. `improvement_management_write` on the Agent Brain Improvement Blackboard;
-2. `improvement_github_issue_create` under the bounded routing contract (`docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md` / issue #51).
+2. `improvement_github_issue_create` under the bounded routing contract [`docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md`](IMPROVEMENT_GITHUB_ISSUE_CREATE.md).
 
 It does **not** receive general Agent Brain Memory/Knowledge write authority, does not become a `global_router`, and does not create a second mutable workforce runtime database. Capability IDs live in [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml).

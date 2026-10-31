@@ -1,0 +1,264 @@
+schema_version: 1
+invariant_id: IMPROVEMENT_GITHUB_ISSUE_CREATE_ROUTING
+purpose: >
+  Deterministic Layer-A pressure cases for bounded GitHub Implementation-Issue
+  routing from validated Improvements (#51). Covers allowed create, duplicate
+  retry, existing issue reuse, ambiguous owner HOLD, unvalidated deny, denied
+  target authority, and scout deny — without a second workforce runtime DB.
+
+capability_id: improvement_github_issue_create
+authorized_role: improvement_board_manager
+
+lineage_fields: &lineage_complete
+  improvement_id: imp-51-demo
+  root_cause_or_problem: Routing contract was stub-only and deferred creates.
+  evidence_summary: Issue #51 acceptance + parent #50 governance on main.
+  recommended_change: Expand IMPROVEMENT_GITHUB_ISSUE_CREATE.md and Layer-A twin.
+  expected_benefit: Validated improvements become owned GitHub work items safely.
+  scope_owner: jannekbuengener/agent-workforce
+  acceptance_or_verification: Unit pressure cases green; contract ACTIVE.
+  improvement_record_ref: blackboard://improvements/imp-51-demo
+  closed_not_verified_notice: >
+    Closing this GitHub issue does not automatically mark the Improvement VERIFIED.
+
+cases:
+  - id: allowed_create
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: VALIDATED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-1
+      known_work_items: []
+      would_create_issue_ref: github.com/jannekbuengener/agent-workforce/issues/NEU
+      body_fields: *lineage_complete
+    expect:
+      allowed: true
+      created: true
+      reused: false
+      outcome: GITHUB_ISSUE_CREATED
+      gate: BOARD_MANAGER_GITHUB_ALLOWED
+
+  - id: duplicate_retry
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: VALIDATED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-1
+      known_work_items:
+        - improvement_id: imp-51-demo
+          owning_repo: agent-workforce
+          state: open
+          create_operation_id: op-create-imp-51-demo-1
+          issue_ref: github.com/jannekbuengener/agent-workforce/issues/99
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      reused: true
+      outcome: IDEMPOTENT_RETRY_NO_DUPLICATE
+      gate: CREATE_OPERATION_ALREADY_APPLIED
+      issue_ref: github.com/jannekbuengener/agent-workforce/issues/99
+
+  - id: existing_issue_reuse
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: PLANNED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-2
+      known_work_items:
+        - improvement_id: imp-51-demo
+          owning_repo: agent-workforce
+          state: open
+          create_operation_id: op-other
+          issue_ref: github.com/jannekbuengener/agent-workforce/issues/88
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      reused: true
+      outcome: REUSED_EXISTING_WORK_ITEM
+      gate: ACTIVE_WORK_ITEM_EXISTS
+      issue_ref: github.com/jannekbuengener/agent-workforce/issues/88
+
+  - id: ambiguous_owner_hold
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: VALIDATED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: false
+      owning_repo: ""
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-3
+      known_work_items: []
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      outcome: HOLD
+      gate: HOLD_OWNER_AMBIGUOUS
+
+  - id: unvalidated_improvement_denied
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: RECURRING
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-4
+      known_work_items: []
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      outcome: DENIED_UNVALIDATED_IMPROVEMENT
+      gate: LIFECYCLE_BELOW_VALIDATED
+
+  - id: denied_target_authority
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: VALIDATED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: private-product
+      work_concrete: true
+      target_authority_allows_issue_create: false
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-5
+      known_work_items: []
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      outcome: DENIED_TARGET_AUTHORITY
+      gate: TARGET_ISSUE_CREATE_FORBIDDEN
+
+  - id: scout_denied
+    layer: A
+    behavioral_required: true
+    input:
+      role: quality_scout
+      capability_id: improvement_github_issue_create
+      lifecycle_state: VALIDATED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-6
+      known_work_items: []
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      outcome: DENIED_ROLE_LACKS_CAPABILITY
+      gate: SCOUT_WRITE_DENIED
+
+  - id: closed_issue_not_verified
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      capability_id: improvement_github_issue_create
+      lifecycle_state: IMPLEMENTED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-7
+      known_work_items:
+        - improvement_id: imp-51-demo
+          owning_repo: agent-workforce
+          state: closed
+          create_operation_id: op-old
+          issue_ref: github.com/jannekbuengener/agent-workforce/issues/77
+      would_create_issue_ref: github.com/jannekbuengener/agent-workforce/issues/NEU2
+      body_fields: *lineage_complete
+      closed_issue: true
+      verified_evidence: false
+    expect:
+      allowed: true
+      created: true
+      outcome: GITHUB_ISSUE_CREATED
+      gate: BOARD_MANAGER_GITHUB_ALLOWED
+      closed_implies_verified: false
+
+  - id: supervisor_denied
+    layer: A
+    behavioral_required: true
+    input:
+      role: supervisor
+      capability_id: improvement_github_issue_create
+      lifecycle_state: VALIDATED
+      improvement_id: imp-51-demo
+      improvement_identity_clear: true
+      owning_repo_clear: true
+      owning_repo: agent-workforce
+      work_concrete: true
+      target_authority_allows_issue_create: true
+      title_follows_german_policy: true
+      claims_global_routing: false
+      create_operation_id: op-create-imp-51-demo-8
+      known_work_items: []
+      body_fields: *lineage_complete
+    expect:
+      allowed: false
+      created: false
+      outcome: DENIED_ROLE_LACKS_CAPABILITY
+      gate: SCOUT_WRITE_DENIED

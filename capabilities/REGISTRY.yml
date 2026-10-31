@@ -221,9 +221,11 @@ capabilities:
       Bounded creation of a GitHub implementation issue for a validated
       Improvement in the owning repository. Separate from management write.
       Authorized only for the Improvement Board Manager under the Workforce
-      contract stub docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md (issue #51).
-      Denied for Quality Scout, Process Scout, and Supervisor. Until #51 is
-      complete, hosts must HOLD rather than create issues.
+      contract docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md. Denied for Quality
+      Scout, Process Scout, and Supervisor. Fail closed on ambiguous owner,
+      unvalidated lifecycle, missing lineage, denied target authority, or
+      duplicate/active work items; closed GitHub issues are not automatic
+      VERIFIED.
     contract: docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md
     triggers:
       - create GitHub implementation issue from a validated improvement
