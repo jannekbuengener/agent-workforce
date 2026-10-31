@@ -28,12 +28,15 @@ From unstructured ideas, problems, issues, or goals:
 understand
 → verify live truth
 → resolve owner / repo / capability
+→ authority reconciliation
 → decide
 → plan smallest useful slice
 → delegate or execute
 → validate
 → close
 ```
+
+When a new durable Goal / Epic / Meta-Epic / Coordinator-style authority is under consideration, follow live `docs/WORKFORCE_POLICY.md#authority-reconciliation` before deciding to create one.
 
 Optimize for value, leverage, speed, low unnecessary complexity, and durable evidence — not for activity.
 

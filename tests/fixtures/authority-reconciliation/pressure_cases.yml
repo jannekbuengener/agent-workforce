@@ -1,0 +1,161 @@
+schema_version: 1
+invariant_id: AUTHORITY_RECONCILIATION_REQUIRED
+purpose: >
+  Deterministic Layer-A pressure cases for authority reconciliation before
+  CREATE_NEW_AUTHORITY. Not LLM prompts by themselves.
+
+cases:
+  - id: existing_authority_owns_outcome
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: browser_live_kit_diagnostics_audio_product_coherence
+      existing_authorities:
+        - id: product_authority
+          kind: product_authority
+          owns_outcome: true
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: UPDATE_EXISTING
+      decision: UPDATE_EXISTING
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_PASS
+
+  - id: newer_delta_requires_freshness_reconciliation
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: product_umbrella_coherence
+      existing_authorities:
+        - id: parent_product
+          kind: product_authority
+          owns_outcome: partial
+          body_fully_read: true
+          updated_at: "2026-01-01"
+        - id: newer_audio_owner
+          kind: epic
+          owns_outcome: partial
+          body_fully_read: true
+          updated_at: "2026-10-01"
+      bodies_fully_read: true
+      newer_relevant_delta: true
+      alternatives_scored: true
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: RECONCILE_EXISTING
+      decision: RECONCILE_EXISTING
+      requires_freshness_reconciliation: true
+      gate: AUTHORITY_RECONCILIATION_PASS
+
+  - id: genuine_missing_authority
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: cross_cutting_completion_gate_not_owned
+      existing_authorities:
+        - id: browser_epic
+          kind: epic
+          owns_outcome: partial
+          body_fully_read: true
+        - id: audio_epic
+          kind: epic
+          owns_outcome: partial
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: >
+        No existing owner can truthfully own the cross-cutting completion
+        gate without distorting browser-only or audio-only ownership.
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: true
+      preferred_decision: CREATE_NEW_AUTHORITY
+      decision: CREATE_NEW_AUTHORITY
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_PASS
+
+  - id: ordinary_implementation_child
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: implementation_child
+      desired_outcome: fix_audio_preview_stop_bug
+      task_kind: small_bugfix
+      existing_authorities: []
+      bodies_fully_read: false
+      newer_relevant_delta: false
+      alternatives_scored: false
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: false
+      create_new_allowed: false
+      preferred_decision: NO_STRUCTURAL_CHANGE
+      decision: NO_STRUCTURAL_CHANGE
+      requires_freshness_reconciliation: false
+      gate: GATE_NOT_APPLICABLE
+
+  - id: search_snippet_insufficient
+    layer: A
+    behavioral_required: true
+    input:
+      proposing: meta_epic
+      desired_outcome: product_coherence
+      existing_authorities:
+        - id: candidate_from_search
+          kind: goal
+          owns_outcome: unknown
+          body_fully_read: false
+          discovery: title_search_only
+      bodies_fully_read: false
+      newer_relevant_delta: false
+      alternatives_scored: false
+      missing_authority_proof: null
+      inventory_entire_portfolio: false
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: HOLD_FULL_BODY_READ_REQUIRED
+      decision: HOLD_FULL_BODY_READ_REQUIRED
+      requires_freshness_reconciliation: false
+      gate: AUTHORITY_RECONCILIATION_HOLD
+
+  - id: portfolio_inventory_overreach
+    layer: A
+    behavioral_required: false
+    input:
+      proposing: meta_epic
+      desired_outcome: product_coherence
+      existing_authorities:
+        - id: product_authority
+          kind: product_authority
+          owns_outcome: true
+          body_fully_read: true
+      bodies_fully_read: true
+      newer_relevant_delta: false
+      alternatives_scored: true
+      missing_authority_proof: null
+      inventory_entire_portfolio: true
+    expect:
+      gate_applicable: true
+      create_new_allowed: false
+      preferred_decision: UPDATE_EXISTING
+      decision: UPDATE_EXISTING
+      requires_freshness_reconciliation: false
+      overreach: true
+      gate: AUTHORITY_RECONCILIATION_PASS

@@ -10,6 +10,7 @@ Focus on decisions and slices, not on becoming a second copy of Agent Workforce 
 UNDERSTAND
 → VERIFY LIVE
 → ROUTE
+→ AUTHORITY RECONCILIATION
 → DECIDE
 → SLICE
 → HANDOFF / EXECUTE
@@ -42,6 +43,16 @@ Through Agent Workforce, determine:
 - target-repository authority front door.
 
 Load only what the current task needs. Do not bulk-load the whole portfolio, capability index, topology, skill set, or plugin set.
+
+### AUTHORITY RECONCILIATION
+
+When considering a new durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent owner structure), complete live `AUTHORITY_RECONCILIATION_REQUIRED` from:
+
+```text
+docs/WORKFORCE_POLICY.md#authority-reconciliation
+```
+
+Do not copy that procedure into this backoffice. Prefer update / reconcile / link / no structural change over create-new unless a missing-authority proof is documented. Ordinary implementation children and small bugfix slices do not trigger this gate.
 
 ### DECIDE
 

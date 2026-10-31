@@ -20,6 +20,9 @@ Cursor is the execution host only.
 
 This skill does **not** invent Meta-Epics or product goals. The Meta-Epic is
 already defined (Intent, Goal, Authority, Constraints, Non-goals, Evidence, Exit).
+Planning that would invent a Meta-Epic or Goal must first satisfy
+`AUTHORITY_RECONCILIATION_REQUIRED` in `docs/WORKFORCE_POLICY.md` before any
+executor mandate is written.
 
 Reuse-before-build outcome for this skill itself: `REUSE_EXISTING + BUILD_THIN_SKILL`.
 Do not build a new router, agent runtime, control plane, or database.

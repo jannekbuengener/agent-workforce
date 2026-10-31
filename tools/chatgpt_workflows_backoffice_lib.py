@@ -55,7 +55,28 @@ REQUIRED_ACROSS_BUNDLE: tuple[tuple[str, re.Pattern[str]], ...] = (
         "plugin_skill_contract_pointer",
         re.compile(r"PLUGIN_SKILL_ROUTING_CONTRACT\.md"),
     ),
+    (
+        "authority_reconciliation_pointer",
+        re.compile(r"AUTHORITY_RECONCILIATION_REQUIRED|authority-reconciliation"),
+    ),
 )
+
+OPERATING_MODEL_POLICY_POINTER = re.compile(
+    r"WORKFORCE_POLICY\.md(?:#authority-reconciliation)?"
+)
+
+
+def operating_model_pipeline_ordered(text: str) -> bool:
+    """ROUTE → AUTHORITY RECONCILIATION → DECIDE without catastrophic regex."""
+    upper = text.upper()
+    route = upper.find("→ ROUTE")
+    if route < 0:
+        route = upper.find("ROUTE")
+    reconcile = upper.find("AUTHORITY RECONCILIATION", route + 1 if route >= 0 else 0)
+    decide = upper.find("→ DECIDE", reconcile + 1 if reconcile >= 0 else 0)
+    if decide < 0:
+        decide = upper.find("DECIDE", reconcile + 1 if reconcile >= 0 else 0)
+    return route >= 0 and reconcile > route and decide > reconcile
 
 
 def sha256_bytes(data: bytes) -> str:
@@ -265,5 +286,17 @@ def validate_bundle(
     for name, pattern in REQUIRED_ACROSS_BUNDLE:
         if not pattern.search(corpus):
             problems.append(f"Bundle missing required orientation marker ({name})")
+
+    operating_model = bundle_dir / "02_OPERATING_MODEL.md"
+    if operating_model.is_file():
+        om_text = operating_model.read_text(encoding="utf-8")
+        if not operating_model_pipeline_ordered(om_text):
+            problems.append(
+                "02_OPERATING_MODEL.md must place AUTHORITY RECONCILIATION between ROUTE and DECIDE"
+            )
+        if not OPERATING_MODEL_POLICY_POINTER.search(om_text):
+            problems.append(
+                "02_OPERATING_MODEL.md must point to WORKFORCE_POLICY.md for authority reconciliation"
+            )
 
     return problems

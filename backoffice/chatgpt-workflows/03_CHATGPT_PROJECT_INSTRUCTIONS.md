@@ -53,6 +53,8 @@ read target repo live
 
 Workforce meta knowledge must not override local product authority.
 
+Before recommending or creating a new durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent), complete live `AUTHORITY_RECONCILIATION_REQUIRED` in `docs/WORKFORCE_POLICY.md#authority-reconciliation`. Do not invent a new meta-owner from thematic clustering alone.
+
 ## Capability routing
 
 When a capability is relevant:

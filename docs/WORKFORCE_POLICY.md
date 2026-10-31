@@ -64,9 +64,78 @@ Allowed: read/analyze live state, append evidence-backed Health Book observation
 
 Forbidden: product-code mutation, implementation PRs, governance changes, secret changes, specialist-agent creation, automatic follow-up issue creation, direct pushes to protected/default branches, or creating a second mutable runtime-state mechanism.
 
+## Authority reconciliation
+
+Invariant id: `AUTHORITY_RECONCILIATION_REQUIRED`.
+
+Producer and planning flows that reach a structural decision after routing must complete this gate **before** `DECIDE` when the relevance gate matches:
+
+```text
+UNDERSTAND → VERIFY LIVE → ROUTE → AUTHORITY RECONCILIATION → DECIDE → …
+```
+
+This gate prevents recommending, designing, or creating a new durable structuring authority when an existing canonical owner already owns the desired outcome or only needs update/reconciliation/linking. It does not replace target-repository authority and does not grant write permission.
+
+### Relevance gate
+
+Apply `AUTHORITY_RECONCILIATION_REQUIRED` when an agent considers recommending, designing, or creating a new durable structuring / coordination authority, including at least:
+
+- Goal;
+- Epic;
+- Meta-Epic;
+- Coordinator;
+- Foundation Owner;
+- Program Owner;
+- Manager;
+- other durable organizational or planning owner structures.
+
+Do **not** inflate ordinary delivery work with this gate. Ordinary implementation children, small bugfix slices, documentation-only edits, and other bounded child work under an already-settled parent do not trigger a new authority-structure search merely because planning language appears in the request.
+
+Reads remain relevance-gated. Do not inventory every parent or open issue in the portfolio solely because a planning ask arrived.
+
+### Required order before CREATE NEW
+
+When the relevance gate matches, complete this order before any `CREATE_NEW_AUTHORITY` recommendation or creation:
+
+1. **Existing owner discovery** — identify existing authorities that already claim the desired outcome in whole or in part (for example Product Authority, Umbrella, Goal, Epic, Meta-Epic, Coordinator, Completion Gate, Parent Owner). Relevant candidates must be **fully read**. Title or search snippets alone are insufficient for the final create-new decision.
+2. **Scope overlap check** — state explicitly what the existing authority already owns and what would actually be new on the proposed owner. Thematic relatedness alone is not proof that authority is missing.
+3. **Freshness / delta reconciliation** — check chronology. An older parent plus a newer child, dependency, epic, or owner decision often requires reconciling the existing authority rather than inventing a new meta-owner. Default question: is the existing authority merely older than newer relevant decisions? If yes, evaluate update/reconcile first. A newer issue strand does not automatically justify a new meta-layer.
+4. **Update / reconcile / link test** — score these as real competing paths, not as a checklist mention:
+   - `UPDATE_EXISTING`
+   - `RECONCILE_EXISTING`
+   - `LINK_EXISTING`
+   - `NO_STRUCTURAL_CHANGE`
+5. **Missing-authority proof** — name the necessary outcome/scope that **no** existing authority can truthfully own without ownership distortion.
+6. **Create new authority** — only if step 5 proves a real ownership gap.
+
+Default when the gap cannot be proven:
+
+```text
+DO NOT CREATE NEW AUTHORITY
+→ UPDATE_EXISTING | RECONCILE_EXISTING | LINK_EXISTING | NO_STRUCTURAL_CHANGE
+```
+
+Allowed structural decisions after the gate:
+
+```text
+UPDATE_EXISTING
+RECONCILE_EXISTING
+LINK_EXISTING
+NO_STRUCTURAL_CHANGE
+CREATE_NEW_AUTHORITY   # only with documented missing-authority proof
+```
+
+Fail closed on premature create-new behavior: designing a new Epic/Meta-Epic/Goal first and reconciling afterward; mentioning an existing owner without comparing scopes; skipping update/link/no-change as real alternatives; or recommending create-new from thematic clustering alone.
+
+### Relationship to issue creation
+
+When issue creation is already authorized and the proposed issue would itself be a Goal, Epic, Meta-Epic, Coordinator, or other durable structuring authority, this gate must pass before creation. Title and body rules below remain unchanged and grant no write authority by themselves.
+
 ## GitHub issue creation
 
 This section governs issue creation **only when the acting role, operator, or target-repository authority already permits creating an issue**. It grants no new write authority and does not weaken the V1.1 prohibition on automatic follow-up issue creation.
+
+When the proposed issue is a durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent owner structure), complete [`Authority reconciliation`](#authority-reconciliation) first. Ordinary implementation or bugfix issues under an existing parent do not inherit that gate.
 
 For every new GitHub issue created through Agent Workforce routing or by a workforce-directed agent in a target repository:
 
