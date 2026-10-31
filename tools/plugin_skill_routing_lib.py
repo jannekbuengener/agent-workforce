@@ -196,7 +196,69 @@ def validate_capability_ref(
                 f"{consumer_id}.{field} references unknown capability id {cap_id!r}",
             )
         )
+    if "relevance" in ref:
+        relevance = ref.get("relevance")
+        if not isinstance(relevance, list) or not relevance:
+            problems.append(
+                _problem(
+                    "UNKNOWN_CAPABILITY",
+                    f"{consumer_id}.{field} id={cap_id} relevance must be a "
+                    "non-empty list of stable relevance ids when present",
+                )
+            )
+        else:
+            for item in relevance:
+                if not isinstance(item, str) or not CAPABILITY_ID_RE.fullmatch(
+                    item.strip()
+                ):
+                    problems.append(
+                        _problem(
+                            "UNKNOWN_CAPABILITY",
+                            f"{consumer_id}.{field} id={cap_id} relevance entry "
+                            f"{item!r} is not a stable relevance id",
+                        )
+                    )
     return problems
+
+
+def resolve_capability_dependencies(
+    consumer: dict[str, Any],
+    active_relevance: set[str] | None = None,
+    *,
+    fields: tuple[str, ...] = ("requires_capabilities", "optional_capabilities"),
+) -> list[str]:
+    """Deterministic contract-twin helper for conditional capability refs.
+
+    Not a runtime router. Runtime authority remains Workforce routing →
+    repository capability discovery → target-repository authority → provider.
+    """
+    active = {item.strip() for item in (active_relevance or set()) if item.strip()}
+    resolved: list[str] = []
+    seen: set[str] = set()
+    for field in fields:
+        for ref in _as_list(consumer.get(field)):
+            if not isinstance(ref, dict):
+                continue
+            cap_id = ref.get("id")
+            if not isinstance(cap_id, str) or not cap_id.strip():
+                continue
+            cap_id = cap_id.strip()
+            relevance = ref.get("relevance")
+            if relevance is None:
+                applies = True
+            elif isinstance(relevance, list):
+                declared = {
+                    item.strip()
+                    for item in relevance
+                    if isinstance(item, str) and item.strip()
+                }
+                applies = bool(declared & active)
+            else:
+                applies = False
+            if applies and cap_id not in seen:
+                seen.add(cap_id)
+                resolved.append(cap_id)
+    return resolved
 
 
 def validate_consumer_schema(consumer: Any, *, index: int) -> list[str]:
@@ -730,6 +792,58 @@ def iter_local_skill_canon_dirs(
     return found
 
 
+def discoverable_skill_capability_ids(
+    *,
+    repo_root: Path | None = None,
+    sources: dict[str, Any] | None = None,
+) -> set[str]:
+    """Capability ids from active local skill_canon_dir sources.
+
+    Identity is owned by portfolio_capability_lib.adapt_skill_canon_dir /
+    collect_rows_from_source. This helper only collects ids — it does not
+    reimplement skill frontmatter/dir naming rules.
+    """
+    # Local import keeps the routing lib usable when only structural fixture
+    # checks run; portfolio lib remains the single skill-identity authority.
+    import portfolio_capability_lib as portfolio
+
+    root = (repo_root or REPO_ROOT).resolve()
+    data = sources if sources is not None else load_sources()
+    ids: set[str] = set()
+    repositories = data.get("repositories") or {}
+    if not isinstance(repositories, dict):
+        return ids
+    for repo_key, entry in repositories.items():
+        if not isinstance(entry, dict):
+            continue
+        for source in _as_list(entry.get("capability_sources")):
+            if not isinstance(source, dict):
+                continue
+            if source.get("status") != "active":
+                continue
+            if source.get("type") != "skill_canon_dir":
+                continue
+            path_value = source.get("path")
+            if not isinstance(path_value, str):
+                continue
+            resolved = _resolved_under_root(root, path_value)
+            if resolved is None or not resolved.is_dir():
+                continue
+            try:
+                rows = portfolio.collect_rows_from_source(
+                    repository=str(repo_key),
+                    source=source,
+                    root=root,
+                )
+            except (OSError, ValueError, KeyError, FileNotFoundError):
+                continue
+            for row in rows:
+                cap_id = getattr(row, "capability_id", None)
+                if isinstance(cap_id, str) and cap_id.strip():
+                    ids.add(cap_id.strip())
+    return ids
+
+
 def discover_production_consumer_pack_paths(
     *,
     repo_root: Path | None = None,
@@ -782,6 +896,9 @@ def validate_production_consumer_packs(
     )
     reg = registry if registry is not None else load_registry()
     route = routing if routing is not None else load_routing()
+    discovery_ids = discoverable_skill_capability_ids(
+        repo_root=root, sources=discovery_sources
+    )
 
     problems: list[str] = []
     discovered = discover_production_consumer_pack_paths(
@@ -806,6 +923,7 @@ def validate_production_consumer_packs(
             registry=reg,
             sources=validation_sources,
             routing=route,
+            extra_known_ids=discovery_ids,
         )
         for item in pack_problems:
             # Keep CODE: as the leading token so problem_codes() stays stable.

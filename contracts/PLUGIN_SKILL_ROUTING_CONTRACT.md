@@ -77,6 +77,10 @@ Consumers reference **Capability IDs**, not other plugin names.
 requires_capabilities:
   - id: reverse_engineering
     requirement: REQUIRED
+  - id: some_repo_local_capability
+    requirement: REQUIRED
+    relevance:
+      - some_relevance_id
 optional_capabilities:
   - id: shared_context_evidence
     requirement: ADVISORY
@@ -85,6 +89,36 @@ optional_capabilities:
 Direct provider binding is allowed only when the capability itself is intentionally
 bound to that canonical provider in Workforce registry (for example a REQUIRED
 provider contract). Agent Workforce resolves which provider serves a capability ID.
+
+Capability IDs may resolve via the global registry **or** the allowed discovery set
+from repository capability discovery (for example `skill_canon_dir` rows produced by
+[`tools/portfolio_capability_lib.py`](../tools/portfolio_capability_lib.py)). Do not
+duplicate skill-identity rules in consumer validators.
+
+### Conditional capability dependencies
+
+Optional structured field on capability refs:
+
+```yaml
+relevance:
+  - stable_relevance_id
+```
+
+Semantics:
+
+```text
+relevance absent
+→ requirement applies unconditionally
+
+relevance present
+→ non-empty list of stable machine-readable relevance ids
+→ requirement applies only when the caller supplies a matching active relevance id
+```
+
+Relevance ids use the same portable id shape as capability ids
+(`^[a-z][a-z0-9_.-]*$`). Validation is structural only. Do not invent keyword,
+LLM, or free-text matching over skill prose. Do not special-case individual
+capability ids in this contract.
 
 Forbidden for global consumers:
 
@@ -138,17 +172,21 @@ exclusions: [string]
 requires_capabilities:
   - id: capability_id
     requirement: REQUIRED|DISCOVERY_REQUIRED|PREFERRED|ADVISORY
+    relevance: [relevance_id]   # optional; conditional applicability
 optional_capabilities:
   - id: capability_id
     requirement: REQUIRED|DISCOVERY_REQUIRED|PREFERRED|ADVISORY
+    relevance: [relevance_id]   # optional; conditional applicability
 output: string
 exit: string
 private_mcp: never_worker_dependency
 repository_provider: owner/name   # optional; must be discoverable via #32/#33 routing
 ```
 
-Capability **definitions** are not duplicated here. Map capability-side concerns to
-[`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml):
+Capability **definitions** are not duplicated here. Map global capability-side
+concerns to [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml).
+Repository-local capability ids remain discoverable via
+[`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](../docs/REPOSITORY_CAPABILITY_DISCOVERY.md).
 
 | Suggested capability field | Workforce home |
 |---|---|
@@ -214,7 +252,7 @@ Deterministic checks (see `tools/plugin_skill_routing_lib.py`):
 
 | Code | Structural meaning |
 |---|---|
-| `UNKNOWN_CAPABILITY` | Capability ID in require/optional/dependency fields is not resolvable via registry (or allowed discovery set). |
+| `UNKNOWN_CAPABILITY` | Capability ID in require/optional/dependency fields is not resolvable via registry (or allowed discovery set); or a `relevance` value is missing/invalid as a stable relevance id. |
 | `REQUIRED_WITHOUT_CANONICAL_PROVIDER` | A `REQUIRED` registry capability lacks a defined tool/contract provider route. Runtime availability/authorization is **out of scope** for this static check. |
 | `CYCLIC_DEPENDENCY` | Cycle in structured `capability_dependency_edges` only. |
 | `COMPETING_GLOBAL_OWNERSHIP` | Two+ `global_router` consumers share an identical `owns` entry. |
