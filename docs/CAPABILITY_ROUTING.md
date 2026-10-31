@@ -53,6 +53,39 @@ A `DISCOVERY_REQUIRED` entry may route to a contract rather than a named executi
 
 Use the named capability when available and suitable. A technically equivalent alternative is allowed when the agent records why the preferred capability is unsuitable or unavailable and the replacement does not violate repo-local authority.
 
+`PREFERRED` is never `REQUIRED`. Unavailability or a justified local equivalent must **not** produce `BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE`.
+
+#### PREFERRED decision observability
+
+Only when normal relevance/trigger routing produces a **material match** for a `PREFERRED` capability must the acting orchestrator leave compact, inspectable decision evidence. Unmatched `PREFERRED` capabilities stay silent — no receipt rows, no `Match: no` noise, and no per-task sweep of every registered preferred capability.
+
+```text
+normal relevance / trigger routing
+→ no match = silence
+→ material match = compact decision evidence
+```
+
+Canonical decision record (Capability ID first; provider optional evidence only):
+
+```text
+PREFERRED_CAPABILITY_DECISION
+Capability: <capability_id>
+Decision: USED_PREFERRED | LOCAL_EQUIVALENT | NOT_USED_WITH_REASON
+Reason: <required for LOCAL_EQUIVALENT and NOT_USED_WITH_REASON>
+```
+
+| Decision | Meaning |
+|---|---|
+| `USED_PREFERRED` | The matched preferred capability (or its currently resolved provider) was actually used. |
+| `LOCAL_EQUIVALENT` | A target-repo / local equivalent route sufficiently covers the needed purpose. Short reason required. Target-repository authority remains stronger than generic workforce routing. |
+| `NOT_USED_WITH_REASON` | The trigger matched, but the capability was consciously not used (unsuitable, unavailable, unauthorized, or no material benefit after inspection). Reason required. `NOT_USED != BLOCK`. |
+
+Decision identity is the **Capability ID**. An optional resolved provider may appear as evidence; Capability ≠ Provider remains binding.
+
+Surface matched decisions in the consumer's **existing** run/delivery receipt under `CAPABILITY ROUTING DECISIONS`. Omit that section entirely when no preferred capability matched. Do not invent a separate telemetry database, router, or second global contract for this evidence.
+
+Machine twin for deterministic invariants: [`tools/preferred_capability_decision_lib.py`](../tools/preferred_capability_decision_lib.py).
+
 ### `ADVISORY`
 
 The capability or source may help the task but is optional. It grants no authority and creates no blocked outcome by itself.
