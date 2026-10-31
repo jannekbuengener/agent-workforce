@@ -199,11 +199,12 @@ def _stale(
         return False
     if head_sha == evidence_head_sha:
         return False
-    if any(c.get("touches_claim_surface") for c in commits):
-        return True
-    if commits and not carry_forward_justified:
-        return True
-    return False
+    # Head mismatch is stale unless a justified carry-forward proves non-impact.
+    if carry_forward_justified and not any(
+        c.get("touches_claim_surface") for c in commits
+    ):
+        return False
+    return True
 
 
 def classify_evidence(data: dict[str, Any]) -> dict[str, Any]:
@@ -288,11 +289,8 @@ def classify_evidence(data: dict[str, Any]) -> dict[str, Any]:
         )
         return result
 
-    if _has_local_only(artifacts) and (
-        perception or claim in PERCEPTION_MODALITIES or True
-    ):
-        # LOCAL_ONLY never suffices for human-inspectable PR evidence.
-        # Also block when it is the only offered artifact for the claim.
+    # LOCAL_ONLY never suffices for human-inspectable PR evidence.
+    if _has_local_only(artifacts):
         non_local = [a for a in artifacts if classify_locator(a) != "LOCAL_ONLY"]
         if not non_local:
             result.update(
@@ -469,12 +467,21 @@ def evaluate_acceptance(data: dict[str, Any]) -> dict[str, Any]:
     unresolved = list(data.get("unresolved_must_fix") or [])
     merge_order = data.get("merge_order")
     issue_ok = data.get("issue_contract_complete", True)
-    tests_green = data.get("tests_green", False)
+    # Missing tests_green must not imply green — require explicit True.
+    tests_green = data.get("tests_green") is True
 
     if not issue_ok:
         return {
             **evidence,
             "verdict": "HOLD_ISSUE_CONTRACT_INCOMPLETE",
+            "merge_candidate": False,
+        }
+
+    # MUST_FIX findings take precedence over owner-wait for verdict clarity.
+    if unresolved:
+        return {
+            **evidence,
+            "verdict": "BLOCKED_REVIEW_FINDINGS",
             "merge_candidate": False,
         }
 
@@ -486,13 +493,6 @@ def evaluate_acceptance(data: dict[str, Any]) -> dict[str, Any]:
     }:
         evidence["merge_candidate"] = False
         return evidence
-
-    if unresolved:
-        return {
-            **evidence,
-            "verdict": "BLOCKED_REVIEW_FINDINGS",
-            "merge_candidate": False,
-        }
 
     if merge_order == "MERGE_ORDER_UNCLEAR":
         return {
@@ -508,14 +508,20 @@ def evaluate_acceptance(data: dict[str, Any]) -> dict[str, Any]:
             "merge_candidate": False,
         }
 
-    # Evidence OK path
+    # Evidence OK path — require explicit tests_green True.
     if evidence.get("evidence_status") in {"ACCEPTABLE", "CARRY_FORWARD_OK"}:
-        if tests_green or data.get("tests_green") is None:
+        if tests_green:
             return {
                 **evidence,
                 "verdict": "MERGE_CANDIDATE",
                 "merge_candidate": True,
             }
+        return {
+            **evidence,
+            "verdict": "CURRENT_PR_REWORK_REQUIRED",
+            "merge_candidate": False,
+            "reason": "tests_green_not_evidenced",
+        }
 
     return {
         **evidence,

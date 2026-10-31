@@ -31,13 +31,16 @@ REQUIRED_BEHAVIORAL = {
     "green_tests_unresolved_must_fix",
     "screenshot_dump_without_index",
     "bugfix_missing_before_fail",
+    "tests_green_omitted_not_merge",
+    "head_mismatch_empty_commits_stale",
+    "owner_gate_with_must_fix_precedence",
 }
 
 
 class PressureCaseContractTests(unittest.TestCase):
     def test_all_pressure_cases_match_expect(self) -> None:
         results = lib.evaluate_all()
-        self.assertGreaterEqual(len(results), 14)
+        self.assertGreaterEqual(len(results), 17)
         failed = [
             {"id": r["id"], "actual": r}
             for r in results

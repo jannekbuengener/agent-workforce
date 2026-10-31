@@ -336,3 +336,74 @@ cases:
       relation: MERGE_ORDER_UNCLEAR
       hold: HOLD_MERGE_ORDER_UNCLEAR
       parallel_prep_allowed: false
+
+  - id: tests_green_omitted_not_merge
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      owner_acceptance_required: false
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: abc111
+          what_to_inspect: "layout"
+      head_sha: abc111
+      evidence_head_sha: abc111
+      review_index_present: true
+      unresolved_must_fix: []
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      verdict: CURRENT_PR_REWORK_REQUIRED
+      merge_candidate: false
+      reason: tests_green_not_evidenced
+
+  - id: head_mismatch_empty_commits_stale
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      artifacts:
+        - id: shot_old
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![old](https://github.com/org/repo/assets/1/old.png)"
+          head_sha: aaa000
+          what_to_inspect: "layout"
+      head_sha: bbb111
+      evidence_head_sha: aaa000
+      commits_since_evidence: []
+      carry_forward_justified: false
+    expect:
+      verdict: BLOCKED_STALE_EVIDENCE
+      merge_candidate: false
+
+  - id: owner_gate_with_must_fix_precedence
+    layer: A
+    behavioral_required: true
+    input:
+      claim_modality: ui_visual
+      human_perception_required: true
+      owner_acceptance_required: true
+      agent_declares_owner_pass: false
+      artifacts:
+        - id: shot1
+          modality: ui_visual
+          locator_kind: PR_EMBEDDED
+          locator: "![after](https://github.com/org/repo/assets/1/after.png)"
+          head_sha: abc111
+          what_to_inspect: "hero layout"
+      head_sha: abc111
+      evidence_head_sha: abc111
+      tests_green: true
+      unresolved_must_fix: ["MUST_FIX: accessibility contrast"]
+      merge_order: INDEPENDENT
+      issue_contract_complete: true
+    expect:
+      verdict: BLOCKED_REVIEW_FINDINGS
+      merge_candidate: false
