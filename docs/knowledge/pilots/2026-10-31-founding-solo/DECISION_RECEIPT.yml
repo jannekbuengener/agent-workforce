@@ -1,0 +1,92 @@
+schema_version: 1
+receipt_kind: knowledge_department_decision
+capability_id: knowledge_department_decision
+actor_employee_id: workforce.employee.dieter-datenbank.v1
+observed_at: "2026-10-31T18:45:00Z"
+operating_phase: FOUNDING_SOLO
+employment_state_at_run: ACTIVE
+runtime_exists_at_run: true
+auftrag:
+  id: knowledge-surface-readiness-founding-solo-2026-10-31
+  source: live_state
+  summary: >
+    Assess whether Head of Knowledge FOUNDING_SOLO can complete a bounded
+    Knowledge Department cycle using currently available live evidence without
+    inventing Brain durable-knowledge APIs or waiting on open Agent Brain
+    slices that are not children of agent-workforce#68.
+decision_type: accept
+subject: >
+  FOUNDING_SOLO Knowledge operation may proceed on Workforce/GitHub live
+  evidence + preferred shared_context_evidence when available; open Agent Brain
+  #8/#10/#11/#12/#38/#39 are explicit uncertainties, not silent blockers and
+  not product authority for target repositories.
+outcome: >
+  ACCEPT: first productive Knowledge cycle is authorized within Dieter's #70
+  capabilities. Do not mutate Agent Brain or target repos. Do not invent a
+  data-quality percentage. No new specialist staffing in this cycle.
+uncertainty_statement: >
+  Durable Agent Brain KnowledgeStore/Evidence/Decision/Memory-read product
+  surfaces remain OPEN (#8/#10/#11/#12/#39; #38 runtime baseline still open).
+  Availability of shared_context_evidence as a live DB-backed knowledge API is
+  therefore uncertain. Improvement Blackboard surfaces are available but are
+  the wrong domain for general knowledge-quality truth. No reproducible
+  cross-repo data-quality percentage method exists.
+evidence_refs:
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-workforce/issues/68
+    note: Meta-Epic open; exit DIETER_DATENBANK_FOUNDING_SOLO_OPERATIONAL
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-workforce/issues/70
+    note: CLOSED — authority defined
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-workforce/issues/71
+    note: CLOSED — ACTIVE / runtime_exists / FOUNDING_SOLO provisioned
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-workforce/issues/72
+    note: CLOSED — Board Manager reports_to Dieter
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-workforce/issues/73
+    note: CLOSED — Owner report contract
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-brain/issues/8
+    note: OPEN — Evidence/Decisions/Trust
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-brain/issues/10
+    note: OPEN — SurrealDB Read Runtime
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-brain/issues/11
+    note: OPEN — Memory Read Side
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-brain/issues/12
+    note: OPEN — CLI/Protocol
+  - locator_kind: STABLE_REVIEW_URL
+    ref: https://github.com/jannekbuengener/agent-brain/issues/39
+    note: OPEN — KnowledgeStore/MemoryStore boundary
+  - locator_kind: PR_EMBEDDED
+    ref: agents/dieter-datenbank.md
+    note: employment_state ACTIVE; runtime_exists true; FOUNDING_SOLO
+  - locator_kind: PR_EMBEDDED
+    ref: docs/skills/head-of-knowledge/
+    note: execution surface present
+capabilities_used:
+  - knowledge_department_decision
+  - knowledge_owner_report
+  - improvement_read
+preferred_capability_decisions:
+  - capability: shared_context_evidence
+    decision: NOT_USED_WITH_REASON
+    reason: >
+      Durable Brain knowledge/evidence read stack still OPEN; used GitHub/repo
+      live issue state instead of pretending Brain DB knowledge was available.
+  - capability: improvement_read
+    decision: USED_PREFERRED
+    reason: Confirmed Improvement Blackboard capability IDs remain Board-Manager-scoped for writes; Head used read-visibility only conceptually via registry/live policy.
+forbidden_actions_confirmed_not_taken:
+  - improvement_management_write
+  - improvement_github_issue_create
+  - generic_memory_or_knowledge_write
+  - raw_database_admin
+  - target_repository_product_mutation
+  - self_grant_authority
+target_repo_authority_preserved: true
+staffing_recommendation: none_this_cycle
