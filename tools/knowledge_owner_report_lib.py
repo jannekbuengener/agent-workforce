@@ -69,8 +69,7 @@ def employee_binds_report_contract() -> bool:
             "knowledge_owner_report" in text,
             "docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md" in text,
             "what_happened" in text,
-            "employment_state: PLANNED_ONLY" in text,
-            "runtime_exists: false" in text,
+            "capability_id: knowledge_owner_report" in text,
         ]
     )
 

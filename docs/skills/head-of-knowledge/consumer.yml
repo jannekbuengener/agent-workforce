@@ -1,0 +1,96 @@
+schema_version: 1
+purpose: >
+  Skill-colocated machine-readable consumer declaration for Dieter Datenbank
+  Head of Knowledge FOUNDING_SOLO execution surface. Validated structurally
+  against PLUGIN_SKILL_ROUTING_CONTRACT.md. Not a second capabilities inventory.
+consumers:
+  - id: head-of-knowledge
+    kind: specialist
+    intent: >
+      Execute Knowledge Department Head work in FOUNDING_SOLO under least
+      privilege: accept Knowledge Aufträge, gather live evidence, handle
+      uncertainty, decide within authority, document evidence, and produce
+      Owner reports without overriding target-repository authority.
+    claims_global_routing: false
+    owns:
+      - Knowledge Department prioritization and knowledge-quality decisions
+      - FOUNDING_SOLO operational Knowledge work when no specialist exists
+      - weekly Head of Knowledge Owner report content under its contract
+    does_not_own:
+      - global cross-repository capability matrix
+      - Improvement Blackboard management write or GitHub issue create
+      - target repository product authority, code, CI, or merge rulesets
+      - raw database administration
+      - generic Agent Brain Memory/Knowledge write
+      - employee creation or self-granted permission expansion
+      - ChatGPT private MCP as a worker dependency
+    triggers:
+      explicit:
+        - use head-of-knowledge
+        - required skill head-of-knowledge
+        - Dieter Datenbank Knowledge Department Auftrag
+      semantic:
+        - Head of Knowledge FOUNDING_SOLO knowledge decision or owner report
+        - Knowledge Department prioritization accept reject rework escalate
+      dependency: []
+      authority:
+        - workforce.employee.dieter-datenbank.v1 is ACTIVE with runtime surface
+    exclusions:
+      - inventing specialist staff without evidenced recurring need
+      - self-granting new authority
+      - Board Manager management or GitHub create work
+      - target-repository product mutation
+      - raw database admin
+      - treating persona as evidence
+    requires_capabilities:
+      - id: knowledge_department_decision
+        requirement: REQUIRED
+        relevance:
+          - department_decision
+      - id: knowledge_owner_report
+        requirement: REQUIRED
+        relevance:
+          - owner_report
+    optional_capabilities:
+      - id: shared_context_evidence
+        requirement: PREFERRED
+      - id: improvement_read
+        requirement: PREFERRED
+    output: >
+      evidence-backed Knowledge Department decision receipt and/or validated
+      Owner report; optional CAPABILITY ROUTING DECISIONS for matched PREFERRED
+      capabilities; explicit HOLD/BLOCKED when gates fail
+    exit: >
+      when the scoped Knowledge Auftrag is decided or held with evidence, and
+      any due Owner report validates, or an explicit blocked/hold outcome is
+      returned
+    private_mcp: never_worker_dependency
+    repository_provider: jannekbuengener/agent-workforce
+
+capability_dependency_edges: []
+
+routing_regression_cases:
+  - id: should-trigger-explicit-head-of-knowledge
+    consumer_id: head-of-knowledge
+    type: should_trigger
+    intent_summary: Required skill head-of-knowledge for Dieter Knowledge Auftrag.
+    expected: TRIGGER
+  - id: should-not-trigger-board-manager-github-create
+    consumer_id: head-of-knowledge
+    type: should_not_trigger
+    intent_summary: Create GitHub implementation issue from validated Improvement.
+    expected: NO_TRIGGER
+  - id: department-decision-resolves-capability
+    consumer_id: head-of-knowledge
+    type: dependency_case
+    intent_summary: >
+      Head of Knowledge records a department knowledge-quality decision
+      (active relevance id department_decision).
+    expected: RESOLVE_CAPABILITY
+  - id: owner-report-resolves-capability
+    consumer_id: head-of-knowledge
+    type: dependency_case
+    intent_summary: >
+      Head of Knowledge produces weekly Owner report
+      (active relevance id owner_report).
+    expected: RESOLVE_CAPABILITY
