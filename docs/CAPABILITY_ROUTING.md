@@ -154,6 +154,34 @@ The discovery order prefers existing repo code and existing accepted dependencie
 
 Discovery does not itself authorize dependency installation, OSS adoption, architecture changes, or any other target-repository mutation.
 
+## Improvement Blackboard capabilities
+
+Four Capability IDs separate Improvement Blackboard authority. Do **not** collapse
+them into shared_context_evidence.
+
+| Capability ID | Level | Provider / contract | Who may use write tiers |
+|---|---|---|---|
+| improvement_read | PREFERRED | Agent Brain (jannekbuengener/agent-brain) | read-only for authorized roles |
+| improvement_observation_write | REQUIRED | Agent Brain | Improvement Board Manager scope (not scouts/Supervisor) |
+| improvement_management_write | REQUIRED | Agent Brain | Improvement Board Manager only |
+| improvement_github_issue_create | REQUIRED | [docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md](IMPROVEMENT_GITHUB_ISSUE_CREATE.md) (#51) | Board Manager only, separate gate |
+
+`	ext
+READ < OBSERVATION_WRITE < MANAGEMENT_WRITE < GITHUB_ISSUE_CREATE
+`
+
+Quality Scout, Process Scout, and Workforce Supervisor remain denied for
+Observation Write, Management Write, and GitHub Issue Create on the blackboard.
+shared_context_evidence may still supply ordinary shared context but never
+substitutes for the REQUIRED improvement write capabilities
+(silent_substitution: false).
+
+GitHub issue handoff is intentionally a Workforce-owned contract capability, not
+an Agent Brain Memory write. Until issue #51 completes its gates, matching work
+must HOLD / GITHUB_ISSUE_CREATE_DEFERRED rather than create issues.
+
+Role canon: [../agents/improvement-board-manager.md](../agents/improvement-board-manager.md).
+
 ## External references during discovery
 
 External-reference semantics are defined by [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](../contracts/EXTERNAL_REFERENCE_CONTRACT.md).
