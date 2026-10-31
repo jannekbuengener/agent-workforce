@@ -244,3 +244,62 @@ capabilities:
       unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
       silent_substitution: false
 
+  knowledge_department_decision:
+    requirement: REQUIRED
+    description: >
+      Evidence-backed Knowledge Department decision receipt (prioritize, accept,
+      reject, rework, escalate, or staffing recommend) under
+      docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md. Authorized for the Head of
+      Knowledge when ACTIVE with runtime_exists true. Does not authorize
+      generic Agent Brain Memory/Knowledge writes, raw database admin,
+      Improvement Blackboard management/GitHub create, target-repository
+      product mutation, or self-granted permission expansion. Fail closed on
+      missing authorization, insufficient evidence, ambiguous authority,
+      half-certain fact claims, or unprovisioned runtime.
+    contract: docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md
+    triggers:
+      - record a Knowledge Department decision with evidence
+      - accept or reject a knowledge-quality recommendation
+      - return Knowledge Department work for rework
+      - escalate unresolved knowledge uncertainty to the Owner
+      - recommend staffing need from recurring Knowledge Department work
+    exclusions:
+      - general Agent Brain memory or knowledge writes
+      - raw database administration
+      - Improvement Blackboard management write or GitHub issue create
+      - target-repository product code, PR, or governance mutation
+      - self-grant of new authority or capabilities
+      - treating persona or backstory as evidence
+    availability:
+      require_available: true
+      require_authorized: true
+      unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      silent_substitution: false
+
+  knowledge_owner_report:
+    requirement: REQUIRED
+    description: >
+      Produce the Head of Knowledge weekly Owner report under
+      docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md. Does not invent data-quality KPIs
+      without a reproducible method. Does not authorize generic Memory/Knowledge
+      writes, raw database admin, or target-repository product mutation.
+      Until the #73 contract body is complete, productive report generation
+      must fail closed rather than invent format or percentages.
+    contract: docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md
+    triggers:
+      - produce weekly Head of Knowledge Owner report
+      - compact data-quality situation reporting to the Owner
+    exclusions:
+      - inventing unreproducible quality percentages
+      - immediate escalation path (separate from weekly report)
+      - general Agent Brain memory or knowledge writes
+      - raw database administration
+      - target-repository product mutation
+    availability:
+      require_available: true
+      require_authorized: true
+      unavailable_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      unauthorized_outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      silent_substitution: false
+

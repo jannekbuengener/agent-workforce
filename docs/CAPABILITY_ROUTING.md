@@ -217,6 +217,33 @@ never treat a closed GitHub issue as automatic `VERIFIED`.
 
 Role canon: [../agents/improvement-board-manager.md](../agents/improvement-board-manager.md).
 
+## Knowledge Department capabilities (Head of Knowledge)
+
+Head of Knowledge FOUNDING_SOLO authority is defined by
+[`docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md`](KNOWLEDGE_DEPARTMENT_AUTHORITY.md)
+(#70). Hierarchy does not inherit Board Manager write capabilities.
+
+| Capability ID | Level | Contract / provider | Who |
+|---|---|---|---|
+| shared_context_evidence | PREFERRED | Agent Brain | Head of Knowledge (read/shared context when available) |
+| improvement_read | PREFERRED | Agent Brain | Head of Knowledge (prioritization visibility only) |
+| knowledge_department_decision | REQUIRED when deciding | [KNOWLEDGE_DEPARTMENT_AUTHORITY.md](KNOWLEDGE_DEPARTMENT_AUTHORITY.md) | Head of Knowledge when ACTIVE |
+| knowledge_owner_report | REQUIRED when reporting | [HEAD_OF_KNOWLEDGE_OWNER_REPORT.md](HEAD_OF_KNOWLEDGE_OWNER_REPORT.md) (#73) | Head of Knowledge when ACTIVE |
+
+Explicitly **not** granted to the Head by title alone:
+
+- `improvement_management_write`
+- `improvement_github_issue_create`
+- generic Memory/Knowledge write
+- raw database admin
+- target-repository product mutation
+- self-grant of authority
+
+Operational use requires `employment_state: ACTIVE` and `runtime_exists: true`.
+Defining the matrix does not activate the employee.
+
+Role canon: [../agents/dieter-datenbank.md](../agents/dieter-datenbank.md).
+
 ## External references during discovery
 
 External-reference semantics are defined by [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](../contracts/EXTERNAL_REFERENCE_CONTRACT.md).
