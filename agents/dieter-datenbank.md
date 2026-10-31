@@ -326,6 +326,15 @@ development:
         - agent-workforce#70
         - docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md
   staffing_history: []
+  pilot_history:
+    - at: "2026-10-31"
+      id: knowledge-surface-readiness-founding-solo-2026-10-31
+      exit: DIETER_FOUNDING_SOLO_PILOT_PROVEN
+      evidence:
+        - docs/knowledge/pilots/2026-10-31-founding-solo/DECISION_RECEIPT.yml
+        - docs/knowledge/pilots/2026-10-31-founding-solo/OWNER_REPORT.yml
+        - docs/knowledge/pilots/2026-10-31-founding-solo/RUN.md
+        - agent-workforce#74
   notes:
     - >-
       Future specialist staff is expected, but roles are created only from real,
