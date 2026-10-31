@@ -1,0 +1,61 @@
+schema_version: 1
+purpose: >
+  Skill-colocated machine-readable consumer declaration for
+  cursor-meta-epic-executor. Not a new capabilities/consumers inventory tree.
+  Validated structurally against PLUGIN_SKILL_ROUTING_CONTRACT.md.
+consumers:
+  - id: cursor-meta-epic-executor
+    kind: project_orchestrator
+    intent: >
+      Execute an already-defined Meta-Epic to its verifiable Exit using
+      live-state reconciliation, plan-before-write, goal gates, multitask
+      when safe, independent evidence gates, replanning, and a single
+      learning recommendation without self-mutation.
+    claims_global_routing: false
+    owns:
+      - Cursor Meta-Epic execution procedure for an already selected target
+      - hierarchical Step/Lane/Integration/Slice/Meta goal gates during that run
+    does_not_own:
+      - global cross-repository capability matrix
+      - target repository product authority or AGENTS/canon
+      - inventing Meta-Epics or product goals
+      - ChatGPT private MCP as a worker dependency
+    triggers:
+      explicit:
+        - use cursor-meta-epic-executor
+        - required execution skill cursor-meta-epic-executor
+      semantic:
+        - execute an already-defined meta-epic with verifiable goal and exit
+        - goal-gated multi-slice program issue on a selected target repository
+      dependency: []
+      authority:
+        - target repository Meta-Epic declares Required execution skill cursor-meta-epic-executor
+    exclusions:
+      - small single-change bug fix
+      - research-only analysis without execution mandate
+      - inventing the product goal
+      - unclear target repository or authority
+    requires_capabilities: []
+    optional_capabilities:
+      - id: reuse_before_build
+        requirement: DISCOVERY_REQUIRED
+      - id: deterministic_validation
+        requirement: PREFERRED
+    output: run receipt with goal, status, live exit evidence, gates, learning
+    exit: when Meta-Epic Exit is evidenced or an explicit HOLD/BLOCKED code is returned
+    private_mcp: never_worker_dependency
+    repository_provider: jannekbuengener/agent-workforce
+
+capability_dependency_edges: []
+
+routing_regression_cases:
+  - id: should-trigger-explicit-meta-epic
+    consumer_id: cursor-meta-epic-executor
+    type: should_trigger
+    intent_summary: Required execution skill cursor-meta-epic-executor on Meta-Epic #41.
+    expected: TRIGGER
+  - id: should-not-trigger-small-bug
+    consumer_id: cursor-meta-epic-executor
+    type: should_not_trigger
+    intent_summary: Fix a one-line typo in README with a clear single change.
+    expected: NO_TRIGGER

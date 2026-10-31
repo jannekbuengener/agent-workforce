@@ -1,0 +1,130 @@
+schema_version: 1
+skill_id: cursor-meta-epic-executor
+purpose: >
+  Structured pressure cases for deterministic contract tests (Layer A) and
+  behavioral agent verification (Layer B). Not LLM prompts by themselves.
+
+cases:
+  - id: stale_child_state
+    layer: A
+    behavioral_required: false
+    input:
+      children:
+        - { id: c1, live_state: DONE }
+        - { id: c2, live_state: DONE }
+        - { id: c3, live_state: DONE }
+        - { id: c4, live_state: DONE }
+        - { id: c5, live_state: OPEN, work: settings }
+        - { id: c6, live_state: DONE }
+        - { id: c7, live_state: OPEN, work: index }
+      historical_order: [c1, c2, c3, c4, c5, c6, c7]
+    expect:
+      actionable_children: [c5, c7]
+      forbidden_actions: [reimplement_done_child]
+      gate: STEP_PASS
+
+  - id: plan_before_write
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      authority_read: false
+      plan_artifact: false
+      mutation_attempted: true
+    expect:
+      allow_mutation: false
+      gate: STEP_REWORK
+      required_before_mutation: [authority_read, plan_artifact]
+
+  - id: true_parallelism
+    layer: A
+    behavioral_required: false
+    input:
+      slices:
+        - { id: s1, deps: [], files: [a.md], mode: read_only }
+        - { id: s2, deps: [], files: [b.md], mode: read_only }
+    expect:
+      parallel_allowed: true
+      require_integration_gate: true
+
+  - id: false_parallelism
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      slices:
+        - { id: s1, deps: [], files: [shared.py], mode: write }
+        - { id: s2, deps: [s1], files: [shared.py], mode: write }
+    expect:
+      parallel_allowed: false
+      reason: dependency_or_file_overlap
+
+  - id: evidence_over_self_claim
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      implementer_claims_done: true
+      quality_gate: FAIL
+    expect:
+      final_status: HOLD_QUALITY_GATE_FAILED
+      meta_goal_pass: false
+
+  - id: scope_creep
+    layer: A
+    behavioral_required: false
+    input:
+      non_goals: [new_global_router]
+      proposed_extra: new_global_router
+    expect:
+      allow_extra: false
+      gate: STEP_REWORK
+
+  - id: owner_decision
+    layer: A
+    behavioral_required: false
+    input:
+      goal_requires_product_choice: true
+      choice_resolvable_from_authority: false
+    expect:
+      final_status: HOLD_OWNER_DECISION_REQUIRED
+      invent_goal: false
+
+  - id: replanning
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      planned_slice: reimplement_c1
+      live_update: { c1: DONE }
+    expect:
+      drop_or_supersede_slice: true
+      gate: STEP_SUPERSEDED_BY_LIVE_STATE
+
+  - id: learning_loop
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      run_complete: true
+      learning_recommendations_emitted: 1
+      skill_self_mutated: false
+    expect:
+      learning_count_max: 1
+      allow_self_mutation: false
+
+  - id: small_task_negative
+    layer: A
+    behavioral_required: false
+    input:
+      task_kind: small_single_fix_bug
+      has_meta_epic_goal_exit: false
+    expect:
+      skill_trigger: NO_TRIGGER
+
+  - id: hierarchical_goal_gates
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      subtask_done: true
+      slice_evidence_pass: false
+      meta_exit_evidenced: false
+    expect:
+      slice_pass: false
+      meta_goal_pass: false
+      inherit_pass_from_subtask: false
