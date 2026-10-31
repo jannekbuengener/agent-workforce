@@ -1,0 +1,30 @@
+schema_version: 1
+purpose: >
+  Fixture evidence for generating a valid Head of Knowledge weekly Owner
+  report example under docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md (#73).
+period:
+  start: "2026-10-24"
+  end: "2026-10-31"
+evidence:
+  what_happened: >
+    Knowledge Department authority matrix (#70) and Board Manager reports_to
+    wiring (#72) landed on main; Owner-report contract (#73) is being defined.
+  what_is_critical: >
+    Dieter remains PLANNED_ONLY until a real execution surface is provisioned
+    (#71). No ACTIVE Head decisions may be claimed yet.
+  what_was_decided: >
+    Least-privilege Capability IDs for FOUNDING_SOLO are fixed; Board Manager
+    stays operable without imaginary Dieter approvals while planned-only.
+  relevant_uncertainties:
+    - Agent Brain knowledge/evidence durable read stack (#8/#10/#11/#12/#39) still open
+    - No reproducible cross-repo data-quality percentage method exists yet
+  concrete_action_recommendations:
+    - type: trend
+      text: Complete Owner-report contract then provision Dieter runtime before pilot.
+    - type: staffing
+      text: No new specialist hire recommended yet; wait for recurring FOUNDING_SOLO workload evidence.
+  evidence_refs:
+    - agent-workforce#70
+    - agent-workforce#72
+    - agent-workforce#73
+    - docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md

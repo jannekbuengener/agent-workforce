@@ -220,9 +220,8 @@ capabilities:
     - self_grant_authority
   note: >-
     Capability IDs and deny-list are defined for FOUNDING_SOLO least privilege
-    (#70). This does not activate the employee. Operational use requires
-    ACTIVE + runtime_exists true (#71). Owner-report contract body is owned
-    by #73; until complete, productive reporting fails closed.
+    (#70). Owner-report contract is defined (#73). This does not activate the
+    employee. Operational use requires ACTIVE + runtime_exists true (#71).
 
 tools:
   status: NOT_PROVISIONED
@@ -250,13 +249,15 @@ communication:
 reporting:
   owner_cadence: weekly
   owner_channel: email
+  capability_id: knowledge_owner_report
+  contract: docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md
   required_sections:
     - what_happened
     - what_is_critical
     - what_was_decided
     - current_data_quality_situation
     - relevant_uncertainties
-    - concrete_action_recommendations_from_new_trends
+    - concrete_action_recommendations
   data_quality_display_examples:
     - "92 % – gut"
     - "76 % – okay"
@@ -264,6 +265,9 @@ reporting:
   metric_rule: >-
     A percentage is only a compact situation indicator. A reproducible scoring
     method must exist before the percentage is treated as a factual KPI.
+    Without a method, report exactly:
+    "Datenqualität: nicht belastbar quantifizierbar".
+  immediate_escalation: separate_from_weekly_report
 
 staffing_signal:
   enabled: true

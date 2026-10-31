@@ -1,42 +1,124 @@
 # Head of Knowledge — Weekly Owner Report
 
+## Purpose
+
+Canonical weekly Owner-facing report produced by Dieter Datenbank (Head of
+Knowledge) under Capability ID `knowledge_owner_report`.
+
+Machine twin: [`tools/knowledge_owner_report_lib.py`](../tools/knowledge_owner_report_lib.py).
+
+Employee record: [`agents/dieter-datenbank.md`](../agents/dieter-datenbank.md).
+
+Parent: #68. Delivery issue: #73.
+
 ## Status
 
 ```text
-CONTRACT_STUB_FOR_CAPABILITY_ID
-full_body_owned_by: agent-workforce#73
+CONTRACT_COMPLETE
 capability_id: knowledge_owner_report
+exit: HEAD_OF_KNOWLEDGE_OWNER_REPORT_DEFINED
 ```
 
-This stub exists so Capability ID `knowledge_owner_report` can be registered
-under least-privilege authority (#70) without inventing a productive report
-format early.
+## Cadence and channel
 
-Until #73 completes this contract:
+| Field | Value |
+|---|---|
+| Cadence | weekly |
+| Primary channel | email (Owner) |
+| Actor | `workforce.employee.dieter-datenbank.v1` |
+| Delivery surface | abstract — content/contract first; no provider hardcoding |
 
-- do **not** treat this document as a finished reporting schema;
-- productive Owner-report generation must fail closed rather than invent KPIs
-  or section semantics;
-- required report sections planned in the employee record remain authoritative
-  intent only.
+Immediate escalations are **not** part of this weekly artifact. Use the
+employee `escalation` path when uncertainty blocks work now.
 
-## Planned required sections (from employee record; finalized in #73)
+## Required sections (machine + human)
 
-1. What happened?
-2. What is critical?
-3. What was decided?
-4. Current data-quality situation
-5. Relevant uncertainties
-6. Concrete action recommendations from trends / recurring patterns
+Stable section ids (YAML / receipt) and human headings:
 
-## Planned data-quality rule
+| id | Human heading |
+|---|---|
+| `what_happened` | Was ist passiert? |
+| `what_is_critical` | Was ist kritisch? |
+| `what_was_decided` | Was wurde entschieden? |
+| `current_data_quality_situation` | Aktuelle Datenqualität |
+| `relevant_uncertainties` | Relevante Unsicherheiten |
+| `concrete_action_recommendations` | Konkrete Handlungsempfehlungen |
 
-No percentage without a reproducible method. Until a method exists:
+Optional but allowed inside recommendations:
+
+- staffing need for a durable recurring specialist function (recommend only;
+  may not create/authorize employees).
+
+## Machine-readable schema
+
+```yaml
+schema_version: 1
+report_kind: head_of_knowledge_weekly_owner_report
+capability_id: knowledge_owner_report
+actor_employee_id: workforce.employee.dieter-datenbank.v1
+period:
+  start: YYYY-MM-DD
+  end: YYYY-MM-DD
+channel: email
+sections:
+  what_happened: string
+  what_is_critical: string
+  what_was_decided: string
+  current_data_quality_situation:
+    summary: string
+    quantifiable: false
+    # percentage only when method_id is set and reproducible
+    percentage: null
+    method_id: null
+    band: null   # optional: gut | okay | schlecht — only with percentage+method
+  relevant_uncertainties: [string]
+  concrete_action_recommendations:
+    - type: trend | recurring_pattern | staffing | other
+      text: string
+evidence_refs: [string]
+immediate_escalation_included: false
+```
+
+## Data-quality rule (fail-closed)
+
+No percentage without a documented, reproducible method id that the twin can
+verify as present.
+
+Until such a method exists in Workforce canon:
 
 ```text
 Datenqualität: nicht belastbar quantifizierbar
 ```
 
-## Exit token (issue #73)
+Illustrative Owner-facing examples (not canonical thresholds, not KPIs):
+
+- `92 % – gut`
+- `76 % – okay`
+- `58 % – schlecht`
+
+These examples may appear in documentation only. Emitting them as factual
+scores without `method_id` is denied (`INVENTED_QUALITY_KPI`).
+
+## Forbidden
+
+- inventing unreproducible quality percentages;
+- including immediate escalation content as a substitute for the escalation path;
+- generic Memory/Knowledge writes under this capability;
+- target-repository product mutation;
+- claiming the report proves Dieter is ACTIVE (lifecycle is separate).
+
+## Operational gate
+
+Producing a productive report requires:
+
+- Capability `knowledge_owner_report` authorized;
+- employee `ACTIVE` with `runtime_exists: true` (activation owned by #71);
+- all required sections present and non-empty;
+- data-quality block obeying the fail-closed rule;
+- `immediate_escalation_included: false`.
+
+Defining this contract does **not** activate Dieter.
+
+## Exit token
 
 `HEAD_OF_KNOWLEDGE_OWNER_REPORT_DEFINED`
