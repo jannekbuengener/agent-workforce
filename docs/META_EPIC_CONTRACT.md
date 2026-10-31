@@ -29,6 +29,12 @@ Which verifiable end-state must be true. Outcome, not implementation recipe.
 Which repo/canon/contract/issue sources own truth. The Meta-Epic must not
 replace target-repository authority.
 
+Planning that would **invent** a new Meta-Epic or Goal must first satisfy
+`AUTHORITY_RECONCILIATION_REQUIRED` in
+[`docs/WORKFORCE_POLICY.md`](WORKFORCE_POLICY.md#authority-reconciliation).
+The executor skill still does not invent Meta-Epics; it executes an already
+defined one after live reconcile.
+
 ### Constraints
 
 Invariants and bounds that must hold.

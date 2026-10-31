@@ -172,4 +172,5 @@ The bootstrap contract is correct only while all of these remain true:
 - repo-local manifests use concrete relevance signals and keep inactive material parked;
 - unrelated tasks do not load or invoke registered capabilities/references solely because they exist;
 - no execution-host prompt carries a second full copy of the downstream canonical read list, checkpoint contract, capability registry, repository capability sources, generated capability index, or shared reference catalog;
-- authorized GitHub issue creation inherits its canonical issue-creation rules from `docs/WORKFORCE_POLICY.md`; scheduler/worker prompts do not duplicate those rules.
+- authorized GitHub issue creation inherits its canonical issue-creation rules from `docs/WORKFORCE_POLICY.md`; scheduler/worker prompts do not duplicate those rules;
+- when producers consider a new durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent), they honor `AUTHORITY_RECONCILIATION_REQUIRED` from `docs/WORKFORCE_POLICY.md` before create-new; scheduler/worker prompts do not duplicate that procedure.
