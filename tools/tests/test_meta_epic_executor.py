@@ -36,6 +36,9 @@ class PressureCaseContractTests(unittest.TestCase):
                 "replanning",
                 "hierarchical_goal_gates",
                 "learning_loop",
+                "owner_visual_not_agent_pass",
+                "ambiguous_visual_delta",
+                "host_visual_bypass_tests_green",
             }.issubset(required)
         )
 
@@ -68,10 +71,34 @@ class SkillDocumentTests(unittest.TestCase):
     def test_skill_md_encodes_material_step_gate(self) -> None:
         self.assertTrue(lib.skill_mandates_material_step_gate())
 
+    def test_skill_md_encodes_host_visual_evidence(self) -> None:
+        self.assertTrue(lib.skill_mandates_host_visual_evidence())
+
     def test_skill_description_excludes_small_tasks(self) -> None:
         text = lib.SKILL_MD.read_text(encoding="utf-8")
         self.assertIn("Do not use for a small single-change bug/fix", text)
         self.assertIn("name: cursor-meta-epic-executor", text)
+
+    def test_host_visual_checklist_is_host_agnostic(self) -> None:
+        checklist = (
+            ROOT
+            / "docs"
+            / "skills"
+            / "cursor-meta-epic-executor"
+            / "references"
+            / "host_visual_evidence_checklist.md"
+        )
+        body = checklist.read_text(encoding="utf-8").lower()
+        for banned in (
+            "wait_harmony_width",
+            "displaypreferencespopover",
+            "qquickitem",
+            "minimumwidth: 1120",
+            "harmonic",
+            "kit-hud",
+            "sample-brain",
+        ):
+            self.assertNotIn(banned, body)
 
     def test_red_baseline_documents_observed_fail(self) -> None:
         red = (
@@ -86,6 +113,20 @@ class SkillDocumentTests(unittest.TestCase):
         self.assertIn("RED_FAIL_OBSERVED", body)
         self.assertIn("CONTRACT.md", body)
         self.assertIn("LIVE_BOARD", body)
+
+    def test_red_host_visual_documents_observed_fail(self) -> None:
+        red = (
+            ROOT
+            / "docs"
+            / "skills"
+            / "cursor-meta-epic-executor"
+            / "evidence"
+            / "RED_HOST_VISUAL.md"
+        )
+        body = red.read_text(encoding="utf-8")
+        self.assertIn("RED_FAIL_OBSERVED", body)
+        self.assertIn("owner_visual_status: PASS", body)
+        self.assertIn("890602b7", body)
 
 
 class ConsumerPackTests(unittest.TestCase):

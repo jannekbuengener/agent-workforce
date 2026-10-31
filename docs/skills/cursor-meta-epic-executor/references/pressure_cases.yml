@@ -128,3 +128,65 @@ cases:
       slice_pass: false
       meta_goal_pass: false
       inherit_pass_from_subtask: false
+
+  - id: owner_visual_not_agent_pass
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      exit_requires_owner_visual: true
+      implementer_sets_owner_visual_pass: true
+      human_owner_attestation: false
+      automated_tests_green: true
+    expect:
+      allow_owner_visual_self_pass: false
+      final_status: HOLD_OWNER_DECISION_REQUIRED
+      meta_goal_pass: false
+
+  - id: stable_visual_state
+    layer: A
+    behavioral_required: false
+    input:
+      layout_stable: false
+      panel_width: 0
+      treat_as_acceptance_evidence: true
+    expect:
+      accept_visual_evidence: false
+      gate: STEP_REWORK
+
+  - id: impossible_geometry_acceptance
+    layer: A
+    behavioral_required: false
+    input:
+      product_min_width: 800
+      claimed_acceptance_width: 640
+      user_reachable: false
+    expect:
+      accept_as_acceptance_viewport: false
+      gate: STEP_REWORK
+
+  - id: ambiguous_visual_delta
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      visual_delta_strength: weak
+      owner_judgment_required: true
+      agent_auto_pass: true
+      agent_auto_fail: false
+    expect:
+      allow_auto_pass: false
+      allow_auto_fail: false
+      disposition: HOLD_OWNER_DECISION_REQUIRED
+
+  - id: host_visual_bypass_tests_green
+    layer: A_and_B
+    behavioral_required: true
+    input:
+      automated_tests_green: true
+      agent_reviewed_screenshots: true
+      exit_requires_owner_visual: true
+      human_owner_attestation: false
+      claim: tests_green_so_visual_pass
+    expect:
+      allow_bypass: false
+      final_status: HOLD_OWNER_DECISION_REQUIRED
+      meta_goal_pass: false

@@ -194,6 +194,29 @@ evidence plus target-repo gatekeeper or a separate read-only verifier.
 
 > Evidence is the judge; the agent controls the iteration.
 
+#### Host visual evidence / Owner Visual
+
+When Exit or acceptance requires live UI / visual evidence:
+
+1. **Stable state before acceptance capture.** Visual evidence counts for
+   acceptance only after the relevant UI/layout/geometry is stable. Do not
+   treat mid-transition or pre-layout (e.g. zero-size) grabs as acceptance.
+2. **Respect product geometry floors.** Product-enforced minimum sizes or
+   geometry constraints bound valid acceptance viewports. Impossible or
+   non-user-reachable states are not acceptance evidence — even if “close”.
+3. **Ambiguous visual deltas ≠ auto PASS/FAIL.** Weak or inconclusive
+   visual differences are notes, not automatic product PASS or FAIL, when
+   owner judgment is part of the contract.
+4. **Owner Visual is never agent-self-PASS.** If Exit requires Owner Visual
+   / human visual acceptance, the executing agent may prepare packs and
+   recommend review, but must **not** set that PASS. Use
+   `HOLD_OWNER_DECISION_REQUIRED` until a human owner attests.
+5. Keep these rules **host/evidence hygiene**. Do not import target-repo
+   harness APIs, UI object names, or product-specific visual contracts into
+   this skill.
+
+See also: [`references/host_visual_evidence_checklist.md`](references/host_visual_evidence_checklist.md).
+
 ### 8. Re-evaluate / replan
 
 After each material slice: re-read Goal, refresh live state, check which
@@ -251,6 +274,7 @@ SKILL LEARNING RECOMMENDATION
 
 - Meta-Epic field contract: [`docs/META_EPIC_CONTRACT.md`](../../META_EPIC_CONTRACT.md)
 - Pressure cases: [`references/pressure_cases.yml`](references/pressure_cases.yml)
+- Host visual evidence checklist: [`references/host_visual_evidence_checklist.md`](references/host_visual_evidence_checklist.md)
 - Distribution: [`docs/CURSOR_META_EPIC_EXECUTOR.md`](../../CURSOR_META_EPIC_EXECUTOR.md)
 - Consumer declaration: [`consumer.yml`](consumer.yml)
 - Plugin/skill consumer contract: [`contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md`](../../../contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md)

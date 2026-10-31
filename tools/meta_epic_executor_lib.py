@@ -152,6 +152,56 @@ def evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
         actual["slice_pass"] = slice_pass
         actual["meta_goal_pass"] = meta_pass
         actual["inherit_pass_from_subtask"] = inherit
+    elif case_id == "owner_visual_not_agent_pass":
+        requires = bool(data.get("exit_requires_owner_visual"))
+        human = bool(data.get("human_owner_attestation"))
+        # Executing agent may never self-certify Owner Visual.
+        actual["allow_owner_visual_self_pass"] = False
+        if requires and not human:
+            actual["final_status"] = "HOLD_OWNER_DECISION_REQUIRED"
+            actual["meta_goal_pass"] = False
+        elif requires and human:
+            actual["final_status"] = "PASS"
+            actual["meta_goal_pass"] = True
+        else:
+            actual["final_status"] = "CONTINUE"
+            actual["meta_goal_pass"] = False
+    elif case_id == "stable_visual_state":
+        stable = bool(data.get("layout_stable"))
+        width = data.get("panel_width")
+        width_ok = width is None or float(width) > 0
+        accept = bool(stable and width_ok)
+        actual["accept_visual_evidence"] = accept
+        actual["gate"] = "STEP_PASS" if accept else "STEP_REWORK"
+    elif case_id == "impossible_geometry_acceptance":
+        min_w = float(data.get("product_min_width") or 0)
+        claimed = float(data.get("claimed_acceptance_width") or 0)
+        reachable = bool(data.get("user_reachable", True))
+        accept = bool(reachable and claimed >= min_w)
+        actual["accept_as_acceptance_viewport"] = accept
+        actual["gate"] = "STEP_PASS" if accept else "STEP_REWORK"
+    elif case_id == "ambiguous_visual_delta":
+        weak = str(data.get("visual_delta_strength", "")).lower() == "weak"
+        owner_needed = bool(data.get("owner_judgment_required"))
+        if weak and owner_needed:
+            actual["allow_auto_pass"] = False
+            actual["allow_auto_fail"] = False
+            actual["disposition"] = "HOLD_OWNER_DECISION_REQUIRED"
+        else:
+            actual["allow_auto_pass"] = True
+            actual["allow_auto_fail"] = True
+            actual["disposition"] = "CONTINUE"
+    elif case_id == "host_visual_bypass_tests_green":
+        requires = bool(data.get("exit_requires_owner_visual"))
+        human = bool(data.get("human_owner_attestation"))
+        if requires and not human:
+            actual["allow_bypass"] = False
+            actual["final_status"] = "HOLD_OWNER_DECISION_REQUIRED"
+            actual["meta_goal_pass"] = False
+        else:
+            actual["allow_bypass"] = False
+            actual["final_status"] = "PASS" if human else "CONTINUE"
+            actual["meta_goal_pass"] = bool(human)
     else:
         raise ValueError(f"unknown pressure case id: {case_id}")
 
@@ -186,5 +236,32 @@ def skill_mandates_material_step_gate(text: str | None = None) -> bool:
         "SKILL_LEARNING_RECOMMENDATION" in body,
         "must not mutate itself" in lowered or "not mutate itself" in lowered,
         "slice gate" in lowered or "slice_pass" in lowered,
+    ]
+    return all(checks)
+
+
+def skill_mandates_host_visual_evidence(text: str | None = None) -> bool:
+    body = text if text is not None else SKILL_MD.read_text(encoding="utf-8")
+    lowered = body.lower()
+    forbidden_target_local = [
+        "wait_harmony_width",
+        "displaypreferencespopover",
+        "qquickitem",
+        "minimumwidth: 1120",
+        "harmonic",
+        "kit-hud",
+        "kit hud",
+    ]
+    if any(token in lowered for token in forbidden_target_local):
+        return False
+    checks = [
+        "owner visual" in lowered,
+        "never" in lowered and "self" in lowered,
+        "HOLD_OWNER_DECISION_REQUIRED" in body,
+        "stable" in lowered and ("layout" in lowered or "geometry" in lowered),
+        "minimum" in lowered or "geometry" in lowered,
+        "ambiguous" in lowered,
+        "host_visual_evidence_checklist" in lowered
+        or "host visual evidence checklist" in lowered,
     ]
     return all(checks)
