@@ -99,7 +99,7 @@ Plugins, orchestrators, and skills that participate in cross-repository routing 
 - Consumers declare ownership/triggers and reference **Capability IDs**; Agent Workforce resolves providers.
 - Agent Workforce owns cross-repository selection and capability resolution; target repositories own behavior once selected; execution hosts override neither.
 - Private MCP remains ChatGPT-only and is never a worker dependency.
-- Structural validation lives in `tools/check_plugin_skill_routing.py`; fixtures under `tests/fixtures/plugin-skill-routing/` are not a production plugin inventory.
+- Structural validation lives in `tools/check_plugin_skill_routing.py` (registry REQUIRED providers + fixtures + real `docs/skills/*/consumer.yml` packs from skill-canon sources); fixtures under `tests/fixtures/plugin-skill-routing/` are not a production plugin inventory.
 - Evidence-backed consumer status is recorded in [`docs/PLUGIN_SKILL_ROUTING_AUDIT.md`](docs/PLUGIN_SKILL_ROUTING_AUDIT.md).
 
 ## ChatGPT Workflows backoffice

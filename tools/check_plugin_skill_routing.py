@@ -1,5 +1,11 @@
 #!/usr/bin/env python3
-"""Fail closed when plugin/skill routing fixtures or REQUIRED providers are invalid."""
+"""Fail closed when plugin/skill routing production or fixture packs are invalid.
+
+Validates:
+1. production registry REQUIRED canonical providers
+2. routing test fixtures (unless --skip-fixtures)
+3. real production consumer packs under skill_canon (docs/skills/*/consumer.yml)
+"""
 
 from __future__ import annotations
 
@@ -19,7 +25,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--skip-fixtures",
         action="store_true",
-        help="Only validate production registry REQUIRED canonical providers",
+        help=(
+            "Skip fixture packs; still validate production registry REQUIRED "
+            "providers and real skill-canon consumer packs"
+        ),
     )
     args = parser.parse_args(argv)
 
@@ -28,6 +37,7 @@ def main(argv: list[str] | None = None) -> int:
         problems.extend(lib.validate_production_registry_required_providers())
         if not args.skip_fixtures:
             problems.extend(lib.validate_fixture_valid_pack())
+        problems.extend(lib.validate_production_consumer_packs())
     except (OSError, ValueError) as exc:
         print(f"PLUGIN_SKILL_ROUTING_CHECK: FAIL\n{exc}", file=sys.stderr)
         return 1
