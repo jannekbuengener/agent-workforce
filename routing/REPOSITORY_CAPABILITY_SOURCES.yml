@@ -13,12 +13,19 @@ repositories:
     local_authority:
       frontdoor: WORKFORCE_BOOTSTRAP.md
       agents: AGENTS.md
+      skill_canon: docs/skills
     capability_sources:
       - id: workforce-global-registry
         type: workforce_capability_registry
         path: capabilities/REGISTRY.yml
         discovery: registry_entries
         authority: workforce_routing
+        status: active
+      - id: skills
+        type: skill_canon_dir
+        path: docs/skills
+        discovery: skill_directories
+        authority: local_repo
         status: active
 
   jannekbuengener/sample-brain:

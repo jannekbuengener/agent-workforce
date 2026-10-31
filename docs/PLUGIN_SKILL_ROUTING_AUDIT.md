@@ -36,6 +36,7 @@ For each consumer with available source:
 | Reverse Engineering Orchestrator | `SOURCE_UNAVAILABLE` | No plugin package found | Design hypothesis (specialist over `reverse_engineering`) remains unproven. |
 | Sample Brain Orchestrator | `SOURCE_UNAVAILABLE` | No ChatGPT plugin package found | Do not confuse with repo-local Cursor agent `sample-brain-control-orchestrator` in Sample Brain; that is not ChatGPT plugin evidence for this matrix. |
 | Jules Supervisor | `SOURCE_UNAVAILABLE` | No plugin package found | Design hypothesis (execution provider with narrow explicit trigger) remains unproven. |
+| cursor-meta-epic-executor | `EVALUATED` | `jannekbuengener/agent-workforce` `docs/skills/cursor-meta-epic-executor/` (`SKILL.md` + skill-colocated `consumer.yml`) | Cursor `project_orchestrator` for already-defined Meta-Epics (#41). Capability IDs optional (`reuse_before_build` DISCOVERY_REQUIRED, `deterministic_validation` PREFERRED). Does not claim global routing. Private MCP never a worker dependency. Consumer pack is skill-colocated intentionally — not a new `capabilities/consumers/` inventory tree. |
 
 ## MiroFish architecture boundary (evidence-backed)
 

@@ -1,7 +1,7 @@
 schema_version: 1
 generated: true
 generator: tools/generate_portfolio_capability_index.py
-source_fingerprint: 691f42ec7cd0274ff7274395f33821998dc9db74c087cb8ba6f17002eb60cd79
+source_fingerprint: cd8346a5836295f8ebf8a7c9a02fbe0a3444ec0ae7de1fdf4247f6cdfb756216
 authority_note: Derived discovery data only. Copy authority exactly from source declarations. Never treat this index as repository or workforce authority.
 global_capabilities:
 - capability_id: deterministic_validation
@@ -317,6 +317,14 @@ repository_capabilities:
   source_type: skill_canon_dir
   authority: local_repo
   repository: jannekbuengener/Claire_de_Binare
+- capability_id: cursor-meta-epic-executor
+  intent: '>-'
+  provider_kind: skill
+  source_id: skills
+  source_path: docs/skills
+  source_type: skill_canon_dir
+  authority: local_repo
+  repository: jannekbuengener/agent-workforce
 - capability_id: detecting-supply-chain-attacks-in-ci-cd
   intent: Supply-chain attack detection guidance for CI/CD.
   provider_kind: registry_entry
