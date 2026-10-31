@@ -193,12 +193,36 @@ rights_model:
     a task; he does not administer permissions as part of normal department work.
 
 capabilities:
-  required: []
-  optional: []
-  status: NOT_ASSIGNED_YET
+  status: AUTHORITY_DEFINED_NOT_ACTIVATED
+  contract: docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md
+  required:
+    - id: knowledge_department_decision
+      requirement: REQUIRED
+      when: making_department_knowledge_decisions
+      contract: docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md
+    - id: knowledge_owner_report
+      requirement: REQUIRED
+      when: producing_owner_report
+      contract: docs/HEAD_OF_KNOWLEDGE_OWNER_REPORT.md
+  preferred:
+    - id: shared_context_evidence
+      requirement: PREFERRED
+      when: agent_brain_or_shared_context_evidence_helps
+    - id: improvement_read
+      requirement: PREFERRED
+      when: reading_improvement_blackboard_for_prioritization
+  explicitly_denied:
+    - improvement_management_write
+    - improvement_github_issue_create
+    - generic_memory_or_knowledge_write
+    - raw_database_admin
+    - target_repository_product_mutation
+    - self_grant_authority
   note: >-
-    Exact capability IDs and technical permission matrix are intentionally deferred
-    until the employee is prepared for actual instantiation.
+    Capability IDs and deny-list are defined for FOUNDING_SOLO least privilege
+    (#70). This does not activate the employee. Operational use requires
+    ACTIVE + runtime_exists true (#71). Owner-report contract body is owned
+    by #73; until complete, productive reporting fails closed.
 
 tools:
   status: NOT_PROVISIONED

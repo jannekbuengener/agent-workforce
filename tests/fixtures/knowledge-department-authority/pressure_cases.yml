@@ -1,0 +1,249 @@
+schema_version: 1
+invariant_id: KNOWLEDGE_DEPARTMENT_FOUNDING_SOLO_AUTHORITY
+purpose: >
+  Deterministic Layer-A pressure cases for Head of Knowledge FOUNDING_SOLO
+  least-privilege authority (#70). Proves denied overreach, denied unprovisioned
+  runtime, denied half-certain facts, and allowed evidence-backed department
+  decisions — without activating Dieter or inventing a second runtime DB.
+
+roles:
+  head_of_knowledge:
+    employee_id: workforce.employee.dieter-datenbank.v1
+    allowed_capabilities:
+      - shared_context_evidence
+      - improvement_read
+      - knowledge_department_decision
+      - knowledge_owner_report
+    denied_capabilities:
+      - improvement_management_write
+      - improvement_github_issue_create
+      - generic_memory_or_knowledge_write
+      - raw_database_admin
+      - target_repository_product_mutation
+      - self_grant_authority
+  improvement_board_manager:
+    allowed_capabilities:
+      - improvement_read
+      - improvement_observation_write
+      - improvement_management_write
+      - improvement_github_issue_create
+  quality_scout:
+    allowed_capabilities: []
+
+cases:
+  - id: denied_self_grant_authority
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: self_grant_authority
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_FORBIDDEN_ACTION
+      gate: SELF_GRANT_DENIED
+
+  - id: denied_target_repo_product_mutation
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: mutate_target_repo_product
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: true
+    expect:
+      allowed: false
+      outcome: DENIED_FORBIDDEN_ACTION
+      gate: TARGET_REPO_AUTHORITY_PRESERVED
+
+  - id: denied_raw_database_admin
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: raw_database_admin
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_FORBIDDEN_ACTION
+      gate: RAW_DB_ADMIN_DENIED
+
+  - id: denied_generic_memory_write
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: generic_memory_write
+      capability_id: shared_context_evidence
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_FORBIDDEN_ACTION
+      gate: MEMORY_WRITE_OUT_OF_SCOPE
+
+  - id: denied_improvement_management_write
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: improvement_management_write
+      capability_id: improvement_management_write
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_ROLE_LACKS_CAPABILITY
+      gate: BOARD_MANAGER_CAPABILITY_NOT_INHERITED
+
+  - id: denied_runtime_not_provisioned
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: department_decision
+      capability_id: knowledge_department_decision
+      employment_state: PLANNED_ONLY
+      runtime_exists: false
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_RUNTIME_NOT_PROVISIONED
+      gate: RUNTIME_NOT_PROVISIONED
+
+  - id: denied_missing_required_capability
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: department_decision
+      capability_id: shared_context_evidence
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: BLOCKED_REQUIRED_CAPABILITY_UNAVAILABLE
+      gate: WRONG_OR_MISSING_CAPABILITY
+
+  - id: denied_insufficient_evidence
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: department_decision
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: false
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_INSUFFICIENT_EVIDENCE
+      gate: EVIDENCE_INSUFFICIENT
+
+  - id: denied_half_certain_as_fact
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: department_decision
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: false
+      half_certain_as_fact: true
+      target_repo_mutation: false
+    expect:
+      allowed: false
+      outcome: DENIED_HALF_CERTAIN_AS_FACT
+      gate: HALF_CERTAIN_AS_FACT
+
+  - id: allowed_department_decision_with_evidence
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: department_decision
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: true
+      outcome: DECISION_RECORDED
+      gate: KNOWLEDGE_DECISION_ALLOWED
+
+  - id: allowed_improvement_read_for_prioritization
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: improvement_read
+      capability_id: improvement_read
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+    expect:
+      allowed: true
+      outcome: READ_OK
+      gate: IMPROVEMENT_READ_ALLOWED
+
+  - id: allowed_founding_solo_self_work
+    layer: A
+    behavioral_required: true
+    input:
+      role: head_of_knowledge
+      action: founding_solo_self_work
+      capability_id: knowledge_department_decision
+      employment_state: ACTIVE
+      runtime_exists: true
+      evidence_sufficient: true
+      uncertainty_stated: true
+      half_certain_as_fact: false
+      target_repo_mutation: false
+      specialist_exists: false
+    expect:
+      allowed: true
+      outcome: FOUNDING_SOLO_SELF_WORK_OK
+      gate: FOUNDING_SOLO_SELF_WORK_ALLOWED

@@ -203,3 +203,24 @@ V1.1 Quality Scout, Process Scout, and Supervisor remain advisory for follow-up 
 2. `improvement_github_issue_create` under the bounded routing contract [`docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md`](IMPROVEMENT_GITHUB_ISSUE_CREATE.md).
 
 It does **not** receive general Agent Brain Memory/Knowledge write authority, does not become a `global_router`, and does not create a second mutable workforce runtime database. Capability IDs live in [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml).
+
+## Head of Knowledge (planned → FOUNDING_SOLO)
+
+Canonical employee record: [`agents/dieter-datenbank.md`](../agents/dieter-datenbank.md).
+
+Authority contract: [`docs/KNOWLEDGE_DEPARTMENT_AUTHORITY.md`](KNOWLEDGE_DEPARTMENT_AUTHORITY.md).
+
+The Head of Knowledge is the Owner's department interface for Knowledge work.
+Least-privilege Capability IDs for FOUNDING_SOLO include
+`knowledge_department_decision` and `knowledge_owner_report`, plus preferred
+`shared_context_evidence` and `improvement_read`.
+
+The Head does **not** inherit `improvement_management_write` or
+`improvement_github_issue_create` from organizational seniority. Those remain
+Board Manager capabilities. The Head must not self-grant authority, must not
+treat hierarchy as technical permission, and must not override target-repository
+authority.
+
+Defining the capability matrix does not activate the employee. Until
+`employment_state: ACTIVE` and `runtime_exists: true` are evidenced,
+operational Head decisions fail closed as unprovisioned.
