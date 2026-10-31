@@ -1,0 +1,61 @@
+schema_version: 1
+purpose: >
+  Global minimum evidence-by-modality matrix for evidence-backed-delivery.
+  Target repositories may be stricter. Agent self-claim never substitutes.
+
+locator_kinds:
+  PR_EMBEDDED:
+    description: Artifact visible inline in the PR body or review thread.
+    human_inspectable_ok: true
+  GITHUB_ATTACHMENT:
+    description: File attached to the PR / issue and reachable from GitHub UI.
+    human_inspectable_ok: true
+  WORKFLOW_ARTIFACT:
+    description: Named CI/workflow artifact with a stable download path for reviewers.
+    human_inspectable_ok: true
+  STABLE_REVIEW_URL:
+    description: Durable HTTPS URL reachable without local filesystem access.
+    human_inspectable_ok: true
+  LOCAL_ONLY:
+    description: >
+      Local filesystem path (e.g. D:\Temp\...). Never sufficient for
+      human-inspectable PR evidence.
+    human_inspectable_ok: false
+
+modalities:
+  ui_visual:
+    required_artifact_kinds: [image]
+    examples: [png, jpeg, webp]
+    human_perception: often
+    notes: Before/After when comparison is the acceptance claim.
+  animation:
+    required_artifact_kinds: [video, gif]
+    human_perception: often
+  audio:
+    required_artifact_kinds: [audio]
+    examples: [wav, mp3]
+    human_perception: often
+    notes: Unit tests alone do not prove audible correctness.
+  api_dataflow:
+    required_artifact_kinds: [request_response, json, contract]
+  cli:
+    required_artifact_kinds: [command_log, terminal]
+  performance:
+    required_artifact_kinds: [measurement_report]
+    notes: Must include baseline, method, and result.
+  migration_persistence:
+    required_artifact_kinds: [before_after_state, roundtrip]
+  bugfix:
+    required_artifact_kinds: [before_fail, after_pass]
+  security_policy_governance:
+    required_artifact_kinds: [validator_output, diff_state]
+  internal:
+    required_artifact_kinds: [test, runtime_integration]
+
+rules:
+  - local_only_blocks_human_inspectable: true
+  - tests_do_not_replace_human_perception: true
+  - agent_may_not_self_pass_owner_gate: true
+  - historical_evidence_is_not_final_head_evidence: true
+  - large_packs_require_review_index: true
+  - large_pack_threshold: 5

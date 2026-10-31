@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/jannekbuengener/agent-workforce/contracts/evidence_backed_delivery.v1.schema.json",
+  "title": "EvidenceBackedDeliveryV1",
+  "description": "Contract shape for evidence-backed-delivery envelopes. Validated by tools/evidence_backed_delivery_lib.py structural checks and pressure cases — no runtime jsonschema dependency required.",
+  "type": "object",
+  "properties": {
+    "issue_contract": { "$ref": "#/definitions/issue_contract" },
+    "pr_evidence": { "$ref": "#/definitions/pr_evidence" },
+    "locator_kind": { "$ref": "#/definitions/locator_kind" },
+    "acceptance_verdict": { "$ref": "#/definitions/acceptance_verdict" },
+    "dependency_relation": { "$ref": "#/definitions/dependency_relation" }
+  },
+  "definitions": {
+    "locator_kind": {
+      "type": "string",
+      "enum": [
+        "PR_EMBEDDED",
+        "GITHUB_ATTACHMENT",
+        "WORKFLOW_ARTIFACT",
+        "STABLE_REVIEW_URL",
+        "LOCAL_ONLY"
+      ]
+    },
+    "issue_contract": {
+      "type": "object",
+      "required": [
+        "intent",
+        "goal",
+        "authority",
+        "scope",
+        "constraints",
+        "non_goals",
+        "dependencies",
+        "acceptance_criteria",
+        "required_evidence",
+        "exit"
+      ],
+      "properties": {
+        "intent": { "type": "string" },
+        "goal": { "type": "string" },
+        "authority": { "type": "string" },
+        "scope": { "type": "string" },
+        "constraints": { "type": "array" },
+        "non_goals": { "type": "array" },
+        "dependencies": { "type": "array" },
+        "acceptance_criteria": { "type": "array", "minItems": 1 },
+        "required_evidence": { "type": "array", "minItems": 1 },
+        "exit": { "type": "string" }
+      }
+    },
+    "evidence_artifact": {
+      "type": "object",
+      "required": ["id", "modality", "locator_kind", "locator", "head_sha"],
+      "properties": {
+        "id": { "type": "string" },
+        "modality": { "type": "string" },
+        "locator_kind": { "$ref": "#/definitions/locator_kind" },
+        "locator": { "type": "string" },
+        "head_sha": { "type": "string" },
+        "what_to_inspect": { "type": "string" },
+        "observed_at": { "type": "string" },
+        "acceptance_criterion": { "type": "string" }
+      }
+    },
+    "pr_evidence": {
+      "type": "object",
+      "required": [
+        "repository",
+        "pr_number",
+        "head_sha",
+        "base_sha",
+        "artifacts"
+      ],
+      "properties": {
+        "repository": { "type": "string" },
+        "pr_number": { "type": ["integer", "string"] },
+        "head_sha": { "type": "string" },
+        "base_sha": { "type": "string" },
+        "observed_at": { "type": "string" },
+        "artifacts": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/evidence_artifact" }
+        },
+        "review_index_present": { "type": "boolean" }
+      }
+    },
+    "acceptance_verdict": {
+      "type": "string",
+      "enum": [
+        "MERGE_CANDIDATE",
+        "CURRENT_PR_REWORK_REQUIRED",
+        "PR_SPLIT_REQUIRED",
+        "FOLLOWUP_REQUIRED",
+        "AWAITING_OWNER",
+        "BLOCKED_MISSING_EVIDENCE",
+        "BLOCKED_STALE_EVIDENCE",
+        "BLOCKED_REVIEW_FINDINGS",
+        "BLOCKED_MERGE_ORDER",
+        "BLOCKED_REPO_GATE",
+        "HOLD_ISSUE_CONTRACT_INCOMPLETE",
+        "HOLD_MERGE_ORDER_UNCLEAR"
+      ]
+    },
+    "dependency_relation": {
+      "type": "string",
+      "enum": [
+        "INDEPENDENT",
+        "UPSTREAM_DEPENDENCY",
+        "DOWNSTREAM_DEPENDENCY",
+        "SAME_AUTHORITY_CONFLICT",
+        "OVERLAPPING_WRITER",
+        "MERGE_ORDER_UNCLEAR"
+      ]
+    }
+  }
+}

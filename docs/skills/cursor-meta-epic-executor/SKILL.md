@@ -90,6 +90,18 @@ all Slices DONE ≠ Meta Goal PASS
 PR created/merged ≠ Meta Goal PASS
 ```
 
+### Child delivery (evidence-backed-delivery)
+
+For child Issue → PR → Evidence → Merge Order → Merge → Verify main →
+Issue close, consume the global
+[`evidence-backed-delivery`](../evidence-backed-delivery/SKILL.md) skill and
+[`EVIDENCE_BACKED_DELIVERY_CONTRACT`](../../../contracts/EVIDENCE_BACKED_DELIVERY_CONTRACT.md).
+
+Use it for modality-matched PR evidence, final-head binding, merge-order
+classification, and honest close/residual gates. Do **not** invent a second
+gate hierarchy; Step→Lane→Integration→Slice→Meta remains authoritative for
+Meta-Epic progress.
+
 ### Slice Gate
 
 A **Slice** is a bounded execution unit toward the Meta Goal (one child,
@@ -250,6 +262,7 @@ SKILL LEARNING RECOMMENDATION
 ## References
 
 - Meta-Epic field contract: [`docs/META_EPIC_CONTRACT.md`](../../META_EPIC_CONTRACT.md)
+- Child delivery: [`docs/skills/evidence-backed-delivery/SKILL.md`](../evidence-backed-delivery/SKILL.md)
 - Pressure cases: [`references/pressure_cases.yml`](references/pressure_cases.yml)
 - Distribution: [`docs/CURSOR_META_EPIC_EXECUTOR.md`](../../CURSOR_META_EPIC_EXECUTOR.md)
 - Consumer declaration: [`consumer.yml`](consumer.yml)
