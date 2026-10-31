@@ -672,3 +672,146 @@ def validate_fixture_valid_pack() -> list[str]:
 def validate_production_registry_required_providers() -> list[str]:
     registry = load_registry()
     return validate_required_canonical_providers(consumers=[], registry=registry)
+
+
+def _resolved_under_root(repo_root: Path, relative: str) -> Path | None:
+    """Return path if relative resolves inside repo_root; otherwise None."""
+    rel = relative.strip().replace("\\", "/")
+    if not rel or rel.startswith("/") or (len(rel) > 1 and rel[1] == ":"):
+        return None
+    parts = Path(rel).parts
+    if ".." in parts:
+        return None
+    root = repo_root.resolve()
+    candidate = (root / rel).resolve()
+    try:
+        candidate.relative_to(root)
+    except ValueError:
+        return None
+    return candidate
+
+
+def iter_local_skill_canon_dirs(
+    *,
+    repo_root: Path | None = None,
+    sources: dict[str, Any] | None = None,
+) -> list[Path]:
+    """Active skill_canon_dir paths from capability sources that exist under repo_root.
+
+    Authority is routing/REPOSITORY_CAPABILITY_SOURCES.yml — not a parallel inventory.
+    """
+    root = (repo_root or REPO_ROOT).resolve()
+    data = sources if sources is not None else load_sources()
+    found: list[Path] = []
+    seen: set[Path] = set()
+    repositories = data.get("repositories") or {}
+    if not isinstance(repositories, dict):
+        return found
+    for entry in repositories.values():
+        if not isinstance(entry, dict):
+            continue
+        for source in _as_list(entry.get("capability_sources")):
+            if not isinstance(source, dict):
+                continue
+            if source.get("status") != "active":
+                continue
+            if source.get("type") != "skill_canon_dir":
+                continue
+            path_value = source.get("path")
+            if not isinstance(path_value, str):
+                continue
+            resolved = _resolved_under_root(root, path_value)
+            if resolved is None or not resolved.is_dir():
+                continue
+            if resolved in seen:
+                continue
+            seen.add(resolved)
+            found.append(resolved)
+    return found
+
+
+def discover_production_consumer_pack_paths(
+    *,
+    repo_root: Path | None = None,
+    sources: dict[str, Any] | None = None,
+) -> list[Path]:
+    """Discover skill-colocated consumer.yml under declared skill_canon directories.
+
+    Does not treat tests/fixtures, generated artifacts, or unrelated YAML as
+    production consumer packs.
+    """
+    root = (repo_root or REPO_ROOT).resolve()
+    paths: list[Path] = []
+    for skill_canon in iter_local_skill_canon_dirs(repo_root=root, sources=sources):
+        try:
+            skill_canon.relative_to(root)
+        except ValueError:
+            continue
+        # Defense: never treat a fixtures tree as production skill canon.
+        rel_canon = skill_canon.relative_to(root).as_posix()
+        if rel_canon == "tests" or rel_canon.startswith("tests/"):
+            continue
+        if not skill_canon.is_dir():
+            continue
+        for child in sorted(skill_canon.iterdir(), key=lambda p: p.name):
+            if not child.is_dir():
+                continue
+            consumer = child / "consumer.yml"
+            if consumer.is_file():
+                paths.append(consumer.resolve())
+    return paths
+
+
+def validate_production_consumer_packs(
+    *,
+    repo_root: Path | None = None,
+    sources: dict[str, Any] | None = None,
+    registry: dict[str, Any] | None = None,
+    routing: dict[str, Any] | None = None,
+    pointer_sources: dict[str, Any] | None = None,
+) -> list[str]:
+    """Validate real production consumer packs with existing contract rules.
+
+    Discovery uses ``sources`` (skill_canon_dir authority). Repository-provider
+    pointer checks use ``pointer_sources`` when provided, else ``sources``.
+    """
+    root = (repo_root or REPO_ROOT).resolve()
+    discovery_sources = sources if sources is not None else load_sources()
+    validation_sources = (
+        pointer_sources if pointer_sources is not None else discovery_sources
+    )
+    reg = registry if registry is not None else load_registry()
+    route = routing if routing is not None else load_routing()
+
+    problems: list[str] = []
+    discovered = discover_production_consumer_pack_paths(
+        repo_root=root, sources=discovery_sources
+    )
+    for path in discovered:
+        try:
+            rel = path.relative_to(root).as_posix()
+        except ValueError:
+            rel = path.as_posix()
+        pack = load_yaml(path)
+        if not isinstance(pack, dict):
+            problems.append(
+                _problem(
+                    "UNKNOWN_CAPABILITY",
+                    f"{rel} must be a mapping consumer pack",
+                )
+            )
+            continue
+        pack_problems = collect_consumer_pack_problems(
+            pack,
+            registry=reg,
+            sources=validation_sources,
+            routing=route,
+        )
+        for item in pack_problems:
+            # Keep CODE: as the leading token so problem_codes() stays stable.
+            code, sep, rest = item.partition(":")
+            if sep:
+                problems.append(f"{code.strip()}: {rel}:{rest}")
+            else:
+                problems.append(f"{rel}: {item}")
+    return problems

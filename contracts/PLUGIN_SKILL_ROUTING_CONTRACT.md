@@ -237,7 +237,13 @@ python tools/check_plugin_skill_routing.py
 python -m unittest tools.tests.test_plugin_skill_routing -v
 ```
 
-Fixtures under `tests/fixtures/plugin-skill-routing/` are test packs only — not a production plugin inventory.
+The official checker validates three classes:
+
+1. production registry REQUIRED canonical providers;
+2. routing test fixtures under `tests/fixtures/plugin-skill-routing/` (test packs only — not a production plugin inventory);
+3. real production consumer packs discovered from active `skill_canon_dir` sources in [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](../routing/REPOSITORY_CAPABILITY_SOURCES.yml) (typically skill-colocated `docs/skills/*/consumer.yml`).
+
+Production discovery reuses that capability-source authority. It must not invent a second consumer inventory, and it must not treat fixtures, generated artifacts, or unrelated YAML as production consumers. A contract-invalid production `consumer.yml` is a deterministic FAIL even when fixtures are green.
 
 ## Audit and migration
 
