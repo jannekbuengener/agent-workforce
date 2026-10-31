@@ -52,7 +52,15 @@ When considering a new durable structuring authority (Goal, Epic, Meta-Epic, Coo
 docs/WORKFORCE_POLICY.md#authority-reconciliation
 ```
 
-Do not copy that procedure into this backoffice. Prefer update / reconcile / link / no structural change over create-new unless a missing-authority proof is documented. Ordinary implementation children and small bugfix slices do not trigger this gate.
+Inside that single gate (no parallel authority):
+
+- preserve original structural intent;
+- discover existing owners;
+- evaluate relevant local same-class precedents as samples (`NONE_FOUND` is allowed after bounded discovery);
+- reconcile material candidates individually against existing authority;
+- then decide update / reconcile / link / no structural change / create-new.
+
+Do not copy that procedure into this backoffice. Prefer update / reconcile / link / no structural change over create-new unless a missing-authority proof is documented. An existing owner is evidence, not an automatic stop for structural candidate analysis. Ordinary implementation children and small bugfix slices do not trigger this gate.
 
 ### DECIDE
 

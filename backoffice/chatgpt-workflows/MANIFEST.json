@@ -6,7 +6,7 @@
   "source": {
     "repository": "jannekbuengener/agent-workforce",
     "branch": "main",
-    "source_canon_commit": "941cdef7f5ec9418da9855902cdcacd79e86ca01",
+    "source_canon_commit": "c860e8631e1b29e9d8af18f31696c3ff19561f69",
     "source_canon_commit_semantics": "Agent Workforce canon tip against which this bundle was authored/validated. Not the SHA of a commit that contains this MANIFEST.json."
   },
   "validated_at": "2026-10-31",
@@ -17,7 +17,7 @@
     },
     {
       "path": "02_OPERATING_MODEL.md",
-      "sha256": "8b26dcd1ebab3a30d3817f8f3932b646ae735a41665f7a90e7027c5d80e287f5"
+      "sha256": "ee41fa4009ed589a330bca9bec020e56d95be777c6ccb626ef29c8cd63053406"
     },
     {
       "path": "03_CHATGPT_PROJECT_INSTRUCTIONS.md",

@@ -43,6 +43,12 @@ ORDINARY_TASK_KINDS = {
     "docs_only",
 }
 
+LOCAL_PRECEDENT_STATUSES = {
+    "NOT_EVALUATED",
+    "EVALUATED",
+    "NONE_FOUND",
+}
+
 
 def load_pressure_cases(path: Path | None = None) -> dict[str, Any]:
     target = path or DEFAULT_PRESSURE_CASES
@@ -64,6 +70,34 @@ def _truthy_proof(proof: Any) -> bool:
         return False
     text = str(proof).strip()
     return bool(text) and text.lower() not in {"null", "none", "false", ""}
+
+
+def _hold(
+    actual: dict[str, Any],
+    *,
+    decision: str,
+    expect: dict[str, Any],
+) -> dict[str, Any]:
+    actual["create_new_allowed"] = False
+    actual["preferred_decision"] = decision
+    actual["decision"] = decision
+    actual["gate"] = "AUTHORITY_RECONCILIATION_HOLD"
+    actual["matches_expect"] = _subset_match(actual, expect)
+    return actual
+
+
+def _fail(
+    actual: dict[str, Any],
+    *,
+    decision: str,
+    expect: dict[str, Any],
+) -> dict[str, Any]:
+    actual["create_new_allowed"] = False
+    actual["preferred_decision"] = decision
+    actual["decision"] = decision
+    actual["gate"] = "AUTHORITY_RECONCILIATION_FAIL"
+    actual["matches_expect"] = _subset_match(actual, expect)
+    return actual
 
 
 def evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
@@ -105,12 +139,46 @@ def evaluate_case(case: dict[str, Any]) -> dict[str, Any]:
         return actual
 
     if authorities and not bodies_fully_read:
-        actual["create_new_allowed"] = False
-        actual["preferred_decision"] = "HOLD_FULL_BODY_READ_REQUIRED"
-        actual["decision"] = "HOLD_FULL_BODY_READ_REQUIRED"
-        actual["gate"] = "AUTHORITY_RECONCILIATION_HOLD"
-        actual["matches_expect"] = _subset_match(actual, expect)
-        return actual
+        return _hold(
+            actual,
+            decision="HOLD_FULL_BODY_READ_REQUIRED",
+            expect=expect,
+        )
+
+    candidate_analysis = bool(data.get("candidate_analysis_requested"))
+    if candidate_analysis:
+        if "original_intent_preserved" not in data:
+            return _hold(
+                actual,
+                decision="HOLD_INTENT_PRESERVATION_REQUIRED",
+                expect=expect,
+            )
+        if data.get("original_intent_preserved") is False:
+            return _fail(
+                actual,
+                decision="INTENT_COLLAPSED_FAIL",
+                expect=expect,
+            )
+
+        status_raw = data.get("local_precedent_status")
+        status = (
+            str(status_raw).strip().upper() if status_raw is not None else "NOT_EVALUATED"
+        )
+        if status not in LOCAL_PRECEDENT_STATUSES:
+            status = "NOT_EVALUATED"
+        if status == "NOT_EVALUATED":
+            return _hold(
+                actual,
+                decision="HOLD_PRECEDENT_EVALUATION_REQUIRED",
+                expect=expect,
+            )
+
+        if not bool(data.get("candidate_reconciliation_completed")):
+            return _hold(
+                actual,
+                decision="HOLD_CANDIDATE_RECONCILIATION_REQUIRED",
+                expect=expect,
+            )
 
     owns_full = any(bool(a.get("owns_outcome") is True) for a in authorities)
     owns_partial = any(
@@ -166,6 +234,7 @@ def evaluate_all(path: Path | None = None) -> list[dict[str, Any]]:
 
 def policy_encodes_authority_reconciliation(text: str | None = None) -> bool:
     body = text if text is not None else POLICY_MD.read_text(encoding="utf-8")
+    body_lower = body.lower()
     checks = [
         "AUTHORITY_RECONCILIATION_REQUIRED" in body,
         "## Authority reconciliation" in body,
@@ -179,10 +248,21 @@ def policy_encodes_authority_reconciliation(text: str | None = None) -> bool:
         "LINK_EXISTING" in body,
         "NO_STRUCTURAL_CHANGE" in body,
         "CREATE_NEW_AUTHORITY" in body,
-        "title or search snippets alone are insufficient" in body.lower()
+        "title or search snippets alone are insufficient" in body_lower
         or "Title or search snippets alone are insufficient" in body,
         "Ordinary implementation children" in body
-        or "ordinary implementation children" in body.lower(),
+        or "ordinary implementation children" in body_lower,
+        # Issue #69 extensions (single gate; no parallel invariant)
+        "original structural intent" in body_lower
+        or (
+            "preserve" in body_lower and "structural intent" in body_lower
+        ),
+        "same-class" in body_lower or "same class" in body_lower,
+        "NONE_FOUND" in body or "NONE FOUND" in body,
+        "candidate" in body_lower and "reconcil" in body_lower,
+        "must not automatically end" in body_lower
+        or "does not automatically end" in body_lower
+        or "not a global stop" in body_lower,
     ]
     return all(checks)
 
