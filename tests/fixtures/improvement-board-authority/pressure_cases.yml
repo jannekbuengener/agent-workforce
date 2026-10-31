@@ -1,0 +1,197 @@
+schema_version: 1
+invariant_id: IMPROVEMENT_BOARD_CAPABILITY_SEPARATION
+purpose: >
+  Deterministic Layer-A pressure cases for Improvement Board Manager capability
+  separation. Proves denied scout write, denied ambiguous routing / specialist
+  overreach, and allowed board-manager management — without a second runtime DB.
+
+roles:
+  quality_scout:
+    allowed_tiers: [READ]
+  process_scout:
+    allowed_tiers: [READ]
+  supervisor:
+    allowed_tiers: [READ]
+  improvement_board_manager:
+    allowed_tiers: [READ, OBSERVATION_WRITE, MANAGEMENT_WRITE]
+    github_issue_create: via_separate_contract_only
+
+tier_capability_ids:
+  READ: improvement_read
+  OBSERVATION_WRITE: improvement_observation_write
+  MANAGEMENT_WRITE: improvement_management_write
+  GITHUB_ISSUE_CREATE: improvement_github_issue_create
+
+cases:
+  - id: denied_scout_management_write
+    layer: A
+    behavioral_required: true
+    input:
+      role: quality_scout
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+    expect:
+      allowed: false
+      outcome: DENIED_ROLE_LACKS_CAPABILITY
+      gate: SCOUT_WRITE_DENIED
+
+  - id: denied_scout_observation_write
+    layer: A
+    behavioral_required: true
+    input:
+      role: process_scout
+      requested_tier: OBSERVATION_WRITE
+      capability_id: improvement_observation_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+    expect:
+      allowed: false
+      outcome: DENIED_ROLE_LACKS_CAPABILITY
+      gate: SCOUT_WRITE_DENIED
+
+  - id: denied_supervisor_github_issue_create
+    layer: A
+    behavioral_required: true
+    input:
+      role: supervisor
+      requested_tier: GITHUB_ISSUE_CREATE
+      capability_id: improvement_github_issue_create
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: true
+    expect:
+      allowed: false
+      outcome: DENIED_ROLE_LACKS_CAPABILITY
+      gate: SCOUT_WRITE_DENIED
+
+  - id: denied_ambiguous_routing
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: false
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+      lifecycle_transition: VALIDATED_TO_PLANNED
+    expect:
+      allowed: false
+      outcome: HOLD
+      gate: HOLD_OWNER_AMBIGUOUS
+
+  - id: denied_ambiguous_improvement_identity
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: false
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+      management_action: merge_dedupe
+    expect:
+      allowed: false
+      outcome: HOLD
+      gate: HOLD_IDENTITY_AMBIGUOUS
+
+  - id: denied_specialist_overreach
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: true
+      general_memory_write: false
+      github_issue_contract_ready: false
+    expect:
+      allowed: false
+      outcome: DENIED_SPECIALIST_OVERREACH
+      gate: SPECIALIST_OVERREACH
+
+  - id: allowed_board_manager_management
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+      management_action: set_priority
+    expect:
+      allowed: true
+      outcome: MANAGEMENT_APPLIED
+      gate: BOARD_MANAGER_MANAGEMENT_ALLOWED
+
+  - id: denied_board_manager_general_memory_write
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: improvement_management_write
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: true
+      github_issue_contract_ready: false
+    expect:
+      allowed: false
+      outcome: DENIED_GENERAL_MEMORY_WRITE
+      gate: MEMORY_WRITE_OUT_OF_SCOPE
+
+  - id: github_issue_create_requires_separate_contract
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: GITHUB_ISSUE_CREATE
+      capability_id: improvement_github_issue_create
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+    expect:
+      allowed: false
+      outcome: HOLD
+      gate: GITHUB_ISSUE_CREATE_DEFERRED
+
+  - id: shared_context_evidence_insufficient_for_management
+    layer: A
+    behavioral_required: true
+    input:
+      role: improvement_board_manager
+      requested_tier: MANAGEMENT_WRITE
+      capability_id: shared_context_evidence
+      owning_repo_clear: true
+      improvement_identity_clear: true
+      claims_global_routing: false
+      general_memory_write: false
+      github_issue_contract_ready: false
+    expect:
+      allowed: false
+      outcome: DENIED_WRONG_CAPABILITY
+      gate: SHARED_CONTEXT_INSUFFICIENT
