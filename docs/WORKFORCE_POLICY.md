@@ -224,3 +224,8 @@ authority.
 Defining the capability matrix does not activate the employee. Until
 `employment_state: ACTIVE` and `runtime_exists: true` are evidenced,
 operational Head decisions fail closed as unprovisioned.
+
+The Improvement Board Manager reports organizationally to
+`workforce.employee.dieter-datenbank.v1` (Head of Knowledge). While Dieter is
+not ACTIVE, Board Manager #50 authority remains operable and no runtime may
+claim imaginary Dieter approvals (`IMAGINARY_MANAGER_APPROVAL`).
