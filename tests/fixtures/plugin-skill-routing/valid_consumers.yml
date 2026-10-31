@@ -109,6 +109,47 @@ consumers:
     exit: when the selected execution finishes or is blocked by host tools
     private_mcp: never_worker_dependency
 
+  - id: fixture-improvement-board-manager
+    kind: specialist
+    intent: Manage validated Skill Improvements on the Agent Brain blackboard and route bounded GitHub implementation issues.
+    claims_global_routing: false
+    owns:
+      - improvement blackboard management mutations
+      - bounded validated-improvement GitHub issue create
+    does_not_own:
+      - global capability routing
+      - Quality Scout or Process Scout authority
+      - Supervisor authority
+      - generic Agent Brain memory or knowledge writes
+      - target repository product implementation
+    triggers:
+      explicit:
+        - use improvement board manager
+      semantic:
+        - consolidate skill learning improvements and create a validated implementation issue
+      dependency:
+        - improvement_management_write
+        - improvement_github_issue_create
+      authority:
+        - agents/improvement-board-manager.md
+    exclusions:
+      - ordinary scout Health Book observation
+      - unvalidated improvement spam issue creation
+      - ambiguous owning repository routing
+    requires_capabilities:
+      - id: improvement_management_write
+        requirement: REQUIRED
+      - id: improvement_github_issue_create
+        requirement: REQUIRED
+    optional_capabilities:
+      - id: improvement_read
+        requirement: PREFERRED
+      - id: improvement_observation_write
+        requirement: ADVISORY
+    output: managed improvement state and optional routed GitHub implementation issue
+    exit: when management/GitHub action completes, HOLDs, or REQUIRED capability blocks
+    private_mcp: never_worker_dependency
+
 capability_dependency_edges: []
 
 routing_regression_cases:
@@ -141,3 +182,21 @@ routing_regression_cases:
     type: missing_required_capability_case
     intent_summary: Reverse-engineering task when REQUIRED provider route is undefined.
     expected: BLOCK
+
+  - id: board-manager-should-trigger-validated-improvement-routing
+    consumer_id: fixture-improvement-board-manager
+    type: should_trigger
+    intent_summary: Consolidate a validated skill improvement and create the owning-repo implementation issue.
+    expected: TRIGGER
+
+  - id: board-manager-should-not-trigger-scout-health-comment
+    consumer_id: fixture-improvement-board-manager
+    type: should_not_trigger
+    intent_summary: Ordinary Quality Scout Health Book observation with no improvement board work.
+    expected: NO_TRIGGER
+
+  - id: board-manager-dependency-management-write
+    consumer_id: fixture-improvement-board-manager
+    type: dependency_case
+    intent_summary: Selected board manager requests capability id improvement_management_write.
+    expected: RESOLVE_CAPABILITY

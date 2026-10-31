@@ -19,6 +19,7 @@ Owns:
 - workforce role contracts;
 - cross-repository workforce policy;
 - scout/supervisor authority boundaries;
+- bounded Improvement Board Manager governance and GitHub-issue routing policy for validated Improvements;
 - monitored-repository portfolio membership;
 - shared finding and Repo Health Book contracts;
 - workforce bootstrap/routing rules.
@@ -35,12 +36,12 @@ Does not own:
 
 Role: generic knowledge, context, evidence, decision, memory and retrieval infrastructure for agents.
 
-Owns product-neutral Agent Brain capabilities under its own repository canon.
+Owns product-neutral Agent Brain capabilities under its own repository canon, including the Improvement Blackboard implementation (contracts, observation/management ports, storage, projection).
 
 Does not own:
 
 - GitHub or repository live truth;
-- workforce identity, authority or routing policy;
+- workforce identity, authority or routing policy (including Board Manager role authorization);
 - product/application state in consumer repositories;
 - ARVP validation/evaluation contracts.
 

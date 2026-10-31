@@ -172,3 +172,14 @@ V1.1 has no dedicated runtime database and no committed `last_run` ledger. Durab
 Create a future manager or specialist only when recurring evidence shows sustained coordination work, repeated specialist judgment, recurring manual/agent tasks, ownership bottlenecks, or repeated failures that deterministic automation cannot solve more cheaply and reliably.
 
 No role gains write authority automatically from age, run count, or personality.
+
+## Improvement Board Manager (bounded specialist)
+
+Canonical role: [`agents/improvement-board-manager.md`](../agents/improvement-board-manager.md).
+
+V1.1 Quality Scout, Process Scout, and Supervisor remain advisory for follow-up issue creation. This specialist is the **only** workforce role authorized for:
+
+1. `improvement_management_write` on the Agent Brain Improvement Blackboard;
+2. `improvement_github_issue_create` under the bounded routing contract (`docs/IMPROVEMENT_GITHUB_ISSUE_CREATE.md` / issue #51).
+
+It does **not** receive general Agent Brain Memory/Knowledge write authority, does not become a `global_router`, and does not create a second mutable workforce runtime database. Capability IDs live in [`capabilities/REGISTRY.yml`](../capabilities/REGISTRY.yml).

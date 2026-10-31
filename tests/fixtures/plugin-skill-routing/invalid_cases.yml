@@ -259,3 +259,31 @@ packs:
     capability_dependency_edges: []
     expect:
       - MISSING_SOURCE_POINTER
+
+  scout_management_overreach:
+    consumers:
+      - id: bad-quality-scout-board-overreach
+        kind: specialist
+        intent: Quality Scout illegally claims global routing while requiring improvement management writes.
+        claims_global_routing: true
+        owns:
+          - engineering quality findings
+        does_not_own:
+          - product implementation
+        triggers:
+          explicit: []
+          semantic: []
+          dependency:
+            - improvement_management_write
+          authority: []
+        exclusions: []
+        requires_capabilities:
+          - id: improvement_management_write
+            requirement: REQUIRED
+        optional_capabilities: []
+        output: none
+        exit: none
+        private_mcp: never_worker_dependency
+    capability_dependency_edges: []
+    expect:
+      - SPECIALIST_OVERREACH
