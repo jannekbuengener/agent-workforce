@@ -1,4 +1,3 @@
-# child-06 Adoption
-STATUS: CLOSED
-DELIVERED: adoption note accepted
-DO NOT REIMPLEMENT
+# child-06
+Work item: adoption
+Historical note: listed sixth.

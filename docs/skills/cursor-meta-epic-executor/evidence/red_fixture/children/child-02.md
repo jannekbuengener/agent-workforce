@@ -1,4 +1,3 @@
-# child-02 Core data
-STATUS: CLOSED
-DELIVERED: core schema accepted
-DO NOT REIMPLEMENT
+# child-02
+Work item: core
+Historical note: listed second.

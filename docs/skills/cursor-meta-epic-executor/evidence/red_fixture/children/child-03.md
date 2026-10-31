@@ -1,4 +1,3 @@
-# child-03 Persistence
-STATUS: CLOSED
-DELIVERED: persistence notes accepted
-DO NOT REIMPLEMENT
+# child-03
+Work item: persistence
+Historical note: listed third.

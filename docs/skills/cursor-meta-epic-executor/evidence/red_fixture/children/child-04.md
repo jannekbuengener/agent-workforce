@@ -1,4 +1,3 @@
-# child-04 Bridge
-STATUS: CLOSED
-DELIVERED: bridge stub accepted
-DO NOT REIMPLEMENT
+# child-04
+Work item: bridge
+Historical note: listed fourth.
