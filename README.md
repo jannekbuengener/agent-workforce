@@ -159,6 +159,7 @@ The topology describes shared capabilities and ownership boundaries only. It doe
 
 - [Stable execution bootstrap](WORKFORCE_BOOTSTRAP.md)
 - [Checkpoint contract](contracts/CHECKPOINT_CONTRACT.md)
+- [History backfill contract](contracts/HISTORY_BACKFILL_CONTRACT.md)
 - [Capability routing](docs/CAPABILITY_ROUTING.md)
 - [Capability registry](capabilities/REGISTRY.yml)
 - [Repository routing](docs/REPOSITORY_ROUTING.md)
