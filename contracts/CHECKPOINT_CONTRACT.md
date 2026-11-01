@@ -15,6 +15,8 @@ Supervisor: read cursor -> review newer Scout outputs -> update same cursor
 
 No parallel state mechanism is introduced.
 
+Scope boundary: the one-off local History Backfill keeps its own temporary, workflow-local collection state under [`HISTORY_BACKFILL_CONTRACT.md`](HISTORY_BACKFILL_CONTRACT.md). That state is not a Scout or Supervisor checkpoint, does not replace or duplicate one, and is never read as a Scout/Supervisor cursor.
+
 ## Scout checkpoint
 
 Each active Scout has exactly one checkpoint comment in each canonical Repo Health Book.
