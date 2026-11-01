@@ -1,0 +1,19 @@
+---
+description: Enforce the reuse-before-build XERJ reference-code check for new features and meaningful implementation paths
+alwaysApply: true
+---
+
+# XERJ reference coding (agent-workforce)
+
+When `reuse_before_build` matches under `docs/REUSE_BEFORE_BUILD.md`, complete the
+XERJ reference-code check before finalizing the implementation path. This includes
+planning or implementing a new feature, not only unfamiliar workforce machinery.
+
+1. Check this repo's existing implementation and accepted dependencies first under the normal repository-authority rules.
+2. Search any execution-host-authorized indexed peer corpus with `xerj search --prefix <peer-prefix> "<problem in their words>"` / `xerj def --prefix <peer-prefix> <Symbol>` when such a prefix exists.
+3. Use the Hub with `xerj hub find "<topic>"` and `xerj ask "<question>"` when a local peer corpus is unavailable or insufficient.
+4. Record `REFERENCE_FOUND` or `NO_RELEVANT_REFERENCE`; for a found reference cite `project/file:line` plus pin/licence when available.
+5. Treat the result as evidence only. Prefer approach-level reuse and do not copy under incompatible licences or bypass target-repository authority.
+6. If no authorized XERJ CLI/MCP route can run the required check, stop with `BLOCKED_TOOL_UNAVAILABLE`; do not silently substitute memory or generic search.
+
+An execution host may provide XERJ through CLI or MCP. Host-specific executable paths and local prefixes are operational configuration, not workforce canon.

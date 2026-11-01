@@ -113,11 +113,11 @@ Exportable ChatGPT Project bootstrap for the **WorkForce — Executive Planning 
 
 ## Reuse before build
 
-For relevant planning/implementation work, check existing repository code and existing accepted dependencies before adding a new library, tool, service, infrastructure path, or custom implementation.
+For planning or implementing a new feature, and for other relevant implementation-path decisions, check existing repository code and accepted dependencies first, then run one bounded XERJ reference-code search before adding a new library, tool, service, infrastructure path, or custom implementation.
 
-The canonical decision procedure is [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md). It is intentionally bounded: trivial fixes, documentation-only changes, straightforward reuse of an existing repo primitive, and tasks with no meaningful build-vs-reuse decision do not trigger broad ecosystem research.
+The canonical decision procedure is [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md). It is intentionally bounded: trivial fixes, documentation-only changes, straightforward reuse of an existing repo primitive, small refactors without an implementation-path decision, and analysis that selects no implementation path do not trigger broad ecosystem research. A matched route records `REFERENCE_FOUND` or `NO_RELEVANT_REFERENCE`; lack of an authorized XERJ route fails closed with `BLOCKED_TOOL_UNAVAILABLE`.
 
-Discovery can conclude `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM`. A discovery outcome is evidence for the engineering decision; it does not itself authorize dependency installation or repository mutation.
+Discovery can conclude `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM`. XERJ/reference evidence supports that decision; it does not itself authorize code copying, dependency installation or repository mutation.
 
 ## Skill-TDD (RED fixture independence)
 

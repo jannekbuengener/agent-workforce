@@ -2,9 +2,9 @@
 
 ## Purpose
 
-Before introducing a new implementation, dependency, tool, service, subsystem, or infrastructure path, determine whether the target repository already has a suitable solution or whether an established external option is technically better than custom code.
+Before planning or implementing a new feature, or introducing another meaningful implementation, dependency, tool, service, subsystem, or infrastructure path, determine whether the target repository already has a suitable solution and inspect relevant worked reference implementations before custom code is selected.
 
-This is a relevance-gated engineering discovery contract. It is not a mandate to research the ecosystem for every edit, and it does not grant authority to install dependencies or mutate a target repository.
+This is a relevance-gated engineering discovery contract. When it matches, one bounded XERJ reference-code check is mandatory. It is not a mandate to research the ecosystem for every edit, and it does not grant authority to install dependencies, copy external code, or mutate a target repository.
 
 ## Authority order
 
@@ -19,8 +19,10 @@ Repo-local dependency, licensing, security, offline, architecture or governance 
 
 ## Relevance gate
 
-Apply this contract when a planning or implementation task would make a meaningful build-vs-reuse decision, including work that may introduce:
+Apply this contract when a planning or implementation task would make a meaningful build-vs-reuse decision, including:
 
+- planning a new feature;
+- implementing a new feature;
 - a new implementation path or subsystem;
 - a new dependency/package;
 - a new external tool or service;
@@ -35,7 +37,7 @@ Do not trigger broad external discovery for:
 - small refactors that do not create a meaningful dependency/tool/build decision;
 - unrelated analysis where no implementation path is being selected.
 
-If the task can be solved cleanly with an already-known target-repository primitive, stop discovery there unless repo-local authority requires additional evaluation.
+When this contract matches, local repository code and accepted dependencies are checked first, then the bounded XERJ reference-code step still runs before the implementation path is finalized. After that step, discovery may stop early when an existing repository primitive or accepted dependency clearly satisfies the requirement.
 
 ## Required discovery order
 
@@ -43,13 +45,42 @@ When the relevance gate matches, evaluate in this order:
 
 1. **Existing repository implementation** — search for reusable modules, helpers, contracts, patterns, adapters, services, tests, scripts or other primitives already owned by the target repository.
 2. **Existing repository dependencies** — determine whether a package/tool already used and accepted by the repository solves the problem without introducing a new dependency surface.
-3. **Established libraries/packages** — identify maintained language/runtime-appropriate libraries with a strong technical fit.
-4. **Maintained open-source projects/tools** — consider broader OSS solutions when a library-level primitive is insufficient.
-5. **Agent Workforce capabilities/tools** — check registered capabilities for an existing specialized route before inventing parallel tooling.
-6. **Official/upstream evidence** — verify relevant specifications, official documentation, release notes, upstream issues and compatibility constraints for serious candidates.
-7. **Custom implementation** — choose new local code only when the prior options are insufficient, incompatible, unsafe, unmaintained, operationally unsuitable, or otherwise worse for the target repository.
+3. **XERJ reference coding** — search an authorized indexed peer corpus or the XERJ Hub for worked implementations of the same problem before selecting the implementation path.
+4. **Established libraries/packages** — identify maintained language/runtime-appropriate libraries with a strong technical fit.
+5. **Maintained open-source projects/tools** — consider broader OSS solutions when a library-level primitive is insufficient.
+6. **Agent Workforce capabilities/tools** — check registered capabilities for an existing specialized route before inventing parallel tooling.
+7. **Official/upstream evidence** — verify relevant specifications, official documentation, release notes, upstream issues and compatibility constraints for serious candidates.
+8. **Custom implementation** — choose new local code only when the prior options are insufficient, incompatible, unsafe, unmaintained, operationally unsuitable, or otherwise worse for the target repository.
 
-The order is intentional: prefer what the repository already owns or already depends on before expanding its dependency or operational surface.
+The order is intentional: prefer what the repository already owns or already depends on, then inspect worked reference implementations through XERJ, before expanding the dependency/operational surface or inventing custom code.
+
+## Required XERJ reference-coding gate
+
+When this contract matches, XERJ is a required discovery step, not an optional inspiration source.
+
+Use an execution-host-authorized XERJ route:
+
+- an already indexed local/peer corpus via XERJ search/definition lookup; or
+- the public XERJ Hub via corpus discovery and question/definition lookup.
+
+Keep the search bounded to the actual engineering problem. Query using the domain terms, symbols, protocols or behavior being implemented. A single relevant worked implementation is often enough; `NO_RELEVANT_REFERENCE` is a valid result and does not block normal engineering once the search itself completed.
+
+Record one compact reference-coding receipt:
+
+```text
+XERJ_REFERENCE_CHECK
+Result: REFERENCE_FOUND | NO_RELEVANT_REFERENCE
+Query: <problem intent>
+Corpus/Prefix: <source>
+Pin/Revision: <when available>
+License: <when available>
+Reference: <file:line when found>
+Decision impact: <reuse/adapt/no change and why>
+```
+
+A XERJ result is evidence only. Before copying or adapting code, verify target-repository architecture, license compatibility, security and operational constraints. `REFERENCE_FOUND` never grants dependency, vendoring, architecture or mutation authority by itself.
+
+If the route matches but no authorized XERJ CLI/MCP route can perform the required check, stop with `BLOCKED_TOOL_UNAVAILABLE`. Do not silently replace the required XERJ step with memory, generic web search or an unrelated search tool.
 
 ## Evaluation criteria
 
@@ -87,9 +118,9 @@ For shared source classification, repo-local relevance manifests and reusable di
 
 ## Bounded discovery
 
-Discovery must be sufficient to support the engineering decision, not exhaustive.
+Discovery must be sufficient to support the engineering decision, not exhaustive. For a matched route, complete the required XERJ reference-code check before using an early-stop condition.
 
-Stop when one of these is true:
+After that check, stop when one of these is true:
 
 - an existing repo primitive clearly satisfies the requirement;
 - an existing accepted dependency clearly satisfies the requirement;
@@ -127,6 +158,7 @@ The final decision should be compact and include only what materially supports i
 
 - selected outcome;
 - existing repo/dependency option checked first;
+- the `XERJ_REFERENCE_CHECK` receipt;
 - external candidate(s) considered when relevant;
 - decisive technical constraints/trade-offs;
 - why the selected route wins.
@@ -152,6 +184,6 @@ Any selected implementation still follows the target repository's normal authori
 
 `reuse_before_build` is registered in `capabilities/REGISTRY.yml` as `DISCOVERY_REQUIRED`.
 
-It has no mandatory named tool. The registry entry is a routing trigger to this contract. Specialized `REQUIRED` capabilities remain independent; for example, reverse-engineering work still follows the REA hard gate when that trigger applies.
+The registry entry routes matching work to this contract and names XERJ as the mandatory reference-coding provider inside the discovery procedure. This does not create a second global Capability ID. Specialized `REQUIRED` capabilities remain independent; for example, reverse-engineering work still follows the REA hard gate when that trigger applies.
 
 The shared external-reference catalog may provide bounded discovery anchors when external evidence is relevant. Repo-local external-reference manifests remain owned by each target repository; issue #13 owns the portfolio rollout and normalization of those manifests.
