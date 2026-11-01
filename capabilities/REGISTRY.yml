@@ -96,11 +96,14 @@ capabilities:
   reuse_before_build:
     requirement: DISCOVERY_REQUIRED
     description: >
-      Bounded engineering discovery before a meaningful implementation-path
-      decision would introduce new code, dependencies, tooling, services,
-      subsystems, or infrastructure.
+      Bounded engineering and reference-code discovery before planning or
+      implementing a new feature or making another meaningful implementation-path
+      decision involving code, dependencies, tooling, services, subsystems, or
+      infrastructure.
     contract: docs/REUSE_BEFORE_BUILD.md
     triggers:
+      - planning a new feature
+      - implementing a new feature
       - planning a new implementation path
       - adding a new capability or subsystem
       - considering a new dependency or package
@@ -117,11 +120,27 @@ capabilities:
       order:
         - existing repository implementation or reusable primitives
         - dependencies already used by the target repository
+        - XERJ reference-code search across authorized indexed peer or Hub corpora
         - established language/runtime libraries or packages
         - suitable maintained open-source projects or tools
         - existing Agent Workforce capabilities or tools
         - official documentation, upstream issues, release notes, and compatibility constraints
         - custom implementation when prior options are insufficient
+      reference_coding:
+        provider: XERJ
+        required: true
+        unavailable_outcome: BLOCKED_TOOL_UNAVAILABLE
+        automatic_adoption_authority: false
+        outcomes:
+          - REFERENCE_FOUND
+          - NO_RELEVANT_REFERENCE
+        evidence:
+          - query_or_problem_intent
+          - corpus_or_prefix
+          - pin_or_revision_when_available
+          - license_when_available
+          - file_line_when_reference_found
+          - decision_impact
       outcomes:
         - REUSE_EXISTING
         - ADOPT_DEPENDENCY_OR_TOOL

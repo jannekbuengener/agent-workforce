@@ -14,7 +14,7 @@ These rules govern agents acting from this workforce repository. They do not ove
 - When cross-repository ownership, spawn-point, or meta/metatool routing is materially relevant, consult [`docs/REPOSITORY_ROUTING.md`](docs/REPOSITORY_ROUTING.md) and [`routing/REPOSITORY_ROUTING.yml`](routing/REPOSITORY_ROUTING.yml) for stable routing facts. Do not treat that topology as monitored membership or product canon.
 - When cross-repository capability/skill discovery is materially relevant, follow [`docs/REPOSITORY_CAPABILITY_DISCOVERY.md`](docs/REPOSITORY_CAPABILITY_DISCOVERY.md): locate authority via [`routing/REPOSITORY_CAPABILITY_SOURCES.yml`](routing/REPOSITORY_CAPABILITY_SOURCES.yml), treat [`generated/PORTFOLIO_CAPABILITY_INDEX.yml`](generated/PORTFOLIO_CAPABILITY_INDEX.yml) as derived discovery data only, and load the declared repo-local source selectively. Do not treat the generated index as authority.
 - When plugin/skill/orchestrator consumer routing is materially relevant, follow [`contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md`](contracts/PLUGIN_SKILL_ROUTING_CONTRACT.md): consumers reference Capability IDs resolved by Agent Workforce; specialists must not become a second global router; private MCP is never a worker dependency. Validation stays structural — do not invent semantic routing scores.
-- For relevant planning/implementation work that would introduce a meaningful new code/dependency/tool/service/infrastructure path, the `reuse_before_build` route is `DISCOVERY_REQUIRED`; follow [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md) before selecting a custom implementation.
+- For planning or implementing a new feature, or other relevant work that would introduce a meaningful new code/dependency/tool/service/infrastructure path, the `reuse_before_build` route is `DISCOVERY_REQUIRED`; follow [`docs/REUSE_BEFORE_BUILD.md`](docs/REUSE_BEFORE_BUILD.md) before finalizing the implementation path. A matched route must complete the bounded XERJ reference-code check and record `REFERENCE_FOUND` or `NO_RELEVANT_REFERENCE`; if no authorized XERJ route is available, return `BLOCKED_TOOL_UNAVAILABLE` rather than silently substituting another search path.
 - When recommending, designing, or creating a new durable structuring authority (Goal, Epic, Meta-Epic, Coordinator, or equivalent owner structure), `AUTHORITY_RECONCILIATION_REQUIRED` applies; follow [`docs/WORKFORCE_POLICY.md`](docs/WORKFORCE_POLICY.md#authority-reconciliation) before create-new. Ordinary implementation children and small bugfix slices do not trigger that gate.
 - Reuse-before-build is bounded and relevance-gated. Do not run broad ecosystem research for trivial fixes, documentation-only work, straightforward use of existing repo primitives, or tasks that do not make a meaningful implementation-path decision.
 - When external documentation or engineering precedent is materially relevant, follow [`contracts/EXTERNAL_REFERENCE_CONTRACT.md`](contracts/EXTERNAL_REFERENCE_CONTRACT.md): use the target repo's own external-reference manifest when present, then consult [`references/CATALOG.yml`](references/CATALOG.yml) only for applicable shared discovery/reference anchors.
@@ -58,3 +58,13 @@ Infrastructure, connector, scheduler, or budget failures are operational failure
 - Unchanged conditions are not reposted solely because another scheduled run occurred.
 - Do not treat scout comments or generic bot activity as meaningful engineering activity triggers.
 - Do not create write/retry loops in response to agent-generated comments.
+
+## XERJ (reference coding)
+
+XERJ supplies the mandatory reference-code step inside matched `reuse_before_build` work. Use an authorized execution-host route: an indexed peer corpus with `xerj search` / `xerj def`, or the public Hub with `xerj hub find` / `xerj ask`.
+
+Do not hard-code workstation paths, local data directories, or prefix names into workforce canon. Those belong to execution-host configuration.
+
+For a matched route, record `REFERENCE_FOUND` or `NO_RELEVANT_REFERENCE`; when a concrete reference is found, cite `file:line` and capture pin/revision and licence when available. The reference is evidence only and never bypasses repository authority or licence checks.
+
+After using XERJ, send the field report through the available XERJ feedback route unless the execution host has explicitly disabled feedback.

@@ -179,13 +179,15 @@ REA unavailable OR unauthorized
 
 `reuse_before_build` is registered as `DISCOVERY_REQUIRED` and routes to [`docs/REUSE_BEFORE_BUILD.md`](REUSE_BEFORE_BUILD.md).
 
-Use it only when planning or implementation would make a meaningful build-vs-reuse decision, such as adding a new subsystem, dependency, external tool/service, infrastructure path, or substantial custom capability.
+Use it when planning or implementing a new feature, or when another planning/implementation task would make a meaningful build-vs-reuse decision such as adding a new subsystem, dependency, external tool/service, infrastructure path, or substantial custom capability.
 
-Do not trigger broad ecosystem research for trivial bug fixes, documentation-only work, straightforward use of existing repository primitives, or tasks that do not select an implementation path.
+Do not trigger broad ecosystem research for trivial bug fixes, documentation-only work, straightforward use of existing repository primitives, small refactors without an implementation-path decision, or analysis that selects no implementation path.
 
-The discovery order prefers existing repo code and existing accepted dependencies before external libraries, OSS projects, workforce capabilities, and finally custom implementation. The contract requires a compact outcome of `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM` with material decision evidence.
+The discovery order checks existing repo code and accepted dependencies first, then requires one bounded XERJ reference-code search across an authorized indexed peer corpus or the XERJ Hub before external libraries, OSS projects, workforce capabilities, or custom implementation are selected. The XERJ step records `REFERENCE_FOUND` or `NO_RELEVANT_REFERENCE`; a no-match result permits normal discovery to continue.
 
-Discovery does not itself authorize dependency installation, OSS adoption, architecture changes, or any other target-repository mutation.
+If the route matches but the execution host has no authorized XERJ CLI/MCP route for the required check, return `BLOCKED_TOOL_UNAVAILABLE` rather than silently substituting memory or another search mechanism. The final reuse decision remains `REUSE_EXISTING`, `ADOPT_DEPENDENCY_OR_TOOL`, or `BUILD_CUSTOM` with material decision evidence.
+
+Reference discovery does not itself authorize code copying, dependency installation, OSS adoption, architecture changes, or any other target-repository mutation.
 
 ## Improvement Blackboard capabilities
 
