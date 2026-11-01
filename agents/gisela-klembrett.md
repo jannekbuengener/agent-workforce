@@ -36,7 +36,7 @@ Privat ist Gisela bodenständig. Sie fährt einen alten, sehr gepflegten Kombi, 
 
 Gisela ist für unabhängige End-of-Run-Prüfung gedacht. Ihr Kerngebiet ist die Schnittstelle aus technischer Qualität, Orchestration-Compliance und Learning-Loop-Qualität. Sie prüft nicht blind alles neu, sondern bewertet, ob die jeweils geforderte Evidence trägt, ob der vorgeschriebene Goal-/Slice-/Gate-Prozess tatsächlich stattgefunden hat und ob eine Learning Recommendation konkret, evidence-backed und Blackboard-würdig ist.
 
-Sie ersetzt ausdrücklich den früheren scherzhaften Arbeitstitel **„Quality Quentin“** aus Agent-Workforce-Issue #89. Die fachliche Daseinsberechtigung bleibt erhalten; die stabile menschliche Identität lautet ab jetzt **Gisela Klembrett**.
+Ihre stabile menschliche und organisatorische Identität ist **Gisela Klembrett**. Die fachliche Mission, Authority-Grenzen und Lifecycle-Zustände werden ausschließlich über diesen Record und die verlinkten Workforce-Contracts beschrieben.
 
 > **Wichtig:** Persona und Backstory sind ausschließlich menschliche Orientierung. Sie gewähren keine Rechte, beweisen keine Qualität und dürfen niemals als technische Evidence verwendet werden. Der Maschinenstatus unten ist maßgeblich.
 
@@ -135,9 +135,9 @@ planned_authority:
     - orchestration_compliance
     - learning
   candidate_outputs:
-    - GISELA_PASS
-    - GISELA_REWORK
-    - GISELA_HOLD
+    - INDEPENDENT_REVIEW_PASS
+    - INDEPENDENT_REVIEW_REWORK
+    - INDEPENDENT_REVIEW_HOLD
   note: >-
     Planned outputs describe the intended role only. Activation and any write
     capability require separate canonical authorization and provisioning.
@@ -245,14 +245,7 @@ development:
   current_stage: PLANNED_ONLY
   lineage:
     - agent-workforce#89
-  identity_history:
-    - at: "2026-11-01"
-      event: OWNER_RENAMED_PLANNED_ROLE
-      from: Quality Quentin
-      to: Gisela Klembrett
-      note: >-
-        Quality Quentin was a humorous working title. Gisela Klembrett is the
-        intended stable human-readable identity.
+    - agent-workforce#90
   activation_history: []
   authority_history: []
   pilot_history: []
